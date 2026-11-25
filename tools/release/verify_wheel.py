@@ -3,7 +3,10 @@
 Verifies the platform tag, the metadata (dependencies pinned exactly to
 requirements.lock, the supported Python range, license files), the packaged
 runtime files and the stamped build identity, including that the recorded
-binary and UI hashes match the files in the wheel.
+binary and UI hashes match the files in the wheel. A wheel that carries private
+benchmark evidence (tools/release/private_evidence.py), or a packaged text file
+that quotes a measured claim kept in the private repository
+(tools/release/disclosures.py), is refused.
 
     python -m tools.release.verify_wheel WHEEL [--platform-tag TAG] [--require-commit] [--expect-commit SHA]
 """
@@ -24,6 +27,7 @@ from packaging.specifiers import SpecifierSet
 from packaging.utils import canonicalize_name, parse_wheel_filename
 
 from backend import resources
+from tools.release import disclosures, private_evidence
 from tools.release.policy import SUPPORTED_PYTHONS, read_lock
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -67,9 +71,33 @@ def crates_without_license_text(report: str) -> list[str]:
     return [crate for crate in listed if crate not in covered]
 
 
+def packaged_private_evidence(names: set[str]) -> list[str]:
+    """Wheel entries under the data folder that are private benchmark evidence."""
+
+    prefix = f"backend/{resources.PACKAGED_DATA_DIR}/"
+    return sorted(name for name in names if name.startswith(prefix) and private_evidence.is_private(name.removeprefix(prefix)))
+
+
+def packaged_claims(archive: zipfile.ZipFile, fingerprints: disclosures.Fingerprints | None = None) -> list[str]:
+    """Packaged text files (sources, data, the UI bundle) that quote a measured claim kept in the private repository."""
+
+    fingerprints = fingerprints or disclosures.Fingerprints.load()
+    found = []
+    for entry in sorted(archive.namelist()):
+        if entry.endswith("/"):
+            continue
+        try:
+            text = archive.read(entry).decode("utf-8")
+        except UnicodeDecodeError:
+            continue
+        found.extend(fingerprints.failures(entry, text))
+    return found
+
+
 def check_wheel(
     path: Path, *, platform_tag: str | None = None, require_commit: bool = False,
     expect_commit: str | None = None, lock: Path = ROOT / "requirements.lock",
+    fingerprints: disclosures.Fingerprints | None = None,
 ) -> list[str]:
     if expect_commit is not None and not re.fullmatch(r"[0-9a-f]{40}", expect_commit):
         return ["expected application commit must be a full lowercase hexadecimal commit hash"]
@@ -133,6 +161,10 @@ def check_wheel(
         for entry in required:
             if entry not in names:
                 problems.append(f"missing {entry}")
+        private = packaged_private_evidence(names)
+        if private:
+            problems.append("private benchmark evidence is packaged (it is kept in the private repository): " + ", ".join(private))
+        problems.extend(packaged_claims(archive, fingerprints))
         if problems:
             return problems
 

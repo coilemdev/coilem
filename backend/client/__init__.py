@@ -30,6 +30,7 @@ from backend.client._solve import (
     solve,
     sweep,
 )
+from backend.client._thermal import ThermalEstimate, thermal, thermal_inputs
 
 __all__ = [
     "ANALYSES",
@@ -55,6 +56,7 @@ __all__ = [
     "Stator",
     "Sweep",
     "SweepPoint",
+    "ThermalEstimate",
     "Waveform",
     "Winding",
     "Wire",
@@ -65,4 +67,6 @@ __all__ = [
     "setups",
     "solve",
     "sweep",
+    "thermal",
+    "thermal_inputs",
 ]

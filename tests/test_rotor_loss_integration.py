@@ -121,6 +121,45 @@ def test_public_orchestration_maps_excitation_once_and_saves_the_rotor_record(mo
     assert rotor_event[0] == rotor_event[1] and rotor_event[1] > 385
 
 
+def test_rotor_loss_progress_never_moves_back_when_the_field_stage_finishes(monkeypatch):
+    """The field stage's last event counts the loaded sweep alone; the bar must not drop to it (#348)."""
+    import backend.solver as module
+    from backend import rotor_loss_solver
+
+    cfg = config()
+    cfg.solve_params.current_angle_deg = 0
+    cfg.solve_options.rotor_iron_loss = True
+    monkeypatch.setattr(module, "_magneto2d_prepare_cache_dir", lambda: False)
+    monkeypatch.setattr(module, "_select_magneto2d_torque_series", lambda *a: ([1.0], 1.0, "contour"))
+    solver = module.Magneto2DSolver(launch_surface=True)
+    events = []
+
+    def fields(config, *, on_progress, **kwargs):
+        # Loaded and no-load sweeps together, then the loaded sweep's own completion count.
+        for done in range(1, 50):
+            on_progress(done, 49, None, "magneto2d_sweep", 0)
+        on_progress(25, 25, 1.0, "magneto2d_complete", None)
+        return {"sweep": {}}, {}
+
+    def compute(native, *, direction, on_progress, check_cancelled, **kwargs):
+        for position in range(1, 386):
+            on_progress(position, 385, -position)
+        return rotor()
+
+    def package(config, sweep, single, **kwargs):
+        return SimpleNamespace(summary=SimpleNamespace(solve_time_s=0), solve_metadata=SimpleNamespace(solve_time_s=0, solve_cache_dir=None))
+
+    monkeypatch.setattr(solver, "_solve_with_per_angle_gmsh_meshes", fields)
+    monkeypatch.setattr(rotor_loss_solver, "compute_or_cached", compute)
+    monkeypatch.setattr(solver, "build_result_from_reports", package)
+    solver.solve(cfg, on_progress=lambda *args, **kwargs: events.append(args))
+    counted = [e for e in events if len(e) > 3 and e[3] in ("magneto2d_sweep", "rotor_iron_loss")]
+    assert {e[1] for e in counted} == {49 + 385}, "one total for the whole run"
+    done = [e[0] for e in counted]
+    assert done == sorted(done) and done[-1] == 49 + 385, "the bar only moves forward"
+    assert not any(len(e) > 3 and e[3] == "magneto2d_complete" for e in events)
+
+
 def test_saved_rotor_record_survives_postprocessing_and_csv_and_is_unavailable_on_sector():
     from backend.models import SolveResult
     from backend.public_report import build_public_run_csv

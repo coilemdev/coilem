@@ -2,9 +2,24 @@ import type { MotorConfig } from './model';
 import type { TorqueSpeedAnalysisSettings } from './performance';
 import { currentUnits, defaultDriveLimits } from './performanceView';
 
-/** Defaults come from the design, before any operating-point solve exists. */
+/** The supply voltage of a design that names none. */
+export const DEFAULT_DC_BUS_V = 48;
+
+/**
+ * The design's supply voltage: what Operating point shows and the map is limited by.
+ * A design saved before the supply had its own input may carry it only in its map settings.
+ */
+export function designDcBusV(config: MotorConfig): number {
+  return config.solve_params.motor_input_dc_bus_V ?? config.torque_speed_analysis?.limits.dc_bus_V ?? DEFAULT_DC_BUS_V;
+}
+
+/** Defaults come from the design, before any operating-point solve exists. The DC bus is always the design's. */
 export function torqueSpeedSettings(config: MotorConfig): TorqueSpeedAnalysisSettings {
-  if (config.torque_speed_analysis) return config.torque_speed_analysis;
+  const stored = config.torque_speed_analysis;
+  if (stored) {
+    const bus = designDcBusV(config);
+    return stored.limits.dc_bus_V === bus ? stored : { ...stored, limits: { ...stored.limits, dc_bus_V: bus } };
+  }
   const units = currentUnits(config.solve_params.current_amplitude_convention);
   return {
     preset: 'preview', control: 'mtpa',
@@ -12,7 +27,7 @@ export function torqueSpeedSettings(config: MotorConfig): TorqueSpeedAnalysisSet
       ratedSpeedRpm: config.solve_params.rated_speed_rpm,
       phaseCurrentRmsA: units.toPeak(config.solve_params.current_amplitude_A) / Math.SQRT2,
       backEmfRmsV: null,
-      dcBusV: config.solve_params.motor_input_dc_bus_V ?? 48,
+      dcBusV: designDcBusV(config),
       shownUnitPeakA: units.toPeak(1),
     }),
   };

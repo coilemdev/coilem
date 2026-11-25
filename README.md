@@ -184,7 +184,7 @@ loopback.
 ## More
 
 - [Release notes](RELEASE_NOTES.md) and [release status](PUBLICATION_STATUS.md).
-  This is coilEM 0.5.9, with the Magneto2D 0.6.0 solver.
+  This is coilEM 0.5.10, with the Magneto2D 0.6.0 solver.
 - [Architecture](docs/ARCHITECTURE.md), the [Magneto2D solver](docs/MAGNETO2D.md)
   and [solver convergence](docs/SOLVER_CONVERGENCE.md).
 - [Materials](MATERIALS.md), [runtime settings](docs/RUNTIME_SETTINGS.md) and

@@ -10,6 +10,7 @@ from pathlib import Path
 
 import pytest
 from fastapi import HTTPException
+from starlette.requests import ClientDisconnect
 
 import backend.solver as solver_module
 from backend.models import MotorConfig
@@ -113,6 +114,116 @@ async def _eventually(predicate) -> None:
             await asyncio.sleep(0.01)
 
     await asyncio.wait_for(wait(), timeout=4)
+
+
+# How a client leaves as a stream's response starts. The ``response-`` cases
+# serve the route's response object the way Starlette's request handler does,
+# and its body never starts: sending the headers fails (ASGI 2.4, so Starlette
+# raises ClientDisconnect), or the server reports the disconnect while the
+# headers are still being sent. ``app-headers`` serves the whole application,
+# middleware included: its body starts and is held at its first event when
+# sending the headers fails.
+CLIENT_LEAVES = ["response-headers", "response-disconnect", "app-headers"]
+
+
+async def _serve_to_a_client_that_leaves(asgi, leave: str, *, path: str = "/", body: bytes = b"") -> None:
+    """Serve one request whose client leaves as the response starts; return when the server is done."""
+    request_read = False
+
+    async def receive():
+        nonlocal request_read
+        if not request_read:
+            request_read = True
+            return {"type": "http.request", "body": body, "more_body": False}
+        if leave != "response-disconnect":
+            await asyncio.Event().wait()  # Still connected; the failed send ends the request.
+        return {"type": "http.disconnect"}
+
+    async def send(message):
+        if message["type"] != "http.response.start":
+            pytest.fail(f"Nothing follows the headers to a client that left, got {message['type']}")
+        if leave == "response-disconnect":
+            await asyncio.Event().wait()  # The disconnect arrives while the headers are being sent.
+        raise OSError("The client left while the response headers were sent")
+
+    scope = {
+        "type": "http",
+        "asgi": {"version": "3.0", "spec_version": "2.4" if leave == "response-headers" else "2.3"},
+        "http_version": "1.1",
+        "method": "POST",
+        "scheme": "http",
+        "path": path,
+        "raw_path": path.encode(),
+        "root_path": "",
+        "query_string": b"",
+        "headers": [(b"host", b"127.0.0.1"), (b"content-type", b"application/json"),
+                    (b"content-length", str(len(body)).encode())],
+        "client": ("127.0.0.1", 50000),
+        "server": ("127.0.0.1", 8000),
+    }
+    try:
+        await asyncio.wait_for(asgi(scope, receive, send), timeout=60)
+    except (OSError, ClientDisconnect):
+        assert leave != "response-disconnect"
+
+
+@pytest.mark.parametrize("stream_kind", ["solve", "armature"])
+@pytest.mark.parametrize("leave", CLIENT_LEAVES)
+def test_a_client_leaving_as_the_stream_starts_frees_the_lane(
+    monkeypatch, tmp_path, public_config, stream_kind, leave,
+):
+    """The lane is claimed before the stream so a second solve gets HTTP 409; a
+    client leaving as the response starts (the body never runs, or is held at
+    its first event) must not leave it claimed, and no worker may start. The
+    run is recorded as cancelled, as for any other disconnect."""
+    from backend.public_main import app
+
+    class Worker:
+        def cancel_active_solve(self):
+            pass
+
+    solver = Worker()
+    workers_started = []
+    monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path / "user-data"))
+    monkeypatch.setattr(routes, "_ACTIVE_SOLVE", {
+        "running": False, "cancelled": False, "solver": None, "run_writer": None,
+    })
+    monkeypatch.setattr(routes, "_create_public_solver", lambda *args: solver)
+    monkeypatch.setattr(routes, "Magneto2DSolver", lambda **kwargs: solver)
+
+    def no_worker(function, *args, **kwargs):
+        workers_started.append(function)
+        raise AssertionError("No worker may start for a client that left")
+
+    monkeypatch.setattr(routes, "_run_solver_thread", no_worker)
+    body = {"config": public_config.model_dump(mode="json")}
+    path = "/solve/stream" if stream_kind == "solve" else "/solve/field-composition/armature/stream"
+
+    async def scenario():
+        if leave == "app-headers":
+            await _serve_to_a_client_that_leaves(app, leave, path=path, body=json.dumps(body).encode())
+            return
+        handler = routes.solve_stream if stream_kind == "solve" else routes.stream_public_armature_field
+        response = await handler(body)
+        assert routes._ACTIVE_SOLVE["solver"] is solver
+        with pytest.raises(HTTPException) as conflict:
+            routes._claim_solve(Worker())
+        assert conflict.value.status_code == 409
+        await _serve_to_a_client_that_leaves(response, leave)
+
+    asyncio.run(scenario())
+    assert workers_started == []
+    assert not routes._ACTIVE_SOLVE["running"] and routes._ACTIVE_SOLVE["solver"] is None
+    replacement = Worker()
+    routes._claim_solve(replacement)
+    assert routes._ACTIVE_SOLVE["solver"] is replacement
+    routes._release_solve(replacement)
+    if stream_kind == "solve":
+        manifests = list((tmp_path / "user-data").rglob("manifest.json"))
+        assert len(manifests) == 1
+        manifest = json.loads(manifests[0].read_text(encoding="utf-8"))
+        assert manifest["status"] == "cancelled"
+        assert manifest["failure"]["error_code"] == "SOLVER_CANCELLED"
 
 
 @pytest.mark.parametrize("stream_kind", ["solve", "armature"])

@@ -57,6 +57,7 @@ from backend.models.performance import (
 )
 from backend.reference_models import reference_model
 from backend.report_numbers import format_report_number
+from backend.thermal_reporting import thermal_csv_rows, thermal_story
 
 PUBLIC_REPORT_SCHEMA = "coilem.single_run_report.v1"
 PUBLIC_REPORT_LIMITATIONS = (
@@ -390,6 +391,15 @@ def build_public_run_csv(
     resolved_config = _mapping(request.get("resolved_config"))
     for field, value in _flatten(resolved_config):
         row("setting", field, value)
+    # A preset plan sets its own sweep and does not read the stored step and range above.
+    # These rows give the sweep that was solved, from the result's own angles (#348).
+    for name, waveform in (("loaded", "torque_waveform"), ("no_load", "back_emf_waveform")):
+        angles = [angle for angle in _sequence(_mapping(result.get(waveform)).get("electrical_angle_deg"))
+                  if isinstance(angle, (int, float)) and not isinstance(angle, bool)]
+        if len(angles) >= 2:
+            row("solved_sweep", f"{name}.positions", len(angles))
+            row("solved_sweep", f"{name}.step_deg", round(angles[1] - angles[0], 9), "deg electrical")
+            row("solved_sweep", f"{name}.range_deg", round(angles[-1] - angles[0], 9), "deg electrical")
 
     summary = _mapping(result.get("summary"))
     known = set(_SUMMARY_ORDER)
@@ -399,7 +409,14 @@ def build_public_run_csv(
             if field == "Kt_Nm_per_A" and _kt_rms(summary) is not None:
                 row("summary", _KT_RMS_FIELD, _kt_rms(summary), _KT_RMS_UNIT)
     for field, section in _SUMMARY_RECORD_SECTIONS.items():
-        for name, value in _flatten(_mapping(summary.get(field))):
+        record = _mapping(summary.get(field))
+        if field == "dq_flux_linkage":
+            # A 0 deg request has no d-axis current: rounding noise is written as 0, as in the PDF (#348).
+            current = math.hypot(record.get("i_d_A") or 0.0, record.get("i_q_A") or 0.0) if all(
+                isinstance(record.get(key), (int, float)) for key in ("i_d_A", "i_q_A")) else None
+            record = {**record, "i_d_A": _without_noise(record.get("i_d_A"), current),
+                      "current_angle_deg": _without_noise(record.get("current_angle_deg"), 1.0)}
+        for name, value in _flatten(record):
             row(section, name, value, _record_unit(name))
     for key, _output, status, reason in _output_statuses(result):
         row("status", key, status)
@@ -494,7 +511,10 @@ def build_public_run_csv(
 
     for index, warning in enumerate(_warnings(result)):
         row("warning", "message", warning, sample_index=index)
-    for index, limitation in enumerate(PUBLIC_REPORT_LIMITATIONS):
+    thermal = _mapping(summary.get("thermal"))
+    if thermal:
+        writer.writerows(thermal_csv_rows(thermal))
+    for index, limitation in enumerate(PUBLIC_REPORT_LIMITATIONS[1:] if thermal else PUBLIC_REPORT_LIMITATIONS):
         row("known_limitation", "message", limitation, sample_index=index)
     limitation_index = len(PUBLIC_REPORT_LIMITATIONS)
     if _mapping(resolved_config.get("solve_params")).get("excitation_mode") == "ideal_six_step_120":
@@ -770,6 +790,8 @@ def _setting_entry(name: str, value: Any) -> tuple[str, str]:
     else:
         display_names = {
             "solve_quality": {"quick": "Preview", "standard": "Standard", "fine": "High accuracy", "custom": "Custom"},
+            # The names Solve gives the mesh densities.
+            "mesh_density": {"coarse": "Coarse", "normal": "Medium", "fine": "Fine", "very_fine": "Very fine"},
             "torque_method": {"weighted_stress": "Weighted stress"},
             "rotor_rotation_model": {"remesh_per_step": "Remesh each position", "fixed_mesh": "Fixed mesh"},
             "ipm_topology": {"flat_buried": "Flat buried", "v_shape": "V-shape"},
@@ -1143,7 +1165,7 @@ class _MotorMeshFigure(Flowable):
         self, png: bytes, *, groups: Sequence[str] = (),
         field_range: tuple[float, float] | None = None,
         legend_title: str = "Flux density |B| (T)",
-        legend_note: str | None = "Yellow: stored field lines",
+        legend_note: str | None = None,
         value_format: Callable[[float], str] = format_report_number,
         legend_colors: Sequence[str] = _HEAT_COLORS,
     ) -> None:
@@ -1174,8 +1196,10 @@ class _MotorMeshFigure(Flowable):
                          fill=1, stroke=0)
             pdf.setFillColor(_SLATE)
             for fraction in (0.0, 0.5, 1.0):
+                value = low + fraction * (high - low)
+                # A minimum that is a sliver of the range is 0 on this scale, not 1.2e-5 (#348).
                 pdf.drawString(143 * mm, (13 + fraction * 72) * mm - 2,
-                               self.value_format(low + fraction * (high - low)))
+                               self.value_format(0.0 if abs(value) < 1e-3 * abs(high - low) else value))
             if self.legend_note:
                 pdf.setFont("Helvetica", 7)
                 for line_index, line in enumerate(self.legend_note.split("\n")):
@@ -1249,22 +1273,29 @@ def _motor_mesh_figures(
     for triangle, value in zip(triangles, values):
         bucket = min(7, int((value - low) / (high - low) * 8)) if high > low else 0
         heat_draw.polygon([pixels[i] for i in triangle], fill=_HEAT_COLORS[bucket])
-    for level in _sequence(plot.get("contour_levels")):
-        for raw in _sequence(_mapping(level).get("segments_mm")):
-            segment = _sequence(raw)
-            if len(segment) != 4:
-                continue
-            try:
-                x0, y0, x1, y1 = map(float, segment)
-            except (TypeError, ValueError, OverflowError):
-                continue
-            if all(math.isfinite(value) for value in (x0, y0, x1, y1)):
-                heat_draw.line([point(x0, y0), point(x1, y1)], fill="#f1c232", width=2)
-    return geometry_figure, _MotorMeshFigure(png(heatmap), field_range=(low, high))
+    # The arrows along B that the app draws, from the same code as its playback images (#348). The view
+    # box is this image's own mapping: width size/scale, centred, with the image's y running down.
+    from backend.public_field_playback import field_arrow_layer
+
+    view = size / scale
+    arrows = field_arrow_layer(dict(plot), (center_x - view / 2, -center_y - view / 2, view, view), size)
+    note = "White arrows: direction of B,\nfainter where |B| is weak"
+    if arrows.getbbox() is None:
+        note = None
+    heatmap = PILImage.alpha_composite(heatmap.convert("RGBA"), arrows).convert("RGB")
+    return geometry_figure, _MotorMeshFigure(png(heatmap), field_range=(low, high), legend_note=note)
 
 
 def _number(value: Any, digits: int = 3) -> str:
     return format_report_number(value, decimal_places=digits)
+
+
+def _without_noise(value: Any, scale: Any) -> Any:
+    """A value that is rounding noise beside its scale reads 0, not 1e-15: a 0 deg request has no d-axis current."""
+    if (isinstance(value, (int, float)) and not isinstance(value, bool) and isinstance(scale, (int, float))
+            and math.isfinite(value) and math.isfinite(scale) and abs(value) <= 1e-9 * abs(scale)):
+        return 0.0
+    return value
 
 
 def _percent(fraction: Any, digits: int = 3) -> str:
@@ -1336,9 +1367,9 @@ def _dq_story(result: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -
         _section("d/q operating point", styles),
         _settings_grid(
             [
-                ("Current angle", f"{_number(dq.get('current_angle_deg'))} deg"),
+                ("Current angle", f"{_number(_without_noise(dq.get('current_angle_deg'), 1.0))} deg"),
                 ("Positions averaged", _number(dq.get("positions"))),
-                ("d-axis current", f"{_number(dq.get('i_d_A'))} A peak"),
+                ("d-axis current", f"{_number(_without_noise(i_d, math.hypot(i_d, i_q)))} A peak"),
                 ("q-axis current", f"{_number(dq.get('i_q_A'))} A peak"),
                 ("d-axis flux linkage", milli(dq.get("lambda_d_Wb"), "mWb")),
                 ("q-axis flux linkage", milli(dq.get("lambda_q_Wb"), "mWb")),
@@ -1781,7 +1812,7 @@ def _motor_figure_story(
     else:
         story.extend([heatmap, Paragraph(
             f"Stored loaded field at {escape(position)}. Colors show per-element flux-density magnitude in tesla "
-            "at this position, not the maximum over the sweep. Field lines are from the same stored solution.",
+            "at this position, not the maximum over the sweep. Arrows show the direction of B from the same stored solution.",
             styles["small"],
         )])
     return story
@@ -1882,7 +1913,8 @@ def build_public_run_pdf(
                         f"{_pdf_text(solve_params.get('commutation_advance_deg') if six_step else solve_params.get('current_angle_deg'))} deg",
                     ),
                     ("Excitation", "Ideal six-step (120 deg)" if six_step else "Sinusoidal"),
-                    ("Phase connection", solve_params.get("phase_connection") if six_step else "Not recorded"),
+                    # Line quantities assume the recorded connection whatever the drive (#348).
+                    ("Phase connection", str(solve_params.get("phase_connection") or "Not recorded").capitalize()),
                     ("Rated speed", f"{_pdf_text(solve_params.get('rated_speed_rpm'))} rpm"),
                     *(
                         [
@@ -1898,8 +1930,10 @@ def build_public_run_pdf(
                         else []
                     ),
                     ("Accuracy plan", _setting_entry("solve_quality", solve_params.get("solve_quality"))[1]),
-                    ("Mesh density", solve_metadata.get("mesh_density") or solve_params.get("mesh_density")),
-                    ("Mesh elements", solve_metadata.get("mesh_element_count")),
+                    ("Mesh density", _setting_entry(
+                        "mesh_density", solve_metadata.get("mesh_density") or solve_params.get("mesh_density") or "Not recorded")[1]),
+                    # Each rotor position is meshed again; the recorded count is the first solved position's (#348).
+                    ("Mesh elements, first position", solve_metadata.get("mesh_element_count")),
                     ("Rotor positions", solve_metadata.get("rotor_positions")),
                     ("Torque method used", _setting_entry("torque_method", solve_metadata.get("torque_method") or "Not recorded")[1]),
                     ("Torque method requested", _setting_entry("torque_method", solve_params.get("torque_method"))[1]),
@@ -1991,6 +2025,9 @@ def build_public_run_pdf(
     story.extend(_winding_and_loss_story(result, styles))
     story.extend(_cogging_story(result, request, styles))
     story.extend(_torque_speed_story(result, styles))
+    thermal = _mapping(summary.get("thermal"))
+    if thermal:
+        story.extend(thermal_story(thermal))
     if torque_plot is not None or back_emf_plot is not None:
         story.append(_section("Stored result plots", styles))
         if torque_plot is not None:
@@ -2106,7 +2143,7 @@ def build_public_run_pdf(
     ]
     story.extend([KeepTogether([_section("Warnings", styles), warning_lines[0]]), *warning_lines[1:]])
     limitations = [
-        *PUBLIC_REPORT_LIMITATIONS,
+        *(PUBLIC_REPORT_LIMITATIONS[1:] if thermal else PUBLIC_REPORT_LIMITATIONS),
         *((SIX_STEP_REPORT_LIMITATION,) if six_step else ()),
         *_qualification_limitations(manifest),
     ]

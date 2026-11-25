@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import signal
 import threading
 from collections.abc import Callable, Iterator
 from concurrent.futures import FIRST_COMPLETED, Executor, Future, ProcessPoolExecutor, wait
@@ -123,8 +124,16 @@ def _stop_pool_workers(pool: ProcessPoolExecutor) -> None:
             pass
 
 
+def initialize_pool_worker() -> None:
+    """Let the Windows parent own console cancellation and pool shutdown."""
+    if os.name == "nt":
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
+        signal.signal(signal.SIGBREAK, signal.SIG_IGN)
+
+
 def _initialize_worker(cancelled_path: str) -> None:
     global _worker_cancelled
+    initialize_pool_worker()
     _worker_cancelled = _CancellationFlag(cancelled_path)
 
 

@@ -12,8 +12,9 @@ Importing ``coilem`` never starts the app, a server or a solve. Solves run in
 this Python process; ``server="http://127.0.0.1:2645"`` sends them to a
 running app instead. On Windows, call :func:`solve` from under
 ``if __name__ == "__main__":`` in a saved script. The same steps are terminal
-commands: ``coilem check``, ``coilem solve``, ``coilem setups``,
-``coilem schema`` and ``coilem version``. See docs/PYTHON_CLIENT.md.
+commands: ``coilem check``, ``coilem solve``, ``coilem thermal``,
+``coilem setups``, ``coilem schema`` and ``coilem version``. See
+docs/PYTHON_CLIENT.md.
 
 This package is the public name of :mod:`backend.client`, which keeps working.
 """
@@ -43,6 +44,7 @@ from backend.client import (
     Stator,
     Sweep,
     SweepPoint,
+    ThermalEstimate,
     Waveform,
     Winding,
     Wire,
@@ -53,6 +55,8 @@ from backend.client import (
     setups,
     solve,
     sweep,
+    thermal,
+    thermal_inputs,
 )
 
 __all__ = [
@@ -79,6 +83,7 @@ __all__ = [
     "Stator",
     "Sweep",
     "SweepPoint",
+    "ThermalEstimate",
     "Waveform",
     "Winding",
     "Wire",
@@ -90,4 +95,6 @@ __all__ = [
     "setups",
     "solve",
     "sweep",
+    "thermal",
+    "thermal_inputs",
 ]

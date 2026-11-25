@@ -12,6 +12,7 @@ import argparse
 import hashlib
 import json
 import platform
+import shutil
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -23,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def _git(*args: str) -> str | None:
     try:
-        completed = subprocess.run(["git", "-C", str(ROOT), *args], capture_output=True, text=True, check=False)
+        completed = subprocess.run([shutil.which("git") or "git", "-C", str(ROOT), *args], capture_output=True, text=True, check=False)
     except OSError:
         return None
     return completed.stdout.strip() if completed.returncode == 0 else None

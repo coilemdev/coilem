@@ -78,8 +78,6 @@ const SEGMENTS: Array<{ key: LossSegment['key']; group: LossGroup; label: string
   { key: 'mechanical', group: 'mechanical', label: 'Mechanical', shortLabel: 'Mechanical', about: 'Friction and windage as entered under Operating point.', field: 'mechanical_loss_W' },
 ];
 
-/** A loss row opens on its segment rows when it holds at least this share of the total. */
-export const EXPAND_SHARE = 0.01;
 
 const finite = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
 const significant = (value: number, digits = 3) => Number(value.toPrecision(digits)).toString().replace('-', '−');
@@ -212,7 +210,8 @@ export function lossesView(
     const parent: LossRow = { ...row, group, segments: members.map((member) => member.key), share: shareText(percent, share) };
     if (members.length === 1) return [{ ...parent, color: members[0].color }];
     return [
-      { ...parent, expanded: share >= EXPAND_SHARE },
+      // Every breakdown starts closed: the card opens on its totals, and a row is opened to see its parts.
+      { ...parent, expanded: false },
       ...members.map((member): LossRow => ({
         key: member.key, label: member.shortLabel, ...formatPower(member.watts), hint: `${member.label}: ${member.about}`,
         parent: group, segments: [member.key], share: member.shareText, color: member.color,
@@ -266,6 +265,8 @@ export const STEEL_RAMP = ['#415263', '#5d748b', '#7c99b2', '#a5c2d9', '#daebf7'
 export const COPPER_FILL = '#c88335';
 /** Stator parts drawn for context only, behind the loss being shown. */
 export const CONTEXT_FILL = '#2a2e36';
+/** Magnets on the map: a flat colour off the steel ramp, because no magnet loss is calculated. */
+export const MAGNET_FILL = '#7a4b58';
 
 /** Steel colour for a value as a fraction of the map's scale: lighter is more loss. */
 export function densityColor(fraction: number): string {

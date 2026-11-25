@@ -141,6 +141,60 @@ uvx --from coilem-wheel/coilem-0.3.1.devN-*.whl coilem
 Do not install with `--extra-index-url https://test.pypi.org/simple/`: anyone
 can upload to TestPyPI, so its copies of coilEM's dependencies are untrusted.
 
+## Exporting private release work
+
+The private experiments repository keeps its `main` equal to public `main`.
+A release developed there on a private branch, such as `release/v0.5.10`,
+carries benchmark evidence in its history that stays private: the generated
+records listed in `tools/release/private_evidence.py` (Phase G and H results
+and FEMM records, thermal result records, the native comparison and rating
+bundles, the write-ups that report them, and the tests in
+`tests/private_records` that check them). Never push that branch or its
+history to the public repository. Export it as one commit on public `main`:
+
+```sh
+python -m tools.release.public_tree --source release/v0.5.10 --base origin/main --branch public/v0.5.10
+```
+
+`--base` is public `main`, fetched up to date (private `main` is the same
+commit). The tool builds the commit in a temporary worktree and leaves the current
+checkout alone. The commit's only parent is public `main`; its tree is the
+release tree without the private evidence. `snapshot-manifest.json` is
+regenerated for that tree, with the private source commit as `source_commit`
+and `history_transferred: false`, and the commit message names the source
+commit. The tool refuses when public `main` is not in the release branch's
+history, when public `main` already holds a path classified as private, when a
+file in an evidence folder is classified as neither private nor public, when a
+public file quotes a known measured claim (below), or when
+`tools/verify_snapshot.py --publication --public-tree` fails on the export. It
+creates the branch locally and never pushes.
+
+Review the branch, push it to the public repository and open the release pull
+request from it. Public CI runs `verify_snapshot.py --publication --public-tree`,
+which refuses any private evidence. After the merge, bring private `main` level
+with public `main` and start the next private release branch there. Wheels
+never carry private evidence: the build and `verify_wheel.py` refuse it, so an
+installed thermal rating reports its native interpolation check as
+NOT_COMPARED. The benchmark READMEs say how to regenerate each record.
+
+A measured result must not reach a public file by quotation either: a
+comparison with FEMM, published or measured data, a verdict count or a dated
+measurement note in a comment, docstring, document or test. Say in the public
+file what is checked and how, in qualitative terms, and keep the numbers in the
+private repository: in the benchmark's records, its `MEASURED_CLAIMS.md`, or a
+test under `tests/private_records`. Each claim that once leaked is declared as a
+fingerprint in `tools/release/disclosure_fingerprints.json`; the plaintext list
+is `tests/private_records/known_disclosures.txt`, and
+`tools/release/disclosures.py` describes the format. The export,
+`verify_snapshot.py` (for every file not classified private) and
+`verify_wheel.py` (for every packaged text file) refuse a file that quotes one.
+When another is found, add it to the plaintext list and regenerate the declared
+list:
+
+```sh
+python -m tools.release.disclosures --write tests/private_records/known_disclosures.txt
+```
+
 ## Publishing a release
 
 One-time setup, done by the project owner:
@@ -156,7 +210,8 @@ One-time setup, done by the project owner:
 
 Each release:
 
-1. On a branch, set the version in `backend/__init__.py`,
+1. On a branch (for work developed privately, the branch made by the
+   [public export](#exporting-private-release-work)), set the version in `backend/__init__.py`,
    `frontend/package.json` (and its lock file) and `COILEM_APP_VERSION` in
    `frontend/src/public/designFile.ts`; `tests/test_public_candidate.py`
    checks that they agree. Update `CITATION.cff` and describe the release in

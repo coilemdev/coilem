@@ -217,8 +217,25 @@ def test_pdf_embeds_stored_motor_and_field_with_correct_orientation_and_range():
     field = next(image for image in images if image.getpixel((600, 800)) == (20, 42, 97))
     assert geometry.getpixel((600, 400)) == (229, 62, 62)  # Magnet above center.
     assert field.getpixel((200, 650)) == (220, 61, 61)  # Highest |B| at left.
-    assert field.getpixel((600, 600)) == (241, 194, 50)  # Stored field line.
+    # The app draws arrows along B now, not field lines, and so does the report (#348).
+    assert field.getpixel((600, 600)) != (241, 194, 50)
+    assert "White arrows" not in text  # This plot recorded no B components, so there are none to draw.
     assert field.getpixel((20, 20)) == (255, 255, 255)  # Preserve equal aspect.
+
+
+def test_pdf_field_page_draws_the_apps_arrows_along_b():
+    result = _result_with_motor_field()
+    # B along +x in every element, as strong everywhere: every arrow is drawn at full strength.
+    result["field_line_plot"].update(element_bx_t=[1.0] * 4, element_by_t=[0.0] * 4, element_b_mag_t=[1.0] * 4)
+    pdf = build_public_run_pdf(project=CONFIG, request={"resolved_config": CONFIG}, result=result, material={}, manifest={})
+    figure_page = pypdf.PdfReader(io.BytesIO(pdf)).pages[1]
+    text = figure_page.extract_text()
+    assert "White arrows: direction of B" in text and "Arrows show the direction of B" in text
+    field = [image.image.convert("RGB") for image in figure_page.images][-1]
+    pixels = field.getdata()
+    arrow = sum(1 for pixel in pixels if min(pixel) >= 240 and pixel != (255, 255, 255))
+    assert arrow > 500, "the arrows' light fill is drawn over the heatmap"
+    assert not any(pixel == (241, 194, 50) for pixel in pixels), "no yellow field lines"
 
 
 @pytest.mark.parametrize("bad_values", [[0.0], [0.0, 1.0, float("nan"), 3.0], [0.0, -1.0, 2.0, 3.0]])

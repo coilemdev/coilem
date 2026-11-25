@@ -54,7 +54,7 @@ AS_WOUND_WINDING = {"type": "concentrated", "layers": 2, "turns_per_coil": 104, 
 
 
 def _git(*args: str) -> str | None:
-    done = subprocess.run(["git", "-C", str(ROOT), *args], capture_output=True, text=True, check=False)
+    done = subprocess.run([shutil.which("git") or "git", "-C", str(ROOT), *args], capture_output=True, text=True, check=False)
     return done.stdout.strip() if done.returncode == 0 else None
 
 

@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "protocol": "thermal-conduction-0.6.0-1",
+  "boundary_C": 20,
+  "conductivity_W_mK": {
+    "winding": 1,
+    "teeth": 20,
+    "yoke": 20
+  },
+  "relative_band": 0.1,
+  "absolute_floor_K": 2,
+  "yellow_multiplier": 2,
+  "mesh_relative_band": 0.01,
+  "mesh_floor_K": 0.2,
+  "cases": [
+    {
+      "id": "spm_concentrated_copper",
+      "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_concentrated__baseline.json",
+      "fixture_sha256": "e63edcc854d01e6c7ddb0c9ef83e6c6212bbb5ee10cf60de2e8f395219c342c7",
+      "heat_W": {
+        "winding": 10,
+        "teeth": 0,
+        "yoke": 0
+      }
+    },
+    {
+      "id": "spm_concentrated_iron",
+      "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_concentrated__baseline.json",
+      "fixture_sha256": "e63edcc854d01e6c7ddb0c9ef83e6c6212bbb5ee10cf60de2e8f395219c342c7",
+      "heat_W": {
+        "winding": 0,
+        "teeth": 3,
+        "yoke": 7
+      }
+    },
+    {
+      "id": "spm_concentrated_combined",
+      "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_concentrated__baseline.json",
+      "fixture_sha256": "e63edcc854d01e6c7ddb0c9ef83e6c6212bbb5ee10cf60de2e8f395219c342c7",
+      "heat_W": {
+        "winding": 10,
+        "teeth": 3,
+        "yoke": 7
+      }
+    },
+    {
+      "id": "spm_distributed_copper",
+      "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_12p36s_distributed_femm_validation.json",
+      "fixture_sha256": "75f68857d14aba7bb1d92d3388185ac91a692ae4d0adf6d3dc5b5fccfb5b0fea",
+      "heat_W": {
+        "winding": 10,
+        "teeth": 0,
+        "yoke": 0
+      }
+    },
+    {
+      "id": "spm_distributed_iron",
+      "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_12p36s_distributed_femm_validation.json",
+      "fixture_sha256": "75f68857d14aba7bb1d92d3388185ac91a692ae4d0adf6d3dc5b5fccfb5b0fea",
+      "heat_W": {
+        "winding": 0,
+        "teeth": 3,
+        "yoke": 7
+      }
+    },
+    {
+      "id": "spm_distributed_combined",
+      "fixture": "benchmarks/main-20261009-bad71d9/fixtures/spm_12p36s_distributed_femm_validation.json",
+      "fixture_sha256": "75f68857d14aba7bb1d92d3388185ac91a692ae4d0adf6d3dc5b5fccfb5b0fea",
+      "heat_W": {
+        "winding": 10,
+        "teeth": 3,
+        "yoke": 7
+      }
+    }
+  ]
+}

@@ -9,10 +9,12 @@ import json
 import re
 import threading
 import time
+from collections.abc import AsyncGenerator, Callable
 from typing import Any
 
 from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import FileResponse, StreamingResponse
+from starlette.types import Receive, Scope, Send
 
 from backend import field_frame_codec, run_field_playback
 from backend.convergence_reporting import convergence_report
@@ -460,6 +462,75 @@ def _release_after_worker(solver: Solver, future: asyncio.Future[Any] | None) ->
         _release_solve(solver)
 
     future.add_done_callback(finished)
+
+
+def _stop_solve_worker(solver: Solver) -> None:
+    """Stop a worker whose stream ended early: its stop predicate, then its native solve.
+
+    A batch worker checks ``_ACTIVE_SOLVE["cancelled"]`` between native
+    solves, where cancelling the solver alone does not reach it. The lane
+    stays claimed: pair this with ``_release_after_worker``.
+    """
+    if _ACTIVE_SOLVE.get("solver") is solver:
+        _ACTIVE_SOLVE["cancelled"] = True
+    solver.cancel_active_solve()
+
+
+class _StreamBody:
+    """A stream's event generator, noting whether its code ever began to run."""
+
+    def __init__(self, events: AsyncGenerator[str, None]) -> None:
+        self._events = events
+        self.started = False
+
+    def __aiter__(self) -> _StreamBody:
+        return self
+
+    async def __anext__(self) -> str:
+        # Set in the same step that enters the generator, so a task cancelled
+        # before its first step leaves both untouched.
+        self.started = True
+        return await self._events.__anext__()
+
+    async def aclose(self) -> None:
+        await self._events.aclose()
+
+
+class _SolveLaneStream(StreamingResponse):
+    """The SSE response of a route that claimed the solve lane before returning it.
+
+    Claiming first keeps a second solve's refusal an HTTP 409 before any
+    event. Once the body runs it owns the lane: its ``finally`` stops its
+    worker and frees the lane when that worker returns. A body that never
+    runs (the client left before or while the response headers were sent)
+    never reaches that ``finally``, so this response calls ``abandon`` to
+    free the lane instead. No worker can be holding it then: only the body
+    starts one.
+    """
+
+    def __init__(
+        self,
+        events: AsyncGenerator[str, None],
+        *,
+        abandon: Callable[[], None],
+        headers: dict[str, str] | None = None,
+    ) -> None:
+        self._body = _StreamBody(events)
+        self._abandon = abandon
+        super().__init__(self._body, media_type="text/event-stream", headers=headers)
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        try:
+            await super().__call__(scope, receive, send)
+        finally:
+            try:
+                # Close the body now rather than whenever it is collected: one
+                # left at a yield by a failed send runs its cleanup, and one
+                # that never ran can no longer start a worker.
+                await self._body.aclose()
+            finally:
+                if not self._body.started:
+                    self._abandon()
 
 
 def _sse_event(event: str, payload: dict[str, Any]) -> str:
@@ -1053,9 +1124,9 @@ async def stream_public_armature_field(body: dict[str, Any]) -> StreamingRespons
                 solver.cancel_active_solve()
             _release_after_worker(solver, future)
 
-    return StreamingResponse(
+    return _SolveLaneStream(
         event_generator(),
-        media_type="text/event-stream",
+        abandon=lambda: _release_solve(solver),
         headers={
             "Cache-Control": "no-cache",
             "Connection": "keep-alive",
@@ -1490,6 +1561,16 @@ async def solve_stream(body: dict[str, Any]) -> StreamingResponse:
                 cancelled=True,
             )
             raise
+        except GeneratorExit:
+            # Closed at an event, as when sending it failed: the client left.
+            # A finished run is already closed, so this records only an
+            # unfinished one; the finally stops a worker still running.
+            run_writer.fail(
+                error_code="SOLVER_CANCELLED",
+                message="Solve cancelled by user.",
+                cancelled=True,
+            )
+            raise
         except Exception as exc:
             error_payload = _stream_error_payload(exc)
             _fail_run_safely(
@@ -1504,9 +1585,21 @@ async def solve_stream(body: dict[str, Any]) -> StreamingResponse:
                 solver.cancel_active_solve()
             _release_after_worker(solver, future)
 
-    return StreamingResponse(
+    def abandon() -> None:
+        # The stream never began: record its run as cancelled, as a
+        # disconnect would, and free the lane no worker ever took.
+        try:
+            run_writer.fail(
+                error_code="SOLVER_CANCELLED",
+                message="Solve cancelled by user.",
+                cancelled=True,
+            )
+        finally:
+            _release_solve(solver)
+
+    return _SolveLaneStream(
         event_generator(),
-        media_type="text/event-stream",
+        abandon=abandon,
         headers={
             "Cache-Control": "no-cache",
             "Connection": "keep-alive",

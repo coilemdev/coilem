@@ -228,3 +228,355 @@ published winding (1.55 mm wire, 52 turns per coil, 8 parallel circuits) the
 model gives 9.80 mOhm at 21 °C against 9.7 mOhm measured (ORNL/TM-2006/535,
 Table 2.3).
 
+
+## Steady-state lumped thermal estimates (0.6.0 M1)
+
+`backend/thermal_network.py` is a backend building block, not a public thermal
+rating or a change to electromagnetic physics. No thermal output is qualified.
+The core nodes are active winding, both end windings together, stator teeth,
+stator yoke, housing and a fixed ambient/coolant boundary. Rotor, magnets,
+air gap, end-space air and bearings are experimental auxiliary nodes. These
+are node-average temperatures, not hotspots. The network solves the steady
+balance `sum_j (T_i - T_j)/R_ij = Q_i`; all nodes must connect to a boundary,
+and rejected heat must equal total assigned heat within numerical tolerance.
+The hand-calculation tests verify this balance, not the physical motor model.
+
+### Geometry and heat paths: stated assumptions
+
+The network has two layouts. For an inner rotor the stator yoke faces a housing,
+as the list below describes. For an outer rotor the stator sits on a hub inside
+the rotor shell, and the same inputs are read as follows. Each is a stated
+assumption, not a correlation.
+
+- **Yoke to hub.** The entered contact resistance acts over the hub-side face of
+  the yoke, `2*pi*r_hub*L`. The yoke slab uses that same face, the smaller one,
+  so its resistance is not understated.
+- **Hub to surroundings.** One entered resistance, `mount_to_ambient_K_W`, covers
+  the hub, the mount and whatever the motor is bolted to. It is required.
+- **Rotor shell to surroundings.** The entered outside coefficient acts over the
+  shell's outer cylinder, taken over the stack length, plus one closed end:
+  `2*pi*r_o*L + pi*r_o^2`, in series with conduction through the shell at the
+  steel conductivity. No speed or propeller-wash correlation is applied. A shell
+  longer than the stack would shed more.
+- **Air inside the rotor.** One mixed node. It exchanges heat with the end
+  windings, with the closed end of the shell (`pi*r_i^2`) and with the stator
+  carrier face on the mount side (the stator's end annulus), all at the entered
+  end-space coefficient. No air exchange through openings in the shell is
+  assumed, so an open rotor runs cooler than the estimate.
+- **Air gap and magnets.** The gap couples the tooth tips to the magnet faces at
+  the entered per-surface coefficient. Magnets pass their heat to the shell.
+- **Bearings.** They connect the rotor to the mount through the two entered
+  resistances. The housing thickness is unused. A mechanical-loss share assigned
+  to the housing heats the mount.
+
+Two hand checks bound the outer layout (`tests/test_thermal_network.py`): with
+the mount path blocked, every watt leaves by the shell's stated area and
+coefficient; with the shell blocked, every watt crosses the mount resistance.
+The inner layout's numbers are unchanged.
+
+Lengths are in metres, areas in square metres, conductivity in W/(m K), and
+thermal resistance in K/W. IR region areas supply total winding, tooth, yoke
+and magnet cross-sections. For a reference with one stator region, the nominal
+yoke annulus partitions its steel into tooth/yoke areas; this is an assumed
+partition, not reconstructed reference teeth. The following reductions are
+engineering assumptions, exposed through the recorded network's links:
+
+- Slot depth is `(OD-ID)/2 - yoke thickness`; slot width is gross slot area
+  divided by depth. Winding-to-tooth conduction uses a uniform-generation mean reduction across a rectangular
+  slot width through homogenized winding, then one liner. Aggregate wall area
+  is two slot-depth walls times slot count times stack length. The slot's
+  transverse conductivity is the series mixture
+  `1/k = fill/k_conductor + (1-fill)/k_impregnation`. This is explicitly the
+  series lower bound, not an empirical prediction of an impregnated winding.
+  Select the user model and supply a conductivity and source to replace it. Round strands, enamel,
+  voids and individual slot contacts are not spatially resolved. Liner
+  thickness must leave positive winding width.
+- Tooth and yoke paths use planar slab means and distinct bore/interface/outer
+  surfaces, as described below. Contact and cylindrical housing conduction join
+  the outer stator surface to a housing outer-surface proxy.
+- Active-to-end-winding conduction includes both aggregate mean-to-junction drops:
+  `R=(L_active+L_end_arc)/(12*k_conductor*total_slot_copper_area)`.
+  This assumes a symmetric coil and distributed side heat exchange in each part.
+- End-winding gross square area is total slot area divided by twice the actual
+  coil count. The same fill/transverse conductivity as the active slots is an
+  explicit assumption. Conduction and convection are solved together with the
+  uniform-net-source square Robin solution. Exposure uniformly reduces h; it
+  does not shrink the bundle or resolve localized shielding. End-space-to-housing
+  convection retains two annular faces and an entered coefficient.
+- Gap coefficients are **per surface**: total resistance is
+  `1/(h_gap*2*pi*r_bore*L) + 1/(h_gap*2*pi*r_rotor*L)` across the air-gap node. The coefficient is entered for the operating point;
+  **no rotating-gap correlation or speed scaling is silently selected**.
+- Magnet-to-rotor conduction uses the uniformly heated, one-cooled-face mean
+  resistance `thickness/(3*k*face_area)`, with an insulated outer face. Adhesive, barriers and pocket contacts are not
+  resolved. Shaft/bearing-to-housing resistances are explicit inputs.
+- Exterior convection uses the cylindrical housing and two annular end faces.
+  Radiation is not modelled separately; any effective coefficient that
+  includes radiation must say so in its source description.
+
+### Inputs and unresolved owner decisions
+
+The Solve thermal setup offers an illustrative still-air starter (v1), with
+ambient 25 C, class F insulation, housing/end-space/gap coefficients 10/10/20
+W/(m2 K), housing/liner thickness 3/0.1 mm, stator contact resistance 0.001
+m2 K/W, bearing-to-housing/rotor-to-bearing resistance 2/3 K/W and hotspot
+allowance 15 K. These are explicit example assumptions for exploring the UI,
+not sourced motor properties, measured cooling, or guaranteed conservative
+bounds. Review them for the actual motor. The source label and actual values
+are recorded with each result and in reports. The owner requested this starter
+to make the thermal setup accessible; it does not change model qualification.
+
+Existing browser drafts are preserved. New designs begin with the starter;
+the starter button replaces a draft explicitly. Changing cooling mode clears
+the three coefficients and their source: forced air and liquid jacket require
+installation-specific inputs. Mechanical heat allocation, aluminium conductor
+conductivity remain explicit inputs. Rotor/magnet additional heat is an optional
+scenario input; a user-declared frequency no longer establishes availability.
+Settings are shared between Solve and Results for the same design in the same
+browser; they are separate from the electromagnetic design file and solver.
+Thermal calculations still run explicitly from Results after an EM solve.
+
+The input help quotes textbook ranges for the surface coefficients: 2 to 25
+W/(m2 K) for free convection in gases, 25 to 250 for forced convection in
+gases and 100 to 20,000 for forced convection in liquids (Incropera, DeWitt,
+Bergman and Lavine, *Fundamentals of Heat and Mass Transfer*, 6th ed., Wiley,
+2007, Table 1.1). They bound a first guess for a surface in air or coolant.
+They are not specific to motors, and no range is quoted for the air gap, the
+mount or the contact, which depend on the build.
+
+Editable initial conductivity **assumptions**, not sourced grade properties,
+are steel 20, conductor 385, housing 205, magnet 8, impregnation 0.2 and liner
+0.2 W/(m K). The conductor default assumes copper; an aluminium design must
+name its conductor conductivity, and the app, `coilem thermal` and the Python
+client fill in 235 W/(m K) for one where none is given. These values are not fitted
+or bench-qualified and the complete inputs travel with the result.
+
+Insulation classes A/B/F/H use 105/130/155/180 C (IEC 60085 thermal-class
+labels), reduced by the recorded, editable hotspot allowance before
+comparison with winding node averages. A class label alone does not establish
+a motor insulation system's allowable operating temperature. Magnet limits
+come from the existing cited grade table where available.
+
+### Temperature units in the app
+
+The estimate works in degrees Celsius. In the app every thermal temperature is
+shown in one unit, Celsius by default, and a margin to a limit or an allowance
+uses that same unit rather than kelvin. The Thermal setup can switch the unit
+to Fahrenheit or kelvin; the choice is kept in the browser, applies to what is
+typed as well as what is shown, and does not change any stored value. Reports,
+the command line, the Python client and messages from the solver stay in
+degrees Celsius.
+
+### Independent conduction check
+
+The slot, tooth and yoke paths are compared with a resolved finite-element
+solution of the same isolated cross-section, for inner and outer rotors (the
+results are kept in the private repository). The reference is
+`backend/benchmark_suite/thermal_fe.py`: linear triangles on the design's own
+mesh, checked against the closed-form heated ring, sharing only the geometry
+with the network. It shows where the network's reduction departs from a
+resolved solution: the network's teeth read low, and its winding reads high on
+a wide-slot inner stator, because the network takes winding heat out through
+the slot walls only and not through the slot bottom. This is a code-to-code
+check of conduction. It does not cover convection, contacts, end windings or
+the rotor.
+
+### FEMM comparison
+
+FEMM 5.0 heat flow was run on the same designs (the results are kept in the
+private repository). For the stator on its own, FEMM is set beside the
+finite-element reference above, so that differences there can be attributed to
+the network, and the six registered cases are graded against their bands. For
+the whole cross-section with air cooling (air gap, magnets, rotor and the
+cooled surfaces included, the network's end-winding, end-space, bearing and
+liner paths closed) every part is compared, for inner and outer rotors, and so
+is the split of heat between an outer rotor's mount and shell. Both codes are
+given the same cooling coefficients, so this checks conduction and how the heat
+divides, not the coefficients. FEMM solves a flat cross-section: end windings
+and the air around them are not covered. The network's rotor temperature
+assumes the whole rotor surface exchanges heat with the gap; with still air
+between the magnets FEMM's inner rotors run hotter.
+
+### Benchmark Phase H
+
+[Phase H](benchmarks/h-v1.0/README.md) turns the comparisons above into a
+standing benchmark: 42 thermal problems with every input fixed, coilEM's
+answer to each, and a format for another tool's answer. Each design is run
+with still air, with strong air cooling and with a liquid jacket or a cooled
+mount, because conduction inside the motor only shows once the outside surface
+is cooled well. The 21 cases a flat cross-section can represent are graded
+against FEMM 5.0; those grades are kept in the private repository. The 21
+full-scope cases, with end windings, wait for a reference from a
+three-dimensional or lumped tool.
+
+### Published measurement check
+
+The network is compared with a published test of the 2004 Prius traction
+motor (ORNL/TM-2005/33), which gives the losses, the casing temperature and
+the measured end-turn temperature at four coolant temperatures
+(`python -m tools.check_thermal_published`; the results are kept in the private
+repository). Given the report's losses, conductivities and casing temperatures,
+the network's end-turn temperature is set beside the measured end-turn average
+and the report's own three-dimensional model. The network has no oil cooling,
+so it reads warm. The stator-to-housing contact resistance is not in the report
+as a number and is set once from the report's model. The result depends
+strongly on that contact and on the steel conductivity: the default steel value
+of 20 W/(m K), instead of the report's 51.9, makes the network read much warmer
+on this motor. This checks conduction to a housing of known temperature. It
+does not cover cooling by air, the outer-rotor layout,
+the rotor or coilEM's own losses. No published temperatures were found for an
+outer-rotor motor already modelled.
+
+### Heat accounting, calibration and claim boundaries
+
+Copper active and end-turn losses heat their respective nodes. Iron heats
+teeth and yoke using the recorded split, or an area-weighted split assuming
+uniform density when only a total exists. An unavailable iron loss makes the
+estimate unavailable. Mechanical heat requires an explicit split summing to
+one between bearings, housing and rotor; no default split is chosen pending
+the owner's decision. Extra rotor heat is an optional sensitivity input, and
+the result also records the solution without that extra input. An explicit
+magnet fraction can put this sensitivity heat in magnets rather than rotor
+steel. Area-weighted iron loss assumes uniform density; actual tooth loss
+density is commonly higher, so this split is an approximation.
+
+Magnet/rotor eddy-current heat, AC copper and inverter heat are not calculated.
+All connected nodes now show experimental heat-transfer temperatures when an
+equilibrium exists. With no heat assigned to rotor/magnets, their values describe
+warming through other components. Additional heat and mechanical heat assigned
+to the rotor are recorded separately in `rotor_heating`; nonzero supplied heat
+changes the label to heat transfer plus supplied heat. Zero input omits a source;
+it does not establish zero physical loss. Bearing friction is only included via
+explicit mechanical heat allocation. Missing losses can affect every node and
+reduce the predicted margins/rating. These are scenario results, not safe limits.
+The legacy `magnet_frequency_limit_Hz` input remains readable but is ignored in
+new calculations. There is no validated universal frequency cutoff, and no
+speed-dependent thermal qualification follows from entering a gap coefficient.
+Historical records retain their original values and availability until recomputed.
+
+One per-design multiplier scales all thermal resistances. Changing it requires
+measurement, operating-point and cooling provenance; calibration never promotes
+an output to qualified. One multiplier cannot identify several uncertain
+paths. Independent bench validation (#24) is separate from calibration and
+from the pending FEMM conduction comparison (#20). The public results and
+report surfaces are delivered separately in M4 (#23).
+
+### Generated-heat mean correction (PR 28 review)
+
+The isolated uniformly heated slab gives mean rise g*L^2/(12*k) with two
+cooled faces and g*L^2/(3*k) with one cooled face and the other insulated.
+Thus the mean source-to-boundary resistances are L/(12*k*A) and L/(3*k*A),
+respectively. The winding transverse reduction is w/(6*k*A_wall), with both
+walls included in A_wall. Liner/contact/housing/convection resistances receive
+no generation correction. Tests independently verify the slab Poisson
+solution, the unheated cylinder log formula, the end-turn surface, and both
+gap surfaces.
+
+These are **reduced, uniform-generation mean-resistance assumptions** inspired
+by the T-equivalent treatment of distributed heat (Mellor, Roberts and Turner,
+1991, DOI 10.1049/ip-b.1991.0025). They are not the full three-terminal
+T-equivalent for arbitrary imposed gradients or multidimensional heat flow.
+The original tooth/yoke one-face chain has been replaced as described below;
+the square-bundle mean path and other reduced paths remain experimental until
+the conduction comparison and bench evidence exist. Do not use a fitted multiplier
+to conceal geometry-model discrepancies. Rotor/magnet losses remain a model gap;
+a declared frequency cannot resolve it.
+
+The separate [analytical protocol](benchmarks/thermal-v0.6/ANALYTICAL_PROTOCOL.md)
+now tests these source-mean primitives and explicit idealized extensions against
+independent 1D solutions. Its initial result exposed the layered-chain reduction
+and an unequal-face slab diagnostic whose boundary-flux split was wrong despite
+a correct mean temperature and total balance. These diagnostics apply to the
+simplified fixtures, not the real motor or the complete geometry-derived network.
+That original failed evidence is preserved in the private repository. The
+subsequent `surface_mean_v2` correction is checked against the same registered
+cases with unchanged inputs, independent references and tolerances. Production
+tooth/yoke paths now use complete planar
+three-terminal slab elements, with distinct mean, bore, shared interface and
+outer-surface temperatures. Bore convection and outer contact attach to the
+surfaces. Internal surface ports are not reported as component averages.
+Winding-side heat is still distributed at the tooth mean, and aggregate planar
+geometry, axial/end paths, cooling and homogenization remain assumptions.
+See the [derivation and scope](benchmarks/thermal-v0.6/ANALYTICAL_REDUCTION_FIX.md).
+Cooling inputs and all frozen acceptance bands remain unchanged. Physical
+temperature qualification still requires independent evidence.
+
+The hottest-node headline compares winding, end winding, teeth, yoke, housing,
+rotor and magnets only. Air-gap, end-space air and the reduced bearing-path node
+remain in the detailed node table. Removing the former frequency reporting gate
+does not alter any heat source, resistance or energy balance. Unavailable source
+data, invalid inputs and unstable copper equilibria still withhold temperatures.
+
+### Copper-temperature feedback for a thermal point
+
+“Compute thermal point” holds phase RMS current, speed, supplied stator iron
+loss, mechanical/extra rotor heat and all thermal paths fixed. Active and end
+winding heat use their own node-average temperatures:
+`Q_active(T) = Q_active,20 * (1 + alpha * (T_active - 20))`, with the same
+relation independently for the end winding. `Q20 = 3 * I_rms^2 * R_phase,20`
+is split by the winding record's active length fraction. The coefficient is
+that of the configured conductor (copper or aluminium). This always starts
+from the 20 C resistance, so a warm source EM run cannot apply the correction
+twice. Zero current still permits iron/mechanical heating but adds no copper heat.
+
+The present network and resistance law are linear. Let `G` be the conductance
+matrix for unfixed nodes and `D = diag(alpha * Q20)` at the two copper nodes.
+The equilibrium is solved directly as `(G-D)*T = b - 20*D*1`, rather than
+stopping an iteration at an arbitrary count. A stable equilibrium requires
+`rho(sqrt(D)*inverse(G)*sqrt(D)) < 1`. This is equivalent to `G-D` being
+positive definite for this passive network; any positive thermal capacitances
+give decaying temperature perturbations. Critical/unstable feedback, singular
+or nonphysical solutions return unavailable with no partial temperatures.
+The singular boundary has a 1e-12 numerical guard; this is not a qualification
+band. A second fixed-heat solve checks temperature consistency within 1e-6 K
+and the existing heat-balance check still applies. Stable roots outside the
+existing winding-resistance record domain (-50 to 250 C) are unavailable;
+mathematical equilibrium does not extend the conductor model's usable range.
+
+The result freezes the method version, conductor coefficient, reference and
+resolved copper losses, effective phase resistance, loop gain, residual and
+wire source. These resolved losses are separate from the original EM run's
+loss/efficiency summary, which is retained as source provenance. There is no
+new EM solve, magnet-temperature correction, voltage-feasibility check or
+radiation model. Any zero-extra-rotor-heat sensitivity independently recomputes
+the feedback. Temperature and loss outputs remain experimental. Existing saved
+fixed-loss records retain their original numbers and are labelled for recompute.
+The separate coupled rating keeps its existing map/temperature iteration;
+its native evidence and frozen comparison bands are unchanged by this fix.
+
+### Thermal result diagram
+
+The thermal cross-section uses the current solved electromagnetic mesh,
+retaining its actual slots, teeth, magnets, rotor cavities and shaft hole. It
+maps stator yoke, stator teeth, slot winding, rotor core, magnet and air-gap
+regions to their corresponding thermal nodes. Pocket air, flux barriers, shafts
+and unrecognised regions remain neutral; they do not inherit neighbouring
+temperatures. The drawing carries no numbers. A table beside it lists every
+node, including end windings, bearings, end-space air and housing, which are
+absent from the radial EM mesh. Each row gives the node's temperature, a bar
+running from the coolant temperature, a tick at the node's recorded limit and
+its margin. Missing or incomplete mesh data shows an explicit message and the
+table alone, without substituting a generic motor drawing. Each mapped
+component has a flat colour from its recorded node-average temperature. The
+scale spans only available node temperatures in the current result (including
+ambient); it is not a safety scale and cannot be compared across separately
+scaled results without reading the endpoints. There is no spatial
+thermal-field interpolation. Unavailable nodes use grey hatching and show no
+temperature or computed margin. A negative recorded margin reads "above limit"
+in the table and in the key numbers; winding limits already include the
+entered hotspot allowance. Selecting a row or a region shows that node's
+status, reason, assigned heat and recorded limit. The unchanged PDF/CSV
+numerical exports remain available for audit.
+
+### Remaining-path audit and rating consistency
+
+The path audit (`backend/benchmark_suite/thermal_path_audit.py`; its write-up is
+kept in the private repository) supersedes the
+historical axial/end-bundle/magnet approximations above. It provides derivations,
+additional checks and recomputed point, native-propagation and rating evidence.
+Housing is an outer-surface proxy, not a resolved shell mean under internal heat.
+The coupled rating and its direct check now resolve active/end copper feedback
+separately and use the resulting effective phase resistance for voltage. The
+outer magnet-temperature loop retains its explicit convergence tolerance. At
+prescribed measured heat, global resistance scaling remains linear for bench
+fitting; fixed-current feedback predictions must not be scaled as if heat were
+fixed. There are no physical calibration measurements to refit.

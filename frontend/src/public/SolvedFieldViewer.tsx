@@ -22,7 +22,7 @@ import {
   type FieldResultRaster,
 } from './FieldResultPlot';
 import { normalizeFieldPlaybackManifest } from './fieldPlaybackContract';
-import { statorSteelSaturationTicks } from './fluxColorScale';
+import { fixedFluxScaleFor, statorSteelSaturationTicks } from './fluxColorScale';
 import {
   FieldPlaybackRasterizer,
   FieldRasterLayer,
@@ -501,6 +501,9 @@ export function SolvedFieldViewer({
   // exact field detail once available. A run without an image still draws its vectors.
   const highResolutionPlot = playing ? null : exactVectorPlot;
   const visiblePlot = visibleRaster ? highResolutionPlot : exactVectorPlot ?? heldVector?.plot ?? armatureReferencePlot;
+  // While the stator field is solved, the view may show a retained frame or the resultant as a placeholder.
+  // Colours follow the field actually drawn, not the view chosen (#348).
+  const drawnFieldSource = exactVectorPlot ? source : heldVector ? heldVector.source : armatureReferencePlot ? 'resultant' : source;
   // Keep overlays at the position of whichever raster or numerical plot is on screen.
   const vectorAngleDeg = exactVectorPlot ? exactVectorAngleDeg : heldVector?.angleDeg ?? armatureReferencePlot?.angle_deg ?? 0;
   const shownElectricalAngleDeg = activeDetailRaster || drawnRaster
@@ -1393,6 +1396,8 @@ export function SolvedFieldViewer({
               showFieldLines={showFieldLines}
               fieldLineDensity={displayedDensity}
               colorRangeMode={colorRangeMode}
+              // The stator-only field has its own fixed scale; it is a few tenths of a tesla (#348).
+              fixedScale={fixedFluxScaleFor(drawnFieldSource)}
               saturationTicks={saturationTicks}
               onColorRangeModeChange={setRangeMode}
               showControls={false}

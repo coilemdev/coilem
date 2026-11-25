@@ -286,7 +286,7 @@ def test_the_launcher_runs_the_headless_commands_and_keeps_its_own(capsys, monke
     assert launcher.main(["benchmark", "--list"]) == 0 and called == [["--list"]]
     with pytest.raises(SystemExit):
         launcher.main(["--help"])
-    assert "coilem check | solve | setups | schema | version" in " ".join(capsys.readouterr().out.split())
+    assert "coilem check | solve | thermal | setups | schema | version" in " ".join(capsys.readouterr().out.split())
 
 
 def test_importing_coilem_starts_nothing() -> None:

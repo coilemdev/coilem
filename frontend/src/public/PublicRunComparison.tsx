@@ -1,12 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import {
-  deletePublicRun,
-  listPublicRuns,
-  loadPublicRunComparison,
-  type PublicRunListRecord,
-  type PublicRunStoragePolicy,
-} from './api';
+import { listPublicRuns, loadPublicRunComparison, type PublicRunListRecord } from './api';
+import { RUNS_CHANGED_EVENT, formatRunTime, runKey } from './runRecords';
 import { compareRunDq, type ComparisonDqCell } from './dqComparison';
 import type { PublicFieldLinePlot, SolveResult } from './model';
 import { previousCompletedRun, type ComparisonFields, type ComparisonLossCell, type ComparisonResult } from './runComparison';
@@ -34,14 +29,7 @@ interface LoadedRun {
 
 interface PublicRunComparisonProps {
   currentResult?: SolveResult | null;
-  manageRuns?: boolean;
   compareWithPrevious?: boolean;
-  /** Opens a completed run's stored result in Solve and Results. */
-  onOpenRun?: (run: PublicRunListRecord) => void;
-}
-
-function runKey(run: Pick<PublicRunListRecord, 'project_slug' | 'run_id'>): string {
-  return `${run.project_slug}/${run.run_id}`;
 }
 
 function solverLabel(solverName: string | null | undefined): string {
@@ -54,33 +42,10 @@ function isMagneto2dRun(run: PublicRunListRecord): boolean {
   return run.solver_name?.toLowerCase().startsWith('magneto2d') === true;
 }
 
-const runDateTime = new Intl.DateTimeFormat('en-US', {
-  month: '2-digit', day: '2-digit', year: '2-digit',
-  hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23',
-});
-
-function formatRunTime(timestamp: string | null | undefined, fallback: string): string {
-  const date = timestamp ? new Date(timestamp) : null;
-  return date && Number.isFinite(date.getTime()) ? runDateTime.format(date).replace(',', '') : fallback;
-}
-
 function runLabel(run: PublicRunListRecord): string {
   const name = run.project_name || run.project_slug;
   const timestamp = formatRunTime(run.completed_at, run.run_id);
   return `${name} · ${run.run_setup?.name || 'Setup not recorded'} · ${timestamp}`;
-}
-
-function formatBytes(value: number | null | undefined): string {
-  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) return '—';
-  if (value < 1024) return `${value.toFixed(0)} B`;
-  const units = ['KB', 'MB', 'GB', 'TB'];
-  let scaled = value / 1024;
-  let unit = units[0];
-  for (let index = 1; index < units.length && scaled >= 1024; index += 1) {
-    scaled /= 1024;
-    unit = units[index];
-  }
-  return `${scaled.toFixed(scaled >= 100 ? 0 : scaled >= 10 ? 1 : 2)} ${unit}`;
 }
 
 function apiErrorMessage(reason: unknown, fallback: string): string {
@@ -88,18 +53,6 @@ function apiErrorMessage(reason: unknown, fallback: string): string {
     return String((reason as { message: unknown }).message);
   }
   return reason instanceof Error ? reason.message : fallback;
-}
-
-function storedRunTime(run: PublicRunListRecord): string {
-  return formatRunTime(run.completed_at || run.started_at, run.run_id);
-}
-
-function storedRunStatus(run: PublicRunListRecord): string {
-  if (run.status === 'complete') return 'Saved';
-  if (run.status === 'cancelled') return 'Cancelled';
-  if (run.status === 'failed') return 'Incomplete';
-  if (run.status === 'running') return 'Running';
-  return run.status || 'Unknown';
 }
 
 function number(value: number | null | undefined, digits = 2): string {
@@ -113,8 +66,11 @@ function delta(left: number | null | undefined, right: number | null | undefined
   return `${rounded > 0 ? '+' : ''}${rounded.toFixed(digits)}`;
 }
 
+/** A count such as mesh elements or solves, with thousands separators. */
+const count = (value: number) => Math.round(value).toLocaleString('en-US');
+
 function timingValue(value: number | null, unit: string): string {
-  return value === null ? 'Not recorded' : unit === 's' ? formatSeconds(value) : number(value, 0);
+  return value === null ? 'Not recorded' : unit === 's' ? formatSeconds(value) : count(value);
 }
 
 function lossNumber(value: number, unit: string): string {
@@ -139,7 +95,10 @@ function DqComparisonValue({ cell, label, unit }: { cell: ComparisonDqCell; labe
 
 function timingDelta(before: number | null, after: number | null, unit: string): string {
   if (before === null || after === null) return '—';
-  if (unit !== 's') return delta(before, after, 0);
+  if (unit !== 's') {
+    const change = Math.round(after - before);
+    return `${change > 0 ? '+' : ''}${count(change)}`;
+  }
   const difference = after - before;
   return `${difference > 0 ? '+' : difference < 0 ? '−' : ''}${formatSeconds(Math.abs(difference))}`;
 }
@@ -171,11 +130,9 @@ interface ComparisonColumn extends LoadedRun {
   title: string;
 }
 
-export function PublicRunComparison({ currentResult, manageRuns = false, compareWithPrevious = false, onOpenRun }: PublicRunComparisonProps) {
+export function PublicRunComparison({ currentResult, compareWithPrevious = false }: PublicRunComparisonProps) {
   const currentSaved = currentResult?.saved_run;
-  const [allRecords, setAllRecords] = useState<PublicRunListRecord[]>([]);
   const [records, setRecords] = useState<PublicRunListRecord[]>([]);
-  const [storage, setStorage] = useState<PublicRunStoragePolicy | null>(null);
   const [selection, setSelection] = useState(() => initialComparisonSelection());
   const selectionContext = useRef<string | null>(null);
   const [loadErrors, setLoadErrors] = useState<Record<string, string>>({});
@@ -184,10 +141,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const comparisonRequests = useRef(new Map<string, Promise<LoadedRun>>());
   const fieldCache = useRef(new Map<string, PublicFieldLinePlot>());
   const [error, setError] = useState<string | null>(null);
-  const [managementNotice, setManagementNotice] = useState<string | null>(null);
   const [exportNotice, setExportNotice] = useState<string | null>(null);
-  const [confirmingDeleteKey, setConfirmingDeleteKey] = useState<string | null>(null);
-  const [deletingKey, setDeletingKey] = useState<string | null>(null);
   const [plotChoice, setPlot] = useState<'auto' | 'torque' | 'back-emf' | 'cogging' | 'torque-speed' | 'fields'>('auto');
   const [hiddenSeriesKeys, setHiddenSeriesKeys] = useState<string[]>([]);
   const [envelopeState, setEnvelopeState] = useState<EnvelopeComparisonState>({ limit: 'peak', quantity: 'torque', hidden: [], speed: 0 });
@@ -195,8 +149,6 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
 
   const refreshRuns = useCallback(async (): Promise<void> => {
     const payload = await listPublicRuns();
-    setAllRecords(payload.runs);
-    setStorage(payload.storage);
     setRecords(payload.runs.filter((run) => run.status === 'complete' && isMagneto2dRun(run)));
     setRunsLoaded(true);
     setError(null);
@@ -210,6 +162,12 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
       if (active) setError(apiErrorMessage(reason, 'Saved runs could not be listed.'));
     });
     return () => { active = false; };
+  }, [refreshRuns]);
+  // A run deleted in Previous runs leaves this list: read it again rather than offer a run that is gone.
+  useEffect(() => {
+    const listAgain = () => { void refreshRuns().catch(() => undefined); };
+    window.addEventListener(RUNS_CHANGED_EVENT, listAgain);
+    return () => window.removeEventListener(RUNS_CHANGED_EVENT, listAgain);
   }, [refreshRuns]);
 
   const currentKey = currentSaved ? runKey(currentSaved) : '';
@@ -267,35 +225,6 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
     return () => { active = false; };
   }, [selectedKeys, records, loaded, loadErrors]);
 
-  const deleteRun = async (record: PublicRunListRecord) => {
-    const key = runKey(record);
-    setDeletingKey(key);
-    setManagementNotice(null);
-    try {
-      const deleted = await deletePublicRun(record.project_slug, record.run_id);
-      comparisonRequests.current.delete(key);
-      setStorage(deleted.storage);
-      setAllRecords((previous) => previous.filter((candidate) => runKey(candidate) !== key));
-      setRecords((previous) => previous.filter((candidate) => runKey(candidate) !== key));
-      setLoaded((previous) => {
-        const next = { ...previous };
-        delete next[key];
-        return next;
-      });
-      setConfirmingDeleteKey(null);
-      setManagementNotice(`Deleted ${record.project_name || record.project_slug} run ${record.run_id}.`);
-      try {
-        await refreshRuns();
-      } catch {
-        setManagementNotice(`Deleted ${record.project_name || record.project_slug} run ${record.run_id}. Refresh Previous runs to recheck the workspace total.`);
-      }
-    } catch (reason: unknown) {
-      setManagementNotice(apiErrorMessage(reason, 'The selected run could not be deleted.'));
-    } finally {
-      setDeletingKey(null);
-    }
-  };
-
   const baselineSlot = selection.slots.find(slot => slot.id === selection.baselineId)!;
   const orderedSlots = [baselineSlot, ...selection.slots.filter(slot => slot.id !== selection.baselineId)];
   const ready = selection.slots.every(slot => slot.key && loaded[slot.key]);
@@ -307,7 +236,7 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const unused = records.find(record => !selectedKeys.includes(runKey(record)));
   useEffect(() => { setExportNotice(null); }, [selection]);
   const exportCsv = () => {
-    if (!ready || error || selectionErrors.length || deletingKey) return;
+    if (!ready || error || selectionErrors.length) return;
     let url: string | null = null;
     try {
       url = URL.createObjectURL(new Blob([comparisonCsv(runs)], { type: 'text/csv;charset=utf-8' }));
@@ -353,85 +282,12 @@ export function PublicRunComparison({ currentResult, manageRuns = false, compare
   const dq = compareRunDq(runs.map(run => run.result));
   return (
     <section className="public-run-compare" aria-label="Compare saved runs">
-      {manageRuns && (
-        <section className="public-run-storage" aria-label="Local run storage">
-          <div className="public-run-storage-summary">
-            <div>
-              <span className="eyebrow">Local run storage</span>
-              <strong>{storage ? `${formatBytes(storage.used_bytes)} of ${formatBytes(storage.max_bytes)} used` : 'Checking saved runs…'}</strong>
-              <small>
-                Saved results stay on this computer and are never removed automatically.
-                {storage?.field_playback_keep_latest_per_project
-                  ? ` Field playback, most of a run's size, is kept for each design's newest ${storage.field_playback_keep_latest_per_project} runs, and older runs give theirs up first when storage fills; their results and reports stay.`
-                  : ''}
-              </small>
-            </div>
-            {storage && (
-              <span className={`public-run-storage-state${storage.accepting_new_runs ? '' : ' is-full'}`}>
-                {storage.accepting_new_runs ? `${formatBytes(storage.available_bytes)} available` : 'Storage full'}
-              </span>
-            )}
-          </div>
-          {storage && (
-            <div
-              className="public-run-storage-meter"
-              role="progressbar"
-              aria-label="Saved-run workspace usage"
-              aria-valuemin={0}
-              aria-valuemax={storage.max_bytes}
-              aria-valuenow={Math.min(storage.used_bytes, storage.max_bytes)}
-            >
-              <i style={{ width: `${Math.min(100, storage.max_bytes > 0 ? storage.used_bytes / storage.max_bytes * 100 : 0)}%` }} />
-            </div>
-          )}
-          {storage && !storage.accepting_new_runs && (
-            <div className="public-run-storage-warning" role="alert">
-              Delete an older saved or incomplete run below to make room for the next analysis.
-            </div>
-          )}
-          <details className="public-run-storage-manager" open={storage?.accepting_new_runs === false}>
-            <summary>Manage stored runs <span>{allRecords.length}</span></summary>
-            <div className="public-run-storage-list" role="list">
-              {allRecords.length === 0 && <p>No saved or incomplete runs are using this workspace.</p>}
-              {allRecords.map((record) => {
-                const key = runKey(record);
-                const confirming = confirmingDeleteKey === key;
-                const deleting = deletingKey === key;
-                return (
-                  <article className="public-run-storage-row" role="listitem" key={key} data-run-id={record.run_id}>
-                    <div>
-                      <strong>{record.project_name || record.project_slug}{record.run_setup?.name ? ` · ${record.run_setup.name}` : ''}</strong>
-                      <small>{storedRunTime(record)} · {record.run_id}{record.field_playback_removed_at ? ' · field playback removed' : ''}</small>
-                    </div>
-                    <span className={`public-run-storage-status is-${record.status}`}>{storedRunStatus(record)}</span>
-                    <span className="public-run-storage-size">{formatBytes(record.size_bytes)}</span>
-                    <div className="public-run-storage-actions">
-                      {onOpenRun && record.status === 'complete' && !confirming && (
-                        <button type="button" disabled={deletingKey !== null} onClick={() => onOpenRun(record)}>Open results</button>
-                      )}
-                      {confirming ? (
-                        <>
-                          <button type="button" className="danger" disabled={deleting} onClick={() => void deleteRun(record)}>{deleting ? 'Deleting…' : 'Delete permanently'}</button>
-                          <button type="button" disabled={deleting} onClick={() => setConfirmingDeleteKey(null)}>Cancel</button>
-                        </>
-                      ) : (
-                        <button type="button" title={record.status === 'running' ? 'Cancel the active analysis before deleting its incomplete run.' : undefined} disabled={deletingKey !== null || record.status === 'running'} onClick={() => setConfirmingDeleteKey(key)}>Delete run</button>
-                      )}
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          </details>
-          {managementNotice && <div className="public-run-storage-notice" role="status">{managementNotice}</div>}
-        </section>
-      )}
       <div className="public-run-compare-heading">
         <div><span className="eyebrow">Run comparison</span><p>Pin a baseline and compare recorded inputs and results. Each delta is relative to the pinned run.</p></div>
-        <button type="button" className="public-run-compare-export" disabled={!ready || Boolean(error) || selectionErrors.length > 0 || deletingKey !== null} onClick={exportCsv}
+        <button type="button" className="public-run-compare-export" disabled={!ready || Boolean(error) || selectionErrors.length > 0} onClick={exportCsv}
           title="Export the selected runs, recorded inputs, comparison tables and waveform samples. No new solve is started.">Export CSV</button>
       </div>
-      {exportNotice && <p className="public-run-storage-notice" role="status" aria-live="polite">{exportNotice}</p>}
+      {exportNotice && <p className="public-run-compare-notice" role="status" aria-live="polite">{exportNotice}</p>}
       <div className="public-run-compare-selectors" aria-busy={Boolean(loadingStatus)}>
         {selection.slots.map(slot => {
           const style = COMPARISON_STYLES.find(style => style.id === slot.id)!;

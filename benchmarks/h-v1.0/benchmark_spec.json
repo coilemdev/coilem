@@ -1,0 +1,730 @@
+{
+ "schema": "coilem.thermal_benchmark_spec/v1",
+ "protocol_version": "H-1.0.0",
+ "phase": "H",
+ "scope": "Steady-state part temperatures for fixed heat, conductivities and cooling; seven designs, three cooling levels each, in a flat cross-section scope and a full scope",
+ "surroundings_C": 25.0,
+ "conductivity_W_mK": {
+  "slot": 1.0,
+  "steel": 20.0,
+  "conductor": 385.0,
+  "magnet": 8.0,
+  "housing": 205.0,
+  "liner": 0.2
+ },
+ "construction": {
+  "housing_thickness_mm": 3.0,
+  "contact_m2K_W": 0.001,
+  "slot_liner_mm": 0.2,
+  "bearing_to_housing_K_W": 2.0,
+  "rotor_to_bearing_K_W": 3.0
+ },
+ "cooling": {
+  "inner": {
+   "still_air": {
+    "cooling": "still_air",
+    "outside_h_W_m2K": 10.0,
+    "end_space_h_W_m2K": 10.0,
+    "airgap_h_W_m2K": 20.0
+   },
+   "forced_air": {
+    "cooling": "forced_air",
+    "outside_h_W_m2K": 60.0,
+    "end_space_h_W_m2K": 25.0,
+    "airgap_h_W_m2K": 40.0
+   },
+   "liquid_jacket": {
+    "cooling": "liquid_jacket",
+    "outside_h_W_m2K": 1000.0,
+    "end_space_h_W_m2K": 25.0,
+    "airgap_h_W_m2K": 40.0
+   }
+  },
+  "outer": {
+   "still_air": {
+    "cooling": "still_air",
+    "outside_h_W_m2K": 10.0,
+    "end_space_h_W_m2K": 10.0,
+    "airgap_h_W_m2K": 20.0,
+    "mount_to_ambient_K_W": 10.0
+   },
+   "prop_wash": {
+    "cooling": "forced_air",
+    "outside_h_W_m2K": 80.0,
+    "end_space_h_W_m2K": 25.0,
+    "airgap_h_W_m2K": 40.0,
+    "mount_to_ambient_K_W": 10.0
+   },
+   "cooled_mount": {
+    "cooling": "still_air",
+    "outside_h_W_m2K": 10.0,
+    "end_space_h_W_m2K": 10.0,
+    "airgap_h_W_m2K": 20.0,
+    "mount_to_ambient_K_W": 1.0
+   }
+  }
+ },
+ "heat_split": {
+  "winding": 10.0,
+  "teeth": 3.0,
+  "yoke": 7.0,
+  "magnets": 1.0,
+  "rotor": 1.0
+ },
+ "heat_basis": "Total heat per design and cooling level puts coilEM's slot winding about 80 K above the surroundings in the in_plane scope; the full scope takes the same heat",
+ "copper_temperature_feedback": false,
+ "bands": {
+  "relative": 0.1,
+  "floor_K": 2.0,
+  "yellow_multiplier": 2.0,
+  "meaning": "A part passes when its temperature is within 10% of the reference rise above the surroundings, or 2 K if that is larger; up to twice that is YELLOW"
+ },
+ "designs": [
+  {
+   "id": "spm_8p12s_concentrated",
+   "layout": "inner",
+   "description": "Inner rotor, surface magnets, 8 poles and 12 slots, tooth coils",
+   "source": "benchmarks/main-20261009-bad71d9/fixtures/spm_8p12s_concentrated__baseline.json",
+   "fixture": "benchmarks/h-v1.0/fixtures/spm_8p12s_concentrated.json",
+   "fixture_sha256": "cd30026ebfa55443046a2985b4a80967872d9aaada7985dd1ae053f5af671480"
+  },
+  {
+   "id": "spm_12p36s_distributed",
+   "layout": "inner",
+   "description": "Inner rotor, surface magnets, 12 poles and 36 slots, distributed winding",
+   "source": "benchmarks/main-20261009-bad71d9/fixtures/spm_12p36s_distributed_femm_validation.json",
+   "fixture": "benchmarks/h-v1.0/fixtures/spm_12p36s_distributed.json",
+   "fixture_sha256": "845ad5ec0dff9803b07171c9a9680596375adbaa031ccb61c129d348b0f9d027"
+  },
+  {
+   "id": "ipm_14p18s_flat_buried",
+   "layout": "inner",
+   "description": "Inner rotor, flat buried magnets, 14 poles and 18 slots",
+   "source": "frontend/src/public/examples/validation_ipm_14p_flat_buried_large.openem",
+   "fixture": "benchmarks/h-v1.0/fixtures/ipm_14p18s_flat_buried.json",
+   "fixture_sha256": "79cdd81a6a8131a78cbdc6eaded372c6717c8ee16cd268604f4ac00933d55ece"
+  },
+  {
+   "id": "ipm_10p12s_v_shape",
+   "layout": "inner",
+   "description": "Inner rotor, V-shape buried magnets, 10 poles and 12 slots",
+   "source": "frontend/src/public/examples/validation_ipm_10p_v_shape_medium.openem",
+   "fixture": "benchmarks/h-v1.0/fixtures/ipm_10p12s_v_shape.json",
+   "fixture_sha256": "a583f1908e7d506c6d14e2c2daee4fa99fcb067c0c7a916e519c2f275353e2a0"
+  },
+  {
+   "id": "outrunner_14p12s",
+   "layout": "outer",
+   "description": "Outer rotor, 14 poles and 12 slots, 28 mm stator",
+   "source": "frontend/src/public/examples/spm_outrunner_14p12s.coilem",
+   "fixture": "benchmarks/h-v1.0/fixtures/outrunner_14p12s.json",
+   "fixture_sha256": "971436ff8fef5d8256acdb2105ddc3abe392f3989d262fd41457a36005d7d652"
+  },
+  {
+   "id": "joint_outrunner_36s40p",
+   "layout": "outer",
+   "description": "Outer rotor, 40 poles and 36 slots, robot-joint size",
+   "source": "frontend/src/public/examples/joint_outrunner_36s40p.coilem",
+   "fixture": "benchmarks/h-v1.0/fixtures/joint_outrunner_36s40p.json",
+   "fixture_sha256": "ef2cd8706a60e79fe688bf982f23398cb3e9579ea7689ce3859d2fee7f27323a"
+  },
+  {
+   "id": "drone_outrunner_36s40p",
+   "layout": "outer",
+   "description": "Outer rotor, 40 poles and 36 slots, drone size",
+   "source": "frontend/src/public/examples/drone_outrunner_36s40p_b.coilem",
+   "fixture": "benchmarks/h-v1.0/fixtures/drone_outrunner_36s40p.json",
+   "fixture_sha256": "97d0c05e4e68bb6a1127b9a249587b8ec7239a1b4886ae28842a1ea0708744ee"
+  }
+ ],
+ "cases": [
+  {
+   "id": "spm_8p12s_concentrated__still_air__in_plane",
+   "phase": "H",
+   "design": "spm_8p12s_concentrated",
+   "cooling": "still_air",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 10.0,
+    "teeth": 3.0,
+    "yoke": 7.0,
+    "magnets": 1.0,
+    "rotor": 1.0
+   }
+  },
+  {
+   "id": "spm_8p12s_concentrated__still_air__full",
+   "phase": "H",
+   "design": "spm_8p12s_concentrated",
+   "cooling": "still_air",
+   "scope": "full",
+   "heat_W": {
+    "winding": 10.0,
+    "teeth": 3.0,
+    "yoke": 7.0,
+    "magnets": 1.0,
+    "rotor": 1.0
+   }
+  },
+  {
+   "id": "spm_8p12s_concentrated__forced_air__in_plane",
+   "phase": "H",
+   "design": "spm_8p12s_concentrated",
+   "cooling": "forced_air",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 50.0,
+    "teeth": 15.0,
+    "yoke": 35.0,
+    "magnets": 5.0,
+    "rotor": 5.0
+   }
+  },
+  {
+   "id": "spm_8p12s_concentrated__forced_air__full",
+   "phase": "H",
+   "design": "spm_8p12s_concentrated",
+   "cooling": "forced_air",
+   "scope": "full",
+   "heat_W": {
+    "winding": 50.0,
+    "teeth": 15.0,
+    "yoke": 35.0,
+    "magnets": 5.0,
+    "rotor": 5.0
+   }
+  },
+  {
+   "id": "spm_8p12s_concentrated__liquid_jacket__in_plane",
+   "phase": "H",
+   "design": "spm_8p12s_concentrated",
+   "cooling": "liquid_jacket",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 200.0,
+    "teeth": 60.0,
+    "yoke": 140.0,
+    "magnets": 20.0,
+    "rotor": 20.0
+   }
+  },
+  {
+   "id": "spm_8p12s_concentrated__liquid_jacket__full",
+   "phase": "H",
+   "design": "spm_8p12s_concentrated",
+   "cooling": "liquid_jacket",
+   "scope": "full",
+   "heat_W": {
+    "winding": 200.0,
+    "teeth": 60.0,
+    "yoke": 140.0,
+    "magnets": 20.0,
+    "rotor": 20.0
+   }
+  },
+  {
+   "id": "spm_12p36s_distributed__still_air__in_plane",
+   "phase": "H",
+   "design": "spm_12p36s_distributed",
+   "cooling": "still_air",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 67.27,
+    "teeth": 20.18,
+    "yoke": 47.09,
+    "magnets": 6.727,
+    "rotor": 6.727
+   }
+  },
+  {
+   "id": "spm_12p36s_distributed__still_air__full",
+   "phase": "H",
+   "design": "spm_12p36s_distributed",
+   "cooling": "still_air",
+   "scope": "full",
+   "heat_W": {
+    "winding": 67.27,
+    "teeth": 20.18,
+    "yoke": 47.09,
+    "magnets": 6.727,
+    "rotor": 6.727
+   }
+  },
+  {
+   "id": "spm_12p36s_distributed__forced_air__in_plane",
+   "phase": "H",
+   "design": "spm_12p36s_distributed",
+   "cooling": "forced_air",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 326.4,
+    "teeth": 97.91,
+    "yoke": 228.5,
+    "magnets": 32.64,
+    "rotor": 32.64
+   }
+  },
+  {
+   "id": "spm_12p36s_distributed__forced_air__full",
+   "phase": "H",
+   "design": "spm_12p36s_distributed",
+   "cooling": "forced_air",
+   "scope": "full",
+   "heat_W": {
+    "winding": 326.4,
+    "teeth": 97.91,
+    "yoke": 228.5,
+    "magnets": 32.64,
+    "rotor": 32.64
+   }
+  },
+  {
+   "id": "spm_12p36s_distributed__liquid_jacket__in_plane",
+   "phase": "H",
+   "design": "spm_12p36s_distributed",
+   "cooling": "liquid_jacket",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 1177.0,
+    "teeth": 353.2,
+    "yoke": 824.1,
+    "magnets": 117.7,
+    "rotor": 117.7
+   }
+  },
+  {
+   "id": "spm_12p36s_distributed__liquid_jacket__full",
+   "phase": "H",
+   "design": "spm_12p36s_distributed",
+   "cooling": "liquid_jacket",
+   "scope": "full",
+   "heat_W": {
+    "winding": 1177.0,
+    "teeth": 353.2,
+    "yoke": 824.1,
+    "magnets": 117.7,
+    "rotor": 117.7
+   }
+  },
+  {
+   "id": "ipm_14p18s_flat_buried__still_air__in_plane",
+   "phase": "H",
+   "design": "ipm_14p18s_flat_buried",
+   "cooling": "still_air",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 96.82,
+    "teeth": 29.05,
+    "yoke": 67.77,
+    "magnets": 9.682,
+    "rotor": 9.682
+   }
+  },
+  {
+   "id": "ipm_14p18s_flat_buried__still_air__full",
+   "phase": "H",
+   "design": "ipm_14p18s_flat_buried",
+   "cooling": "still_air",
+   "scope": "full",
+   "heat_W": {
+    "winding": 96.82,
+    "teeth": 29.05,
+    "yoke": 67.77,
+    "magnets": 9.682,
+    "rotor": 9.682
+   }
+  },
+  {
+   "id": "ipm_14p18s_flat_buried__forced_air__in_plane",
+   "phase": "H",
+   "design": "ipm_14p18s_flat_buried",
+   "cooling": "forced_air",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 459.1,
+    "teeth": 137.7,
+    "yoke": 321.4,
+    "magnets": 45.91,
+    "rotor": 45.91
+   }
+  },
+  {
+   "id": "ipm_14p18s_flat_buried__forced_air__full",
+   "phase": "H",
+   "design": "ipm_14p18s_flat_buried",
+   "cooling": "forced_air",
+   "scope": "full",
+   "heat_W": {
+    "winding": 459.1,
+    "teeth": 137.7,
+    "yoke": 321.4,
+    "magnets": 45.91,
+    "rotor": 45.91
+   }
+  },
+  {
+   "id": "ipm_14p18s_flat_buried__liquid_jacket__in_plane",
+   "phase": "H",
+   "design": "ipm_14p18s_flat_buried",
+   "cooling": "liquid_jacket",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 1523.0,
+    "teeth": 456.8,
+    "yoke": 1066.0,
+    "magnets": 152.3,
+    "rotor": 152.3
+   }
+  },
+  {
+   "id": "ipm_14p18s_flat_buried__liquid_jacket__full",
+   "phase": "H",
+   "design": "ipm_14p18s_flat_buried",
+   "cooling": "liquid_jacket",
+   "scope": "full",
+   "heat_W": {
+    "winding": 1523.0,
+    "teeth": 456.8,
+    "yoke": 1066.0,
+    "magnets": 152.3,
+    "rotor": 152.3
+   }
+  },
+  {
+   "id": "ipm_10p12s_v_shape__still_air__in_plane",
+   "phase": "H",
+   "design": "ipm_10p12s_v_shape",
+   "cooling": "still_air",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 30.32,
+    "teeth": 9.095,
+    "yoke": 21.22,
+    "magnets": 3.032,
+    "rotor": 3.032
+   }
+  },
+  {
+   "id": "ipm_10p12s_v_shape__still_air__full",
+   "phase": "H",
+   "design": "ipm_10p12s_v_shape",
+   "cooling": "still_air",
+   "scope": "full",
+   "heat_W": {
+    "winding": 30.32,
+    "teeth": 9.095,
+    "yoke": 21.22,
+    "magnets": 3.032,
+    "rotor": 3.032
+   }
+  },
+  {
+   "id": "ipm_10p12s_v_shape__forced_air__in_plane",
+   "phase": "H",
+   "design": "ipm_10p12s_v_shape",
+   "cooling": "forced_air",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 144.5,
+    "teeth": 43.36,
+    "yoke": 101.2,
+    "magnets": 14.45,
+    "rotor": 14.45
+   }
+  },
+  {
+   "id": "ipm_10p12s_v_shape__forced_air__full",
+   "phase": "H",
+   "design": "ipm_10p12s_v_shape",
+   "cooling": "forced_air",
+   "scope": "full",
+   "heat_W": {
+    "winding": 144.5,
+    "teeth": 43.36,
+    "yoke": 101.2,
+    "magnets": 14.45,
+    "rotor": 14.45
+   }
+  },
+  {
+   "id": "ipm_10p12s_v_shape__liquid_jacket__in_plane",
+   "phase": "H",
+   "design": "ipm_10p12s_v_shape",
+   "cooling": "liquid_jacket",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 495.5,
+    "teeth": 148.6,
+    "yoke": 346.8,
+    "magnets": 49.55,
+    "rotor": 49.55
+   }
+  },
+  {
+   "id": "ipm_10p12s_v_shape__liquid_jacket__full",
+   "phase": "H",
+   "design": "ipm_10p12s_v_shape",
+   "cooling": "liquid_jacket",
+   "scope": "full",
+   "heat_W": {
+    "winding": 495.5,
+    "teeth": 148.6,
+    "yoke": 346.8,
+    "magnets": 49.55,
+    "rotor": 49.55
+   }
+  },
+  {
+   "id": "outrunner_14p12s__still_air__in_plane",
+   "phase": "H",
+   "design": "outrunner_14p12s",
+   "cooling": "still_air",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 2.541,
+    "teeth": 0.7623,
+    "yoke": 1.779,
+    "magnets": 0.2541,
+    "rotor": 0.2541
+   }
+  },
+  {
+   "id": "outrunner_14p12s__still_air__full",
+   "phase": "H",
+   "design": "outrunner_14p12s",
+   "cooling": "still_air",
+   "scope": "full",
+   "heat_W": {
+    "winding": 2.541,
+    "teeth": 0.7623,
+    "yoke": 1.779,
+    "magnets": 0.2541,
+    "rotor": 0.2541
+   }
+  },
+  {
+   "id": "outrunner_14p12s__prop_wash__in_plane",
+   "phase": "H",
+   "design": "outrunner_14p12s",
+   "cooling": "prop_wash",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 2.823,
+    "teeth": 0.8468,
+    "yoke": 1.976,
+    "magnets": 0.2823,
+    "rotor": 0.2823
+   }
+  },
+  {
+   "id": "outrunner_14p12s__prop_wash__full",
+   "phase": "H",
+   "design": "outrunner_14p12s",
+   "cooling": "prop_wash",
+   "scope": "full",
+   "heat_W": {
+    "winding": 2.823,
+    "teeth": 0.8468,
+    "yoke": 1.976,
+    "magnets": 0.2823,
+    "rotor": 0.2823
+   }
+  },
+  {
+   "id": "outrunner_14p12s__cooled_mount__in_plane",
+   "phase": "H",
+   "design": "outrunner_14p12s",
+   "cooling": "cooled_mount",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 5.455,
+    "teeth": 1.636,
+    "yoke": 3.818,
+    "magnets": 0.5455,
+    "rotor": 0.5455
+   }
+  },
+  {
+   "id": "outrunner_14p12s__cooled_mount__full",
+   "phase": "H",
+   "design": "outrunner_14p12s",
+   "cooling": "cooled_mount",
+   "scope": "full",
+   "heat_W": {
+    "winding": 5.455,
+    "teeth": 1.636,
+    "yoke": 3.818,
+    "magnets": 0.5455,
+    "rotor": 0.5455
+   }
+  },
+  {
+   "id": "joint_outrunner_36s40p__still_air__in_plane",
+   "phase": "H",
+   "design": "joint_outrunner_36s40p",
+   "cooling": "still_air",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 4.095,
+    "teeth": 1.229,
+    "yoke": 2.867,
+    "magnets": 0.4095,
+    "rotor": 0.4095
+   }
+  },
+  {
+   "id": "joint_outrunner_36s40p__still_air__full",
+   "phase": "H",
+   "design": "joint_outrunner_36s40p",
+   "cooling": "still_air",
+   "scope": "full",
+   "heat_W": {
+    "winding": 4.095,
+    "teeth": 1.229,
+    "yoke": 2.867,
+    "magnets": 0.4095,
+    "rotor": 0.4095
+   }
+  },
+  {
+   "id": "joint_outrunner_36s40p__prop_wash__in_plane",
+   "phase": "H",
+   "design": "joint_outrunner_36s40p",
+   "cooling": "prop_wash",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 4.864,
+    "teeth": 1.459,
+    "yoke": 3.405,
+    "magnets": 0.4864,
+    "rotor": 0.4864
+   }
+  },
+  {
+   "id": "joint_outrunner_36s40p__prop_wash__full",
+   "phase": "H",
+   "design": "joint_outrunner_36s40p",
+   "cooling": "prop_wash",
+   "scope": "full",
+   "heat_W": {
+    "winding": 4.864,
+    "teeth": 1.459,
+    "yoke": 3.405,
+    "magnets": 0.4864,
+    "rotor": 0.4864
+   }
+  },
+  {
+   "id": "joint_outrunner_36s40p__cooled_mount__in_plane",
+   "phase": "H",
+   "design": "joint_outrunner_36s40p",
+   "cooling": "cooled_mount",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 19.64,
+    "teeth": 5.891,
+    "yoke": 13.75,
+    "magnets": 1.964,
+    "rotor": 1.964
+   }
+  },
+  {
+   "id": "joint_outrunner_36s40p__cooled_mount__full",
+   "phase": "H",
+   "design": "joint_outrunner_36s40p",
+   "cooling": "cooled_mount",
+   "scope": "full",
+   "heat_W": {
+    "winding": 19.64,
+    "teeth": 5.891,
+    "yoke": 13.75,
+    "magnets": 1.964,
+    "rotor": 1.964
+   }
+  },
+  {
+   "id": "drone_outrunner_36s40p__still_air__in_plane",
+   "phase": "H",
+   "design": "drone_outrunner_36s40p",
+   "cooling": "still_air",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 4.955,
+    "teeth": 1.486,
+    "yoke": 3.468,
+    "magnets": 0.4955,
+    "rotor": 0.4955
+   }
+  },
+  {
+   "id": "drone_outrunner_36s40p__still_air__full",
+   "phase": "H",
+   "design": "drone_outrunner_36s40p",
+   "cooling": "still_air",
+   "scope": "full",
+   "heat_W": {
+    "winding": 4.955,
+    "teeth": 1.486,
+    "yoke": 3.468,
+    "magnets": 0.4955,
+    "rotor": 0.4955
+   }
+  },
+  {
+   "id": "drone_outrunner_36s40p__prop_wash__in_plane",
+   "phase": "H",
+   "design": "drone_outrunner_36s40p",
+   "cooling": "prop_wash",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 7.0,
+    "teeth": 2.1,
+    "yoke": 4.9,
+    "magnets": 0.7,
+    "rotor": 0.7
+   }
+  },
+  {
+   "id": "drone_outrunner_36s40p__prop_wash__full",
+   "phase": "H",
+   "design": "drone_outrunner_36s40p",
+   "cooling": "prop_wash",
+   "scope": "full",
+   "heat_W": {
+    "winding": 7.0,
+    "teeth": 2.1,
+    "yoke": 4.9,
+    "magnets": 0.7,
+    "rotor": 0.7
+   }
+  },
+  {
+   "id": "drone_outrunner_36s40p__cooled_mount__in_plane",
+   "phase": "H",
+   "design": "drone_outrunner_36s40p",
+   "cooling": "cooled_mount",
+   "scope": "in_plane",
+   "heat_W": {
+    "winding": 27.68,
+    "teeth": 8.305,
+    "yoke": 19.38,
+    "magnets": 2.768,
+    "rotor": 2.768
+   }
+  },
+  {
+   "id": "drone_outrunner_36s40p__cooled_mount__full",
+   "phase": "H",
+   "design": "drone_outrunner_36s40p",
+   "cooling": "cooled_mount",
+   "scope": "full",
+   "heat_W": {
+    "winding": 27.68,
+    "teeth": 8.305,
+    "yoke": 19.38,
+    "magnets": 2.768,
+    "rotor": 2.768
+   }
+  }
+ ]
+}

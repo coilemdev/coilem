@@ -78,9 +78,18 @@ import {
 } from './chartReadout';
 import { BldcTorqueCurrentChart } from './BldcTorqueCurrentChart';
 import { PublicRunComparison } from './PublicRunComparison';
+import { PublicRunHistory } from './PublicRunHistory';
+import { designDcBusV } from './torqueSpeedAnalysis';
+import { MESH_DENSITY_LABELS, meshDensityLabel } from './meshLabels';
 import { MotorConstants } from './MotorConstants';
 import { CompactTorqueSpeedChart, PerformancePanel } from './PerformancePanel';
 import { ResultDiagnostics } from './SolverConvergenceCard';
+import { ThermalResultsTab } from './ThermalResultsTab';
+import { LossMapPanel, hasLossMap } from './LossesCard';
+import { ThermalRatingControls, ThermalRunControls, ThermalRunMonitor, useThermalRun } from './ThermalRun';
+import { TemperatureUnitPicker, ThermalAdvancedFields, ThermalConstructionFields, ThermalCoolingFields, ThermalInsulationFields, ThermalRotorFields, useThermalSetup } from './ThermalSetup';
+import { useTemperatureUnit } from './useTemperatureUnit';
+import { rotorLayoutOf, thermalProblemSection, thermalSectionSummary, type ThermalSetupSection } from './thermal';
 import { GRADE_TEMPERATURE, isDeratedRun, magnetTemperatureView } from './magnetTemperature';
 import { hasMotorConstants, motorConstantsView } from './machineConstants';
 import { rotorHistoryPositions, type TorqueSpeedAnalysisSettings, type WireSpec } from './performance';
@@ -231,7 +240,7 @@ interface CoilEmWorkspaceProps {
   onSolvePlanChange: (solvePlan: PublicSolvePlanChoice) => void;
   onCustomSweepChange: (stepDeg: number) => void;
   onSolveSettingChange: (
-    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C' | 'max_nonlinear_iterations',
+    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'motor_input_dc_bus_V' | 'magnet_temperature_C' | 'max_nonlinear_iterations',
     value: MotorConfig['solve_params']['nonlinear_solver'] | MotorConfig['solve_params']['current_amplitude_convention'] | MotorConfig['solve_params']['excitation_mode'] | number,
   ) => void;
   /** Changes which analyses are included in the next run. */
@@ -255,7 +264,7 @@ interface CoilEmWorkspaceProps {
   onOpenRunProject: (savedRun: PublicSavedRun) => void;
   onRerun: (savedRun: PublicSavedRun) => void;
   /** Opens a saved run's stored result, field playback included, from Previous runs. */
-  onOpenRunResults: (savedRun: PublicSavedRun) => void;
+  onOpenRunResults: (savedRun: PublicSavedRun) => Promise<string | null>;
   onUndoDesignEdit?: () => void;
   onDismissDesignEdit?: () => void;
 }
@@ -577,7 +586,7 @@ export function CoilEmTopBar({
   onTutorialCatalog?: () => void;
   runHistoryOpen?: boolean;
   onRunHistoryOpenChange?: (open: boolean) => void;
-  onOpenRunResults?: (savedRun: PublicSavedRun) => void;
+  onOpenRunResults?: (savedRun: PublicSavedRun) => Promise<string | null>;
 }) {
   const [designMenuOpen, setDesignMenuOpen] = useState(false);
   const [examplesMenuOpen, setExamplesMenuOpen] = useState(false);
@@ -846,21 +855,23 @@ export function CoilEmTopBar({
         >
           <section className="public-run-history-dialog" role="dialog" aria-modal="true" aria-labelledby="public-run-history-title">
             <header>
-              <div><span className="eyebrow">Local results</span><h1 id="public-run-history-title">Previous runs</h1><p>Review or compare completed analyses without starting another solve.</p></div>
+              <div><h1 id="public-run-history-title">Previous runs</h1><p>Every analysis saved on this computer, newest first. Click a run to open its results.</p></div>
               <button type="button" onClick={() => setRunHistoryOpen(false)} aria-label="Close previous runs">×</button>
             </header>
             <div className="public-run-history-content">
-              <PublicRunComparison
-                manageRuns
-                onOpenRun={onOpenRunResults ? (run) => {
-                  setRunHistoryOpen(false);
-                  onOpenRunResults({
+              <PublicRunHistory
+                onOpenRun={onOpenRunResults ? async (run) => {
+                  // A stored result can take seconds to read. The dialog stays, saying so, until
+                  // Results can be shown; closing it first would show the page behind it instead.
+                  const problem = await onOpenRunResults({
                     schema_version: 'coilem.solve_run.v2',
                     project_slug: run.project_slug,
                     run_id: run.run_id,
                     path: run.path,
                     completed_at: run.completed_at,
                   });
+                  if (problem === null) setRunHistoryOpen(false);
+                  return problem;
                 } : undefined}
               />
             </div>
@@ -3467,8 +3478,9 @@ function LiveSolveMonitor({ config, busy, progress, liveSamples, progressPercent
           { label: 'B', values: backEmfSamples.map((sample) => sample.phase_b_V as number), color: '#4ade80' },
           { label: 'C', values: backEmfSamples.map((sample) => sample.phase_c_V as number), color: '#60a5fa' },
         ]}
-        emptyStatus={finalizing ? 'Post-processing' : '0 samples'}
-        emptyMessage={finalizing ? 'Building waveform from solved fields' : 'Waiting for samples'}
+        // The back-EMF waveform is built from the solved fields at the end, so there is nothing to wait for before then (#348).
+        emptyStatus={finalizing ? 'Post-processing' : 'After the sweep'}
+        emptyMessage={finalizing ? 'Building waveform from solved fields' : 'Built when the sweep finishes'}
         emptyWorking={finalizing}
       />}
       </>}
@@ -3508,7 +3520,7 @@ function CompletedResultMonitor({ result, onOpenReport, positionLink }: { result
   // With no current (or a near-zero average) ripple % means nothing: show the swing.
   const ripple = torqueRippleView(result);
   const allResultCount = 3 + (hasTorque ? 2 + (ripple.ripplePct === null ? 1 : 0) : 0) + (hasBackEmf ? 2 : 0)
-    + (cogging ? 1 : 0) + (result.torque_speed_analysis ? 1 : 0) + (losses ? 2 : 0) + (result.workflow_elapsed_s != null ? 1 : 0) + (constants ? 4 : 0);
+    + (cogging ? 1 : 0) + (result.torque_speed_analysis ? 1 : 0) + (losses ? 2 : 0) + (result.workflow_elapsed_s != null ? 1 : 0) + (constants ? 5 : 0);
   // Read like the motor constants below: one row per value, numbers in one
   // right-aligned column, units beside them, a rule between groups.
   const resultRow = (label: string, value: string, unit: string, groupStart = false, title?: string) => (
@@ -3766,8 +3778,23 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   // The setup sections open one at a time, as Design's do. The accuracy plan
   // starts open for ordinary runs. The guide opens the section for its stop.
   const [openSetupSection, setOpenSetupSection] = useState<SolveSetupSection | null>(guidedSolveSection ?? 'plan');
+  // The left panel shows one setup at a time: the electromagnetic run, or the
+  // thermal estimate that starts from its losses. Each has its own sections
+  // and run button. The electromagnetic setup stays mounted while hidden, so
+  // its open section and the guided tour's targets are kept.
+  const [setupMode, setSetupMode] = useState<'em' | 'thermal'>('em');
+  // One thermal run for the whole page: the button in the footer and the monitor beside the motor show the same state.
+  const thermalRun = useThermalRun(config, result ?? null, designName ?? null);
+  const [thermalValues, setThermalValues] = useThermalSetup(config);
+  const [openThermalSection, setOpenThermalSection] = useState<`thermal-${ThermalSetupSection | 'curve'}` | null>('thermal-cooling');
+  const toggleThermalSection = (section: `thermal-${ThermalSetupSection | 'curve'}`) => setOpenThermalSection((current) => current === section ? null : section);
+  const thermalMechanicalW = config.solve_params.mechanical_loss_W ?? 0;
+  const thermalLayout = rotorLayoutOf(config);
+  const [temperatureUnit] = useTemperatureUnit();
+  const thermalProblem = thermalProblemSection(thermalValues, thermalMechanicalW, thermalLayout);
+  const thermalGroup = { values: thermalValues, onChange: setThermalValues, mechanicalW: thermalMechanicalW, layout: thermalLayout };
   useEffect(() => {
-    if (guidedSolveSection) setOpenSetupSection(guidedSolveSection);
+    if (guidedSolveSection) { setSetupMode('em'); setOpenSetupSection(guidedSolveSection); }
   }, [guidedSolveSection]);
   // The result plots set the field view's position, and show it.
   const fieldPositionLink = useMemo(createFieldPositionLink, []);
@@ -3877,10 +3904,10 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
   const sixStepSupported = config.topology === 'SPM' && selectedSolver === 'magneto2d';
   const solverLabel = selectedSolver === 'elmer' ? 'Elmer FEM' : 'Magneto2D';
   const densityChoices: Array<{ value: MotorConfig['solve_params']['mesh_density']; label: string; title?: string }> = [
-    { value: 'coarse', label: 'Coarse' },
-    { value: 'normal', label: 'Medium' },
-    { value: 'fine', label: 'Fine' },
-    { value: 'very_fine', label: 'Very fine', title: 'About 3–6× the elements of Medium: slower meshing and solving. For cogging and mesh-convergence checks.' },
+    { value: 'coarse', label: MESH_DENSITY_LABELS.coarse },
+    { value: 'normal', label: MESH_DENSITY_LABELS.normal },
+    { value: 'fine', label: MESH_DENSITY_LABELS.fine },
+    { value: 'very_fine', label: MESH_DENSITY_LABELS.very_fine, title: 'About 3–6× the elements of Medium: slower meshing and solving. For cogging and mesh-convergence checks.' },
   ];
   const meshBuild = config.solve_params.mesh_build ?? 'precise';
   const meshBuildChoices: Array<{ value: MotorConfig['solve_params']['mesh_build']; label: string; title: string }> = [
@@ -4012,9 +4039,12 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
       ? ['Meshing', 'Meshing…']
       : validationChecking
         ? ['Checking', 'Checking setup']
-        : runReady
-          ? ['Ready to run', 'Ready to run']
-          : ['Needs review', 'Review before running'];
+        // A finished run reads Complete here as it does beside the Run button (#348).
+        : result
+          ? ['Complete', 'Analysis complete']
+          : runReady
+            ? ['Ready to run', 'Ready to run']
+            : ['Needs review', 'Review before running'];
   const runReadinessTone: StatusTagTone = solveInProgress || busy === 'mesh'
     ? 'running'
     : runReady
@@ -4333,7 +4363,12 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
         />
         <div className="public-solve-setup-frame">
         <div className="mesh-panel-header"><span className="mesh-panel-header-title">Analysis setup</span></div>
+        <div className="public-setup-mode" role="tablist" aria-label="Setup shown">
+          <button type="button" role="tab" aria-selected={setupMode === 'em'} className={setupMode === 'em' ? 'active' : ''} onClick={() => setSetupMode('em')}>Electromagnetic</button>
+          <button type="button" role="tab" aria-selected={setupMode === 'thermal'} className={setupMode === 'thermal' ? 'active' : ''} onClick={() => setSetupMode('thermal')}>Thermal</button>
+        </div>
         <div className="public-solve-setup-scroll">
+        <div className="public-setup-mode-body" hidden={setupMode !== 'em'}>
         {runSetupControl}
         {elmerCapability.feature_enabled && <ParameterSectionBlock id="solver" label="Solver" summary={selectedSolver === 'elmer' ? 'Elmer FEM' : 'Magneto2D · built in'} active={openSetupSection === 'solver'} onToggle={toggleSetupSection} className="public-solver-section">
           <div className="public-solver-selector" role="radiogroup" aria-label="Electromagnetic solver">
@@ -4403,6 +4438,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
           <NumberRow label={sixStepSelected ? 'Conducting phase current' : 'Phase Current'} value={config.solve_params.current_amplitude_A} unit={sixStepSelected ? 'A plateau' : `A ${config.solve_params.current_amplitude_convention}`} min={0} max={1000} step={0.5} disabled={busy !== null || !currentEnabled} onChange={(value) => onSolveSettingChange('current_amplitude_A', value)} />
           {sixStepSelected && <NumberRow label="Commutation advance" value={config.solve_params.commutation_advance_deg} unit="electrical degrees" min={-180} max={180} step={1} disabled={busy !== null} onChange={(value) => onSolveSettingChange('commutation_advance_deg', value)} />}
           <NumberRow label="Rated Speed" value={config.solve_params.rated_speed_rpm} unit="rpm" min={0} max={30000} step={50} disabled={busy !== null} onChange={(value) => onSolveSettingChange('rated_speed_rpm', value)} />
+          <NumberRow label="DC bus voltage" value={designDcBusV(config)} unit="V" min={1} max={2000} step={1} hint="The supply voltage at the inverter. It limits the speed the torque–speed map can reach; the solved torque is unchanged." disabled={busy !== null} onChange={(value) => onSolveSettingChange('motor_input_dc_bus_V', value)} />
           <NumberRow label="Mechanical loss" value={config.solve_params.mechanical_loss_W ?? 0} unit="W" min={0} max={100000} step={1} hint="Friction and windage at the rated speed, if known. It lowers the shaft power and efficiency; the solved torque is unchanged." disabled={busy !== null} onChange={(value) => onSolveSettingChange('mechanical_loss_W', value)} />
           {config.geometry_reference === 'pyleecan_prius_2004' && <SelectRow label="Magnet temp" value={String(config.solve_params.magnet_temperature_C ?? 20)} disabled={busy !== null}
             choices={[{ value: '20', label: '20 °C reference' }, { value: '60', label: '60 °C reference' }]}
@@ -4576,7 +4612,31 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
           </div>
         </ParameterSectionBlock>
         </div>
+        {setupMode === 'thermal' && <div className="public-setup-mode-body">
+          <p className="thermal-mode-intro">Estimates how hot each part runs in steady state, from the losses of the solved run. Results are experimental until checked against a bench test.</p>
+          <TemperatureUnitPicker />
+          <ParameterSectionBlock id="thermal-cooling" label="Cooling" summary={thermalSectionSummary('cooling', thermalValues, thermalLayout, temperatureUnit)} active={openThermalSection === 'thermal-cooling'} attention={thermalProblem === 'cooling'} onToggle={toggleThermalSection}>
+            <ThermalCoolingFields {...thermalGroup} />
+          </ParameterSectionBlock>
+          <ParameterSectionBlock id="thermal-insulation" label="Winding insulation" summary={thermalSectionSummary('insulation', thermalValues, thermalLayout, temperatureUnit)} active={openThermalSection === 'thermal-insulation'} attention={thermalProblem === 'insulation'} onToggle={toggleThermalSection}>
+            <ThermalInsulationFields {...thermalGroup} />
+          </ParameterSectionBlock>
+          <ParameterSectionBlock id="thermal-construction" label="Construction" summary={thermalSectionSummary('construction', thermalValues, thermalLayout, temperatureUnit)} active={openThermalSection === 'thermal-construction'} attention={thermalProblem === 'construction'} onToggle={toggleThermalSection}>
+            <ThermalConstructionFields {...thermalGroup} />
+          </ParameterSectionBlock>
+          <ParameterSectionBlock id="thermal-rotor" label="Rotor and magnets" summary={thermalSectionSummary('rotor', thermalValues, thermalLayout, temperatureUnit)} active={openThermalSection === 'thermal-rotor'} onToggle={toggleThermalSection}>
+            <ThermalRotorFields {...thermalGroup} />
+          </ParameterSectionBlock>
+          <ParameterSectionBlock id="thermal-advanced" label="Advanced" summary={thermalSectionSummary('advanced', thermalValues, thermalLayout, temperatureUnit)} active={openThermalSection === 'thermal-advanced'} attention={thermalProblem === 'advanced'} onToggle={toggleThermalSection}>
+            <ThermalAdvancedFields {...thermalGroup} />
+          </ParameterSectionBlock>
+          <ParameterSectionBlock id="thermal-curve" label="Torque curve" summary="Optional · two extra maps" active={openThermalSection === 'thermal-curve'} onToggle={toggleThermalSection}>
+            <ThermalRatingControls config={config} result={result ?? null} designName={designName ?? null} />
+          </ParameterSectionBlock>
+        </div>}
+        </div>
         <div className="public-solve-footer">
+          <div className="public-setup-mode-body" hidden={setupMode !== 'em'}>
           <div className="public-run-consequence">
             <StatusTag tone={actionTagTone} label={actionTag} heading={actionStatus} placement="above">
               <span>{actionDetails}</span>
@@ -4592,6 +4652,9 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
           ) : (
             <button className={busy === 'solve' || busy === 'field' ? 'public-cancel-btn' : 'public-run-btn'} type="button" data-guide="solve-run" disabled={!meshNeeded && (runDisabled || cancellingSolve)} onClick={meshNeeded ? onGenerateMesh : busy === 'solve' ? onCancelSolve : busy === 'field' ? onCancelArmatureField : handleStartSolve}>{cancellingSolve ? 'Stopping…' : busy === 'solve' ? '■ Cancel solve' : busy === 'mesh' ? 'Meshing…' : busy === 'field' ? '■ Cancel stator field' : meshNeeded ? meshActionLabel : validationChecking ? 'Checking setup…' : '▶ Run analysis'}</button>
           )}
+          </div>
+          {setupMode === 'thermal' && <ThermalRunControls run={thermalRun} solving={busy === 'solve'} onOpenReport={onOpenReport}
+            onShowElectromagnetic={() => { setSetupMode('em'); setOpenSetupSection('analysis'); }} />}
           <button className="public-back-link" type="button" onClick={onBack}>← Back to Design</button>
         </div>
         </div>
@@ -4703,6 +4766,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
             </div>
           )}
         </div>
+        {setupMode === 'thermal' && <ThermalRunMonitor run={thermalRun} solving={busy === 'solve'} onOpenReport={onOpenReport} />}
         <div className="public-run-magnifier-slot" ref={setMagnifierSlot} />
         <div className="public-run-field-data-slot" ref={setFieldDataSlot} />
         <details
@@ -4731,7 +4795,7 @@ function SolveStage({ config, designName, runSetupControl, guidedActive, guidedS
             <dl className="public-quality-list">
               <div><dt>Solver</dt><dd>{solverLabel}</dd></div>
               <div><dt>Accuracy plan</dt><dd>{planLabel}</dd></div>
-              <div><dt>Mesh</dt><dd>{mesh ? `${meshElements.toLocaleString()} elements` : busy === 'mesh' ? 'Meshing…' : 'Not prepared'}</dd></div>
+              <div><dt>Mesh</dt><dd title={mesh ? 'The mesh prepared for the starting rotor position. Each position is meshed again when the run solves it, so its count can differ a little.' : undefined}>{mesh ? `${meshElements.toLocaleString()} elements` : busy === 'mesh' ? 'Meshing…' : 'Not prepared'}</dd></div>
               <div><dt>Solved region</dt><dd>{solvedRegionLabel}</dd></div>
               <div className="public-minimum-quality-row">
                 <dt>Minimum quality</dt>
@@ -4853,7 +4917,7 @@ function ReportStage({
   const reference = publishedReference(config);
   const [reportMode, setReportMode] = useState<'single' | 'compare' | 'previous'>('single');
   useEffect(() => { setReportMode('single'); }, [result]);
-  const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'cogging' | 'field-map' | 'performance'>(() => defaultResultPlot(result));
+  const [activePlot, setActivePlot] = useState<'torque' | 'back-emf' | 'cogging' | 'field-map' | 'losses' | 'performance' | 'thermal'>(() => defaultResultPlot(result));
   useEffect(() => { setActivePlot(defaultResultPlot(result)); }, [result]);
   const [backEmfView, setBackEmfView] = useState<'phase-neutral' | 'line-line'>('phase-neutral');
   // Which size each Back EMF trace's legend reads: the headline's rms, or the peak papers quote.
@@ -4883,6 +4947,12 @@ function ReportStage({
   }, [moreActionsOpen]);
   const fieldPlot = result.field_line_plot;
   const coggingWaveform = result.summary.cogging ? result.cogging_torque_waveform : null;
+  // The loss map is a diagram like the field map, so it has a tab of its own; the numbers stay on the Losses card.
+  const lossMapSource = {
+    loss: result.summary.loss_breakdown, iron: result.summary.iron_loss, rotor: result.summary.rotor_iron_loss,
+    density: result.iron_loss_density, plot: result.field_line_plot, winding: result.summary.winding_resistance, slotCount: config.stator.slot_count,
+  };
+  const lossMap = hasLossMap(lossMapSource);
   const sixStep = resultUsesSixStep(result, config);
   const reportQualification = qualificationForDisplay(readQualification(result.qualification), config);
   const completeLoadedCycle = result.solve_metadata.loaded_cycle_complete === true;
@@ -4959,9 +5029,11 @@ function ReportStage({
     { label: 'Torque method', value: torqueMethod },
     { label: 'Nonlinear solver', value: nonlinearSolver },
     { label: 'Requested linear solver', value: requestedLinearSolver },
-    { label: 'Mesh elements', value: result.solve_metadata.mesh_element_count.toLocaleString() },
+    // Each rotor position is meshed again, so counts differ a little between positions and from the
+    // mesh prepared in Solve. The recorded count is the first solved position's (#348).
+    { label: 'Mesh elements, first position', value: result.solve_metadata.mesh_element_count.toLocaleString() },
     { label: 'Rotor positions', value: String(result.solve_metadata.rotor_positions) },
-    { label: 'Mesh density', value: result.solve_metadata.mesh_density || 'native' },
+    { label: 'Mesh density', value: meshDensityLabel(result.solve_metadata.mesh_density) ?? 'native' },
   ];
   const runSavedAction = async (
     action: string,
@@ -5071,9 +5143,12 @@ function ReportStage({
         {hasBackEmfResult(result) && <button type="button" role="tab" aria-selected={activePlot === 'back-emf'} className={activePlot === 'back-emf' ? 'active' : ''} onClick={() => setActivePlot('back-emf')}>Back EMF</button>}
         {coggingWaveform && <button type="button" role="tab" aria-selected={activePlot === 'cogging'} className={activePlot === 'cogging' ? 'active' : ''} onClick={() => setActivePlot('cogging')}>Cogging</button>}
         {fieldPlot && <button type="button" role="tab" aria-selected={activePlot === 'field-map'} className={activePlot === 'field-map' ? 'active' : ''} onClick={() => setActivePlot('field-map')}>Field map</button>}
+        {lossMap && <button type="button" role="tab" aria-selected={activePlot === 'losses'} className={activePlot === 'losses' ? 'active' : ''} onClick={() => setActivePlot('losses')}>Losses</button>}
         {result.torque_speed_analysis && <button type="button" role="tab" aria-selected={activePlot === 'performance'} className={activePlot === 'performance' ? 'active' : ''} onClick={() => setActivePlot('performance')}>Torque–speed</button>}
+        <button type="button" role="tab" aria-selected={activePlot === 'thermal'} className={activePlot === 'thermal' ? 'active' : ''} onClick={() => setActivePlot('thermal')}>Thermal</button>
       </div>
       {activePlot === 'performance' && <PerformancePanel config={config} result={result} designName={designName} />}
+      {activePlot === 'thermal' && <ThermalResultsTab config={config} result={result} designName={designName} />}
       {activePlot === 'torque' && sixStep && result.phase_current_waveform
         ? <><BldcTorqueCurrentChart angles={result.torque_waveform.electrical_angle_deg} torqueNm={result.torque_waveform.torque_Nm} phaseA={result.phase_current_waveform.phase_a_A} phaseB={result.phase_current_waveform.phase_b_A} phaseC={result.phase_current_waveform.phase_c_A} commutationAdvanceDeg={result.solve_metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg} cycleComplete={completeLoadedCycle} /><IdealSixStepCommand /></>
         : activePlot === 'torque' && <WaveformChart angles={result.torque_waveform.electrical_angle_deg} values={result.torque_waveform.torque_Nm} label="Torque waveform" unit="N·m" />}
@@ -5093,8 +5168,12 @@ function ReportStage({
       </>}
       {activePlot === 'cogging' && coggingWaveform && <WaveformChart angles={coggingWaveform.electrical_angle_deg} values={coggingWaveform.torque_Nm} label="Cogging torque · one cogging period, no current" unit="N·m" samplingLabel={`${result.summary.cogging?.positions_per_period ?? coggingWaveform.electrical_angle_deg.length - 1} positions per period`} />}
       {activePlot === 'field-map' && fieldPlot && <FieldResultPlot plot={fieldPlot} ring={outerRotorRing(config)} saturationTicks={statorSteelSaturationTicks(config, materials)} />}
+      {activePlot === 'losses' && lossMap && <LossMapPanel {...lossMapSource} />}
       <ResultDiagnostics report={result.solver_convergence} timeBreakdown={result.solve_metadata.time_breakdown}
-        rotorHistoryPositions={rotorHistoryPositions(result.summary.rotor_iron_loss)} />
+        rotorHistoryPositions={rotorHistoryPositions(result.summary.rotor_iron_loss)}
+        // The recorded solve time covers the operating point and the map; the breakdown only the first.
+        mapSeconds={result.torque_speed_analysis && result.solve_metadata.time_breakdown
+          ? (result.summary.solve_time_s ?? 0) - result.solve_metadata.time_breakdown.elapsed_s : null} />
       </>}
     </div>
   );

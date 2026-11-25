@@ -1,0 +1,731 @@
+{
+  "schema": "coilem.phase_g_femm_request/v1",
+  "history": {
+    "id": "distributed_spm_loaded",
+    "motor": "distributed_spm",
+    "load": "loaded",
+    "rotor_layout": "inner",
+    "fixture": "fixtures/loss_distributed_spm_loaded_3000rpm.json",
+    "fixture_sha256": "0beecd4cd249fd49d1a912696c79db1682c8e05db85aa835077ccf2283016aeb"
+  },
+  "spec_sha256": "29fb50c2bd2428ce4fb2e2efc75a26e9c770d9bb1754af82862dbcc5dd28c4ce",
+  "requested_config": {
+    "materials": {
+      "conductor": "copper",
+      "magnet_grade": "N42",
+      "rotor_steel": "M350-50A",
+      "stator_steel": "M350-50A"
+    },
+    "rotor": {
+      "ID_mm": null,
+      "OD_mm": 151.0,
+      "barrier_widths_mm": null,
+      "bridge_thickness_mm": 0.0,
+      "flat_buried_magnet_shape": "straight",
+      "flux_barrier_count": null,
+      "holem50_h0_mm": 10.96,
+      "holem50_h1_mm": 1.5,
+      "holem50_h2_mm": 1.0,
+      "holem50_h3_mm": 6.5,
+      "holem50_h4_mm": 0.0,
+      "holem50_w0_mm": 42.0,
+      "holem50_w1_mm": 0.0,
+      "holem50_w2_mm": 0.0,
+      "holem50_w3_mm": 14.0,
+      "holem50_w4_mm": 18.9,
+      "inner_web_thickness_mm": 8.0,
+      "ipm_topology": "flat_buried",
+      "magnet_angle_deg": 0.0,
+      "magnet_embrace": 0.65,
+      "magnet_thickness_mm": 4.0,
+      "magnet_width_mm": 38.5,
+      "outer_bridge_thickness_mm": 1.5,
+      "pocket_clearance_mm": 0.25,
+      "pole_count": 8,
+      "side_bridge_thickness_mm": 1.2,
+      "v_angle_deg": 60.0,
+      "v_depth_mm": 22.0
+    },
+    "schema_version": "1.0",
+    "solve_options": {
+      "back_emf": false,
+      "cogging_torque": false,
+      "flux_density": false,
+      "losses_efficiency": true,
+      "rotor_iron_loss": false,
+      "thd_analysis": false,
+      "torque_speed_envelope": false,
+      "torque_sweep": true
+    },
+    "solve_params": {
+      "corner_refinement": false,
+      "current_amplitude_A": 8.0,
+      "current_amplitude_convention": "peak",
+      "current_angle_deg": 0.0,
+      "femm_workers": 1,
+      "field_composition_source": "resultant",
+      "linear_solver_preconditioner": "direct",
+      "linear_steel_mu_rel": null,
+      "magnet_temperature_C": null,
+      "magneto2d_workers": 4,
+      "max_nonlinear_iterations": 200,
+      "mechanical_loss_W": 0.0,
+      "mesh_density": "normal",
+      "mesh_source": "native",
+      "mesher": "gmsh",
+      "motor_input_dc_bus_V": null,
+      "nonlinear_solver": "newton",
+      "rated_speed_rpm": 3000,
+      "rotor_rotation_model": "remesh_per_step",
+      "rotor_step_deg": 3.75,
+      "rotor_sweep_range_deg": 360,
+      "slot_sidewall_refinement": false,
+      "solve_quality": "custom",
+      "stream_noload_field_lines": null,
+      "symmetry": "full",
+      "torque_method": "weighted_stress",
+      "winding_temperature_C": 20.0
+    },
+    "stator": {
+      "ID_mm": 161.0,
+      "OD_mm": 269.0,
+      "slot_count": 24,
+      "slot_opening_mm": 2.5,
+      "stack_length_mm": 135.0,
+      "tooth_shoe_enabled": false,
+      "tooth_shoe_height_mm": 1.5,
+      "tooth_shoe_overhang_mm": 1.5,
+      "tooth_width_mm": 12.4,
+      "yoke_thickness_mm": 24.0
+    },
+    "topology": "SPM",
+    "winding": {
+      "coil_span": null,
+      "layers": 2,
+      "parallel_paths": 2,
+      "turns_per_coil": 12,
+      "type": "distributed",
+      "wire": {
+        "end_turn_extension_mm": 0.0,
+        "slot_fill_limit": 0.45,
+        "strands_in_hand": 2,
+        "wire_bare_diameter_mm": 0.8
+      }
+    }
+  },
+  "native_config": {
+    "schema_version": "1.0",
+    "geometry_reference": null,
+    "reference_case": null,
+    "topology": "SPM",
+    "stator": {
+      "OD_mm": 269.0,
+      "ID_mm": 161.0,
+      "slot_count": 24,
+      "stack_length_mm": 135.0,
+      "slot_opening_mm": 2.5,
+      "tooth_width_mm": 12.4,
+      "yoke_thickness_mm": 24.0,
+      "tooth_shoe_enabled": false,
+      "tooth_shoe_height_mm": 1.5,
+      "tooth_shoe_overhang_mm": 1.5
+    },
+    "rotor": {
+      "OD_mm": 151.0,
+      "ID_mm": null,
+      "magnet_thickness_mm": 4.0,
+      "magnet_width_mm": 38.5,
+      "pole_count": 8,
+      "magnet_embrace": 0.65,
+      "bridge_thickness_mm": 0.0,
+      "ipm_topology": "flat_buried",
+      "flat_buried_magnet_shape": "straight",
+      "side_bridge_thickness_mm": 1.2,
+      "pocket_clearance_mm": 0.25,
+      "magnet_angle_deg": 0.0,
+      "v_angle_deg": 60.0,
+      "v_depth_mm": 22.0,
+      "inner_web_thickness_mm": 8.0,
+      "outer_bridge_thickness_mm": 1.5,
+      "holem50_w0_mm": 42.0,
+      "holem50_w1_mm": 0.0,
+      "holem50_w2_mm": 0.0,
+      "holem50_w3_mm": 14.0,
+      "holem50_w4_mm": 18.9,
+      "holem50_h0_mm": 10.96,
+      "holem50_h1_mm": 1.5,
+      "holem50_h2_mm": 1.0,
+      "holem50_h3_mm": 6.5,
+      "holem50_h4_mm": 0.0,
+      "flux_barrier_count": null,
+      "barrier_widths_mm": null
+    },
+    "winding": {
+      "type": "distributed",
+      "turns_per_coil": 12,
+      "layers": 2,
+      "parallel_paths": 2,
+      "coil_span": null,
+      "wire": {
+        "wire_bare_diameter_mm": 0.8,
+        "strands_in_hand": 2,
+        "insulation_build_mm": null,
+        "end_turn_extension_mm": 0.0,
+        "slot_fill_limit": 0.45
+      }
+    },
+    "materials": {
+      "stator_steel": "M350-50A",
+      "rotor_steel": "M350-50A",
+      "magnet_grade": "N42",
+      "conductor": "copper",
+      "custom_steels": {}
+    },
+    "solve_params": {
+      "solve_quality": "custom",
+      "rotor_sweep_range_deg": 360.0,
+      "rotor_step_deg": 3.75,
+      "mesh_density": "normal",
+      "mesh_source": "native",
+      "mesher": "gmsh",
+      "corner_refinement": false,
+      "mesh_build": "precise",
+      "slot_sidewall_refinement": false,
+      "current_amplitude_A": 8.0,
+      "current_amplitude_convention": "peak",
+      "current_angle_deg": 180.0,
+      "excitation_mode": "sinusoidal",
+      "commutation_advance_deg": 0.0,
+      "phase_connection": "wye",
+      "rated_speed_rpm": 3000,
+      "magnet_temperature_C": null,
+      "winding_temperature_C": 20.0,
+      "mechanical_loss_W": 0.0,
+      "motor_input_dc_bus_V": null,
+      "max_nonlinear_iterations": 200,
+      "nonlinear_solver": "newton",
+      "linear_solver_preconditioner": "direct",
+      "linear_steel_mu_rel": null,
+      "magneto2d_workers": 4,
+      "stream_noload_field_lines": null,
+      "field_composition_source": "resultant",
+      "rotor_rotation_model": "remesh_per_step",
+      "torque_method": "weighted_stress"
+    },
+    "solve_options": {
+      "torque_sweep": true,
+      "back_emf": false,
+      "flux_density": false,
+      "cogging_torque": false,
+      "losses_efficiency": true,
+      "torque_speed_envelope": false,
+      "thd_analysis": false
+    },
+    "torque_speed_analysis": null
+  },
+  "coefficients": {
+    "kh": 0.02363080387956422,
+    "alpha": 2.1133208693341228,
+    "kc": 0.0001273839224087156,
+    "density_kg_m3": 7650.0
+  },
+  "steel_bh_sha256": "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d",
+  "matched_magnet": {
+    "remanence_T": 1.315,
+    "relative_permeability": 1.05
+  },
+  "positions": 384,
+  "collection_speed_rpm": 3000,
+  "evaluation_speeds_rpm": [
+    1500,
+    3000
+  ],
+  "femm_mesh": {
+    "density": "normal",
+    "airgap_target_mm": 0.125,
+    "airgap_arc_step_deg": 0.25
+  },
+  "native_windings": [
+    {
+      "region": "slot_winding_0_layer1",
+      "phase": "A",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        92.5895288252007,
+        1.7989072465380269e-12
+      ]
+    },
+    {
+      "region": "slot_winding_0_layer2",
+      "phase": "A",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        105.65808270485951,
+        1.833457243181736e-12
+      ]
+    },
+    {
+      "region": "slot_winding_1_layer1",
+      "phase": "C",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        89.43461713619713,
+        23.963933437032473
+      ]
+    },
+    {
+      "region": "slot_winding_1_layer2",
+      "phase": "C",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        102.05787084080949,
+        27.34632407303729
+      ]
+    },
+    {
+      "region": "slot_winding_2_layer1",
+      "phase": "B",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        80.18488408705288,
+        46.2947644126047
+      ]
+    },
+    {
+      "region": "slot_winding_2_layer2",
+      "phase": "B",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        91.50258373756601,
+        52.82904135242897
+      ]
+    },
+    {
+      "region": "slot_winding_3_layer1",
+      "phase": "A",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        65.4706836991664,
+        65.47068369916721
+      ]
+    },
+    {
+      "region": "slot_winding_3_layer2",
+      "phase": "A",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        74.7115467677722,
+        74.71154676777837
+      ]
+    },
+    {
+      "region": "slot_winding_4_layer1",
+      "phase": "C",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        46.2947644125981,
+        80.18488408705679
+      ]
+    },
+    {
+      "region": "slot_winding_4_layer2",
+      "phase": "C",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        52.829041352423886,
+        91.5025837375689
+      ]
+    },
+    {
+      "region": "slot_winding_5_layer1",
+      "phase": "B",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        23.963933437029517,
+        89.43461713619791
+      ]
+    },
+    {
+      "region": "slot_winding_5_layer2",
+      "phase": "B",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        27.34632407302877,
+        102.05787084081172
+      ]
+    },
+    {
+      "region": "slot_winding_6_layer1",
+      "phase": "A",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -1.5359541461622379e-12,
+        92.58952882520073
+      ]
+    },
+    {
+      "region": "slot_winding_6_layer2",
+      "phase": "A",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -2.8683088549251296e-12,
+        105.65808270485954
+      ]
+    },
+    {
+      "region": "slot_winding_7_layer1",
+      "phase": "C",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -23.963933437033266,
+        89.43461713619693
+      ]
+    },
+    {
+      "region": "slot_winding_7_layer2",
+      "phase": "C",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -27.346324073037266,
+        102.05787084080947
+      ]
+    },
+    {
+      "region": "slot_winding_8_layer1",
+      "phase": "B",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -46.294764412602014,
+        80.18488408705441
+      ]
+    },
+    {
+      "region": "slot_winding_8_layer2",
+      "phase": "B",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -52.82904135243382,
+        91.50258373756314
+      ]
+    },
+    {
+      "region": "slot_winding_9_layer1",
+      "phase": "A",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -65.47068369916754,
+        65.47068369916596
+      ]
+    },
+    {
+      "region": "slot_winding_9_layer2",
+      "phase": "A",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -74.71154676777715,
+        74.71154676777353
+      ]
+    },
+    {
+      "region": "slot_winding_10_layer1",
+      "phase": "C",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -80.18488408705629,
+        46.29476441259892
+      ]
+    },
+    {
+      "region": "slot_winding_10_layer2",
+      "phase": "C",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -91.50258373757104,
+        52.82904135242005
+      ]
+    },
+    {
+      "region": "slot_winding_11_layer1",
+      "phase": "B",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -89.43461713619769,
+        23.96393343703045
+      ]
+    },
+    {
+      "region": "slot_winding_11_layer2",
+      "phase": "B",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -102.05787084081126,
+        27.346324073030562
+      ]
+    },
+    {
+      "region": "slot_winding_12_layer1",
+      "phase": "A",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -92.58952882520072,
+        -1.7133895507294493e-12
+      ]
+    },
+    {
+      "region": "slot_winding_12_layer2",
+      "phase": "A",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -105.65808270485945,
+        -2.4687045167147937e-12
+      ]
+    },
+    {
+      "region": "slot_winding_13_layer1",
+      "phase": "C",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -89.43461713619692,
+        -23.96393343703331
+      ]
+    },
+    {
+      "region": "slot_winding_13_layer2",
+      "phase": "C",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -102.05787084080967,
+        -27.346324073036882
+      ]
+    },
+    {
+      "region": "slot_winding_14_layer1",
+      "phase": "B",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -80.18488408705375,
+        -46.29476441260333
+      ]
+    },
+    {
+      "region": "slot_winding_14_layer2",
+      "phase": "B",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -91.50258373756485,
+        -52.829041352431055
+      ]
+    },
+    {
+      "region": "slot_winding_15_layer1",
+      "phase": "A",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -65.47068369916511,
+        -65.47068369916832
+      ]
+    },
+    {
+      "region": "slot_winding_15_layer2",
+      "phase": "A",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -74.71154676777398,
+        -74.71154676777643
+      ]
+    },
+    {
+      "region": "slot_winding_16_layer1",
+      "phase": "C",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -46.29476441259768,
+        -80.18488408705704
+      ]
+    },
+    {
+      "region": "slot_winding_16_layer2",
+      "phase": "C",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -52.829041352427645,
+        -91.50258373756681
+      ]
+    },
+    {
+      "region": "slot_winding_17_layer1",
+      "phase": "B",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -23.963933437030473,
+        -89.4346171361977
+      ]
+    },
+    {
+      "region": "slot_winding_17_layer2",
+      "phase": "B",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        -27.346324073027883,
+        -102.05787084081209
+      ]
+    },
+    {
+      "region": "slot_winding_18_layer1",
+      "phase": "A",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        1.6778218770603337e-12,
+        -92.58952882520074
+      ]
+    },
+    {
+      "region": "slot_winding_18_layer2",
+      "phase": "A",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        2.7263539311734374e-12,
+        -105.65808270485948
+      ]
+    },
+    {
+      "region": "slot_winding_19_layer1",
+      "phase": "C",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        23.963933437034004,
+        -89.43461713619674
+      ]
+    },
+    {
+      "region": "slot_winding_19_layer2",
+      "phase": "C",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        27.346324073038392,
+        -102.0578708408092
+      ]
+    },
+    {
+      "region": "slot_winding_20_layer1",
+      "phase": "B",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        46.294764412602035,
+        -80.18488408705444
+      ]
+    },
+    {
+      "region": "slot_winding_20_layer2",
+      "phase": "B",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        52.82904135243826,
+        -91.50258373756061
+      ]
+    },
+    {
+      "region": "slot_winding_21_layer1",
+      "phase": "A",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        65.47068369916697,
+        -65.47068369916667
+      ]
+    },
+    {
+      "region": "slot_winding_21_layer2",
+      "phase": "A",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        74.71154676777931,
+        -74.7115467677711
+      ]
+    },
+    {
+      "region": "slot_winding_22_layer1",
+      "phase": "C",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        80.18488408705511,
+        -46.29476441260119
+      ]
+    },
+    {
+      "region": "slot_winding_22_layer2",
+      "phase": "C",
+      "direction": "in",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        91.50258373756735,
+        -52.82904135242658
+      ]
+    },
+    {
+      "region": "slot_winding_23_layer1",
+      "phase": "B",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        89.43461713619719,
+        -23.96393343703241
+      ]
+    },
+    {
+      "region": "slot_winding_23_layer2",
+      "phase": "B",
+      "direction": "out",
+      "turn_fraction": 0.5,
+      "centroid_mm": [
+        102.05787084081238,
+        -27.34632407302678
+      ]
+    }
+  ],
+  "written_by": "coilEM 0.5.9"
+}

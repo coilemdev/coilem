@@ -32,6 +32,25 @@ export const FIXED_FLUX_SCALE: FluxColorScale = {
   fixed: true,
 };
 
+/**
+ * The stator-only field (stator current, magnets off) is a few tenths of a tesla, so on 0–2.0 T it is
+ * nearly all the lowest colour (#348). Its view has a fixed scale of its own, here and in the server's
+ * playback images (backend/public_field_playback.py STATOR_FIELD_SCALE_MAX_T).
+ */
+export const STATOR_FIELD_SCALE_MAX_T = 0.5;
+
+export const STATOR_FIXED_FLUX_SCALE: FluxColorScale = {
+  minB: 0,
+  maxB: STATOR_FIELD_SCALE_MAX_T,
+  overAboveT: STATOR_FIELD_SCALE_MAX_T,
+  fixed: true,
+};
+
+/** The fixed scale of a field view: the stator-only field's own, else 0–2.0 T. */
+export function fixedFluxScaleFor(source: string): FluxColorScale {
+  return source === 'armature' ? STATOR_FIXED_FLUX_SCALE : FIXED_FLUX_SCALE;
+}
+
 /** A scale fitted to the visible values, never past 2.0 T, so one hot element cannot stretch it. */
 export function fittedFluxScale(minB: number, maxB: number): FluxColorScale {
   const top = Math.min(maxB, FLUX_SCALE_MAX_T);

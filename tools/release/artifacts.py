@@ -43,8 +43,9 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def tool_version(*command: str) -> str:
-    return subprocess.run(list(command), capture_output=True, text=True, check=True).stdout.strip().splitlines()[0]
+def tool_version(tool: str, *args: str) -> str:
+    executable = shutil.which(tool) or tool
+    return subprocess.run([executable, *args], capture_output=True, text=True, check=True).stdout.strip().splitlines()[0]
 
 
 def crate_version() -> str:
@@ -107,7 +108,7 @@ def build_ui(out: Path) -> Path:
     if npm is None:
         raise ArtifactError("npm was not found on PATH")
     for arguments in (["ci"], ["run", "build"]):
-        subprocess.run([npm, *arguments], cwd=FRONTEND, check=True)
+        subprocess.run([npm, *arguments], cwd=FRONTEND, env=os.environ.copy(), check=True)
     bundle = out / "ui"
     shutil.rmtree(bundle, ignore_errors=True)
     shutil.copytree(ROOT / "frontend" / "dist-public-boundary", bundle)

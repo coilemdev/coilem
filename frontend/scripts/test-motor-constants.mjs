@@ -35,6 +35,11 @@ assert.equal(view.ke.unit, 'V/krpm L-L rms');
 assert.equal(view.ke.siHint, '0.201 V·s/rad, phase peak per mechanical rad/s (SI)');
 assert.equal(view.lambdaPm.siHint, undefined, 'only Kt and Ke carry an SI hint');
 
+// Kv uses peak line-to-line back-EMF, so E_peak = Ke_SI × ω × √3.
+close(view.kv.value, 1000 / (Math.sqrt(3) * ke * omegaAt1000Rpm), 'Kv from peak line-to-line voltage');
+assert.equal(shown(view.kv), '27.4');
+assert.equal(view.kv.unit, 'RPM/V L-L peak');
+
 assert.equal(shown(view.lambdaPm), '50.1', 'λpm in mWb');
 assert.equal(view.lambdaPm.unit, 'mWb');
 
@@ -60,6 +65,12 @@ assert.equal(sixStep.kt.siHint, undefined, 'no hint without a value');
 assert.equal(shown(sixStep.consistency), '—');
 assert.equal(sixStep.consistencyStatus, 'unavailable');
 assert.equal(shown(sixStep.ke), '25.8');
+assert.equal(shown(sixStep.kv), shown(view.kv), 'Ke alone is sufficient to estimate Kv');
+for (const invalidKe of [undefined, null, 0, -ke, NaN, Infinity]) {
+  const { kv } = motorConstantsView({ Kt_Nm_per_A: kt, Ke_Vs_per_rad_mech: invalidKe });
+  assert.equal(kv.value, null);
+  assert.equal(shown(kv), '—');
+}
 assert.equal(motorConstantsView({ Kt_Nm_per_A: kt, Ke_Vs_per_rad_mech: 0 }).consistencyStatus, 'unavailable', 'no Ke, no ratio');
 
 // Negative torque (a generating current angle) keeps its sign, with a true minus.

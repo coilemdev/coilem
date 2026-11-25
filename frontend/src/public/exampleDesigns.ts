@@ -154,7 +154,7 @@ const BUNDLED_EXAMPLE_FILES: Record<Exclude<PublicExampleId, 'spm-8p12s'>, strin
 
 export function createPublicExampleDesign(exampleId: PublicExampleId): { name: string; config: MotorConfig } {
   if (exampleId === 'spm-8p12s') {
-    return { name: 'Example SPM 8p/12s', config: cloneDefaultConfig() };
+    return { name: 'Example SPM 8p/12s', config: starterDesignConfig() };
   }
   const { name, config: fileConfig } = parseDesignFile(BUNDLED_EXAMPLE_FILES[exampleId]);
   let config = fileConfig;
@@ -171,6 +171,32 @@ export function createPublicExampleDesign(exampleId: PublicExampleId): { name: s
   const option = PUBLIC_EXAMPLE_OPTIONS.find((candidate) => candidate.id === exampleId);
   return {
     name: name || option?.label || 'Example motor',
-    config,
+    config: withExampleBus(config, exampleId),
   };
+}
+
+/**
+ * The DC bus of each example whose operating point needs more than the 48 V default (#274): the
+ * smallest common bus at least 20% above the voltage its own solved point needs (measured 2026-11-23:
+ * SPM 8p/12s 77 V, Accord 70 V, SPM 6p/36s 69 V, IPM 14p 96 V, SPM 24p 48 V). The others fit 48 V
+ * with room; the Prius files carry the vehicle's own 500 V.
+ */
+export const EXAMPLE_DC_BUS_V: Readonly<Partial<Record<PublicExampleId, number>>> = {
+  'spm-8p12s': 96,
+  'honda-accord-2005': 96,
+  'rotating-field-6p36s': 96,
+  'ipm-14p-flat-buried-large': 144,
+  'spm-24p-small': 72,
+};
+
+/** An example's design with its supply voltage, unless its file already names one. */
+function withExampleBus(config: MotorConfig, exampleId: PublicExampleId): MotorConfig {
+  const bus = EXAMPLE_DC_BUS_V[exampleId];
+  if (bus !== undefined && config.solve_params.motor_input_dc_bus_V == null) config.solve_params.motor_input_dc_bus_V = bus;
+  return config;
+}
+
+/** The starter design: Example SPM 8p/12s, with its supply voltage. */
+export function starterDesignConfig(): MotorConfig {
+  return withExampleBus(cloneDefaultConfig(), 'spm-8p12s');
 }

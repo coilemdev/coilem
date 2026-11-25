@@ -3,7 +3,7 @@
   "designs": {
     "starter": {
       "openem_schema_version": 4,
-      "openem_version": "0.5.9",
+      "openem_version": "0.5.10",
       "name": "starter",
       "run_setups": {
         "schema": 1,
@@ -260,7 +260,7 @@
     },
     "high_speed_saved": {
       "openem_schema_version": 4,
-      "openem_version": "0.5.9",
+      "openem_version": "0.5.10",
       "name": "high_speed_saved",
       "run_setups": {
         "schema": 1,
@@ -531,7 +531,7 @@
     },
     "high_speed_edited": {
       "openem_schema_version": 4,
-      "openem_version": "0.5.9",
+      "openem_version": "0.5.10",
       "name": "high_speed_edited",
       "run_setups": {
         "schema": 1,
@@ -802,7 +802,7 @@
     },
     "prius_noload": {
       "openem_schema_version": 4,
-      "openem_version": "0.5.9",
+      "openem_version": "0.5.10",
       "name": "prius_noload",
       "run_setups": {
         "schema": 1,
@@ -1152,7 +1152,7 @@
     },
     "prius_loaded": {
       "openem_schema_version": 4,
-      "openem_version": "0.5.9",
+      "openem_version": "0.5.10",
       "name": "prius_loaded",
       "run_setups": {
         "schema": 1,
@@ -1502,7 +1502,7 @@
     },
     "lrk": {
       "openem_schema_version": 4,
-      "openem_version": "0.5.9",
+      "openem_version": "0.5.10",
       "name": "lrk",
       "run_setups": {
         "schema": 1,
@@ -1772,7 +1772,7 @@
     },
     "sector": {
       "openem_schema_version": 4,
-      "openem_version": "0.5.9",
+      "openem_version": "0.5.10",
       "name": "sector",
       "run_setups": {
         "schema": 1,

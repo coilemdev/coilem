@@ -14,7 +14,7 @@ const landingScreenshot = fileURLToPath(new URL('../test-results/landing-page.pn
 type Excitation = 'sinusoidal' | 'ideal_six_step_120';
 type RunRecord = { project_slug: string; run_id: string; status: string };
 
-async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field' | 'winding' | 'phases' | 'tooth-poles' | 'field-axes' | 'image-playback' | 'pruned-field' | 'losses-unavailable' | 'tutorial-scale' | 'horizontal-legend') {
+async function openViewportHarness(page: Page, view: 'mesh' | 'field' | 'mesh-menu' | 'docked-mesh' | 'docked-field' | 'saturated-field' | 'winding' | 'phases' | 'tooth-poles' | 'field-axes' | 'image-playback' | 'pruned-field' | 'losses-unavailable' | 'losses-split' | 'tutorial-scale' | 'horizontal-legend' | 'run-comparison' | 'run-comparison-with-history') {
   await page.route('**/__viewport_test__?*', route => route.fulfill({ contentType: 'text/html', body: `
     <!doctype html><div id="root"></div><script type="module">
     import RefreshRuntime from '/@react-refresh';
@@ -599,7 +599,8 @@ for (const view of ['mesh-menu', 'field'] as const) {
       await expect(page.getByRole('button', { name: 'Flux density', exact: true })).toHaveAttribute('aria-pressed', 'true');
       await expect(page.getByRole('button', { name: 'Field arrows', exact: true })).toHaveAttribute('aria-pressed', 'false');
       await expect(page.locator('.public-field-result-legend')).not.toContainText('solved elements');
-      expect(await page.locator('.public-field-scale > i').evaluate(element => element.getBoundingClientRect().width)).toBeGreaterThan(420);
+      // The scale is a vertical strip at the right edge, beside the plot.
+      expect(await page.locator('.public-field-scale > i').evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThan(100);
       await page.getByRole('button', { name: 'Field arrows', exact: true }).click();
       await expect(page.getByRole('button', { name: 'Field arrows', exact: true })).toHaveAttribute('aria-pressed', 'true');
     }
@@ -1343,6 +1344,17 @@ test.describe('public developer preview release rehearsal', () => {
       await expect(page.getByRole('radio', { name: /Elmer FEM/ })).toHaveCount(0);
     });
 
+    // The thermal setup, estimate, validation and reports are covered in thermal.spec.ts, where the
+    // electromagnetic solve is a fixture. This rehearsal checks the two states a real run reaches.
+    await test.step('thermal has its own setup and waits for a solved run', async () => {
+      const modes = page.getByRole('tablist', { name: 'Setup shown', exact: true });
+      await modes.getByRole('tab', { name: 'Thermal', exact: true }).click();
+      await expect(page.locator('.thermal-run-controls [role=status]')).toHaveText('Thermal uses the losses of a solved run. Run the electromagnetic analysis first.');
+      await page.locator('.public-solve-setup').screenshot({path: info.outputPath('thermal-setup.png'), animations:'disabled'});
+      await page.getByRole('button', { name: 'Go to Electromagnetic setup', exact: true }).click();
+      await expect(modes.getByRole('tab', { name: 'Electromagnetic', exact: true })).toHaveAttribute('aria-selected', 'true');
+    });
+
     await test.step('solve the sinusoidal example at Standard quality and download its reports', async () => {
       await openSetupSection(page, 'operating');
       await expect(page.getByRole('radio', { name: /Sinusoidal/ })).toHaveAttribute('aria-checked', 'true');
@@ -1350,6 +1362,14 @@ test.describe('public developer preview release rehearsal', () => {
       await expect(page.locator('.public-report-provenance')).toContainText('Sinusoidal');
       await downloadReports(page, info, 'sinusoidal');
       await checkPerformanceRegressions(page);
+    });
+
+    await test.step('a run solved without losses is told how to get a thermal estimate', async () => {
+      await page.getByRole('tab', { name: 'Thermal', exact: true }).click();
+      const notice = page.getByRole('region', { name: 'Thermal setup', exact: true });
+      await expect(notice).toContainText("Thermal estimates use this run's losses");
+      await expect(notice).toContainText('Losses & efficiency');
+      await page.getByRole('tab', { name: 'Torque', exact: true }).click();
     });
 
     await test.step('replay inputs and solve ideal six-step at Standard quality', async () => {
@@ -1415,8 +1435,9 @@ test.describe('public developer preview release rehearsal', () => {
       await page.getByRole('tab', { name: 'Back EMF overlay', exact: true }).click();
       await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
       const history = page.getByRole('dialog', { name: 'Previous runs' });
-      await expect(history.getByRole('region', { name: 'Local run storage' })).toContainText('used');
-      await expect(history.getByLabel('Run A · baseline').locator('option')).toHaveCount(2);
+      await expect(history.getByRole('region', { name: 'Saved runs' })).toContainText('used');
+      await expect(history.locator('.run-history-row').first()).toBeVisible();
+      await expect(history.getByLabel('Run A · baseline')).toHaveCount(0);
       await page.getByRole('button', { name: 'Close previous runs', exact: true }).click();
       await page.getByRole('button', { name: '← Back to Solve', exact: true }).click();
     });
@@ -1654,7 +1675,8 @@ test('runs a standalone torque–speed map from Analysis and reopens its saved s
   await page.getByRole('checkbox', { name: 'Back EMF', exact: true }).uncheck();
   const settings = page.getByRole('region', { name: 'Torque–speed map settings', exact: true });
   await expect(settings.getByLabel('Peak current', { exact: true })).toHaveValue('60');
-  await expect(settings.getByLabel('DC bus', { exact: true })).toHaveValue('48');
+  // The example motor carries its own supply (EXAMPLE_DC_BUS_V, #274), not the 48 V app default.
+  await expect(settings.getByLabel('DC bus', { exact: true })).toHaveValue('96');
   await settings.getByLabel('Drive control', { exact: true }).selectOption('least_loss');
   await openSetupSection(page, 'plan');
   await page.getByRole('button', { name: /Preview.*Coarse mesh/ }).click();
@@ -1697,10 +1719,10 @@ test('runs a standalone torque–speed map from Analysis and reopens its saved s
   await openSetupSection(page, 'analysis');
   await expect(selectedMap).toBeChecked();
   await expect(settings.getByLabel('Drive control', { exact: true })).toHaveValue('least_loss');
-  await expect(settings.getByLabel('DC bus', { exact: true })).toHaveValue('48');
+  await expect(settings.getByLabel('DC bus', { exact: true })).toHaveValue('96');
 });
 
-test('Previous runs handles standalone analyses and missing legacy waveform arrays', async ({ page }) => {
+test('Compare handles standalone analyses and missing legacy waveform arrays', async ({ page }) => {
   const errors: string[] = [];
   const solveRequests: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
@@ -1738,17 +1760,8 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
     const key = new URL(route.request().url()).pathname.split('/').at(-2) as keyof typeof results;
     return route.fulfill({ json: { result: results[key] } });
   });
-  await page.goto('/');
-  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
-  await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
-  const dialog = page.getByRole('dialog', { name: 'Previous runs', exact: true });
-  await dialog.locator('summary').filter({ hasText: 'Manage stored runs' }).click();
-  const storedRow = dialog.locator('[data-run-id="map"]');
-  await storedRow.getByRole('button', { name: 'Delete run', exact: true }).click();
-  await expect(storedRow.getByRole('button', { name: 'Delete permanently', exact: true })).toBeVisible();
-  await expect(storedRow.getByRole('button', { name: 'Open results', exact: true })).toHaveCount(0);
-  await storedRow.getByRole('button', { name: 'Cancel', exact: true }).click();
-  await expect(storedRow.getByRole('button', { name: 'Open results', exact: true })).toBeVisible();
+  await openViewportHarness(page, 'run-comparison');
+  const dialog = page.getByRole('region', { name: 'Compare saved runs', exact: true });
   await expect(dialog.getByRole('tab', { name: 'Torque–speed', exact: true })).toHaveAttribute('aria-selected', 'true');
   await expect(dialog.getByRole('tablist', { name: 'Comparison plots', exact: true }).getByRole('tab')).toHaveText(['Torque–speed', 'Fields']);
   await expect(dialog.getByRole('region', { name: 'Torque–speed comparison', exact: true })).toContainText('A torque–speed map was not recorded for this run.');
@@ -1786,21 +1799,142 @@ test('Previous runs handles standalone analyses and missing legacy waveform arra
   await expect(dialog.getByRole('status').filter({ hasText: 'All curves are hidden.' })).toBeVisible();
   await singleCoggingLegend.click();
   await expect(dialog.getByRole('img', { name: 'Cogging torque comparison waveform', exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Close previous runs', exact: true }).click();
-  await expect(page.getByRole('button', { name: 'Continue to Solve', exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
-  await expect(dialog.getByRole('tab', { name: 'Torque–speed', exact: true })).toHaveAttribute('aria-selected', 'true');
-  await page.getByRole('button', { name: 'Close previous runs', exact: true }).click();
   await page.route('**/runs', route => route.fulfill({ json: {
     storage: { used_bytes: 0, max_bytes: 10000, available_bytes: 10000, accepting_new_runs: true }, runs: [],
   } }));
-  await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
+  await page.reload();
   await expect(dialog.getByText('Complete one more Magneto2D analysis to compare two runs.', { exact: true })).toBeVisible();
   await expect(dialog.getByRole('status').filter({ hasText: /Loading saved runs|Preparing comparison/ })).toHaveCount(0);
   expect(errors).toEqual([]);
   expect(solveRequests).toEqual([]);
 });
 
+
+test('Previous runs lists every saved run with its numbers, opens one with a click and confirms a delete', async ({ page }) => {
+  // Times are built and read in this machine's own time zone, with the browser's clock held at 16:59.
+  const at = (day: number, hour: number, minute: number) => new Date(2026, 10, day, hour, minute, 3).toISOString();
+  await page.clock.setFixedTime(new Date(2026, 10, 14, 16, 59));
+  let storage = { used_bytes: 1_500_000_000, max_bytes: 10_000_000_000, available_bytes: 8_500_000_000, accepting_new_runs: true,
+    field_playback_keep_latest_per_project: 5 };
+  const runs = [
+    { project_slug: 'alpha', run_id: 'a2', project_name: 'Alpha motor', status: 'complete', solver_name: 'magneto2d-test', path: '/runs/a2',
+      started_at: at(14, 12, 9), completed_at: at(14, 12, 10), size_bytes: 55_200_000,
+      run_setup: { id: 'rated', name: 'Rated point', version: 1, kind: 'user', includes_numerics: true },
+      operating_point: { current_A: 30, current_convention: 'rms', speed_rpm: 2400, current_angle_deg: 0, excitation_mode: 'sinusoidal' },
+      headline: { mean_torque_Nm: 11.164, efficiency_pct: 95.24, back_emf_fundamental_V: 31.19, solve_time_s: 9.61 } },
+    { project_slug: 'alpha', run_id: 'a1', project_name: 'Alpha motor', status: 'cancelled', path: '/runs/a1', started_at: at(14, 12, 5), size_bytes: 11_100 },
+    { project_slug: 'beta', run_id: 'b1', project_name: 'Beta outrunner', status: 'complete', solver_name: 'magneto2d-test', path: '/runs/b1',
+      started_at: at(13, 1, 46), completed_at: at(13, 1, 47), size_bytes: 236_000_000, field_playback_removed_at: at(14, 9, 0),
+      operating_point: { current_A: 10, current_convention: 'plateau', speed_rpm: 8000, excitation_mode: 'ideal_six_step_120' },
+      headline: { mean_torque_Nm: 0.064, back_emf_fundamental_V: 2.29, cogging_peak_to_peak_Nm: 0.004 } },
+  ];
+  const opened: string[] = [];
+  await page.route('**/runs', route => route.fulfill({ json: { storage, runs } }));
+  await page.route('**/runs/beta/b1', route => {
+    if (route.request().method() !== 'DELETE') return route.fallback();
+    runs.splice(runs.findIndex(run => run.run_id === 'b1'), 1);
+    storage = { ...storage, used_bytes: 1_264_000_000, available_bytes: 8_736_000_000 };
+    return route.fulfill({ json: { status: 'deleted', run_id: 'b1', storage } });
+  });
+  await page.route('**/runs/alpha/a2', route => { opened.push('a2'); return route.fulfill({ status: 404, json: { detail: 'Not needed here.' } }); });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'Previous runs', exact: true });
+  const list = dialog.getByRole('region', { name: 'Saved runs', exact: true });
+
+  // The runs are there at once: no section to open first, and no comparison in the way.
+  const rows = list.locator('.run-history-row');
+  await expect(rows).toHaveCount(3);
+  await expect(list.locator('.run-history-day')).toHaveText(['Today', 'Yesterday']);
+  await expect(dialog.getByText('Manage stored runs', { exact: false })).toHaveCount(0);
+  for (const gone of ['Run A · baseline', 'Export CSV', 'What changed?']) await expect(dialog.getByText(gone, { exact: false })).toHaveCount(0);
+  await expect(list.getByRole('columnheader')).toHaveText(['Time', 'Run', 'Torque', 'Efficiency', 'Back EMF', 'Size', 'Actions']);
+
+  // A row says when, what, how it was driven and what it gave.
+  const rated = list.locator('[data-run-id="a2"]');
+  await expect(rated.locator('td')).toContainText(['12:10', 'Alpha motor', '11.16 N·m', '95.2%', '31.2 V', '52.6 MB']);
+  await expect(rated).toContainText('Rated point');
+  await expect(rated).toContainText('30.0 A rms · 2,400 rpm');
+  await expect(rated).toContainText('9.61 s');
+  const outrunner = list.locator('[data-run-id="b1"]');
+  await expect(outrunner).toContainText('10.0 A plateau · 8,000 rpm · six-step · cogging 0.00400 N·m p-p');
+  await expect(outrunner).toContainText('playback removed');
+  await expect(outrunner.locator('td').nth(3)).toHaveText('—');
+  const cancelled = list.locator('[data-run-id="a1"]');
+  await expect(cancelled).toContainText('Cancelled');
+  await expect(cancelled).toContainText('No result was saved.');
+  await expect(cancelled.getByRole('button', { name: 'Open results', exact: true })).toHaveCount(0);
+
+  // Storage is one line, with the policy behind its help button.
+  await expect(list).toContainText('1.40 GB of 9.31 GB used');
+  await list.getByRole('button', { name: 'About saved-run storage', exact: true }).click();
+  await expect(page.getByText('never removed automatically', { exact: false })).toBeVisible();
+  await page.keyboard.press('Escape');
+
+  // The filter shows one design's runs.
+  const filter = list.getByRole('group', { name: 'Show runs of', exact: true });
+  await expect(filter.getByRole('button')).toHaveText(['All 3', 'Alpha motor 2', 'Beta outrunner 1']);
+  await filter.getByRole('button', { name: /^Beta outrunner/ }).click();
+  await expect(rows).toHaveCount(1);
+
+  // Deleting asks first, and Cancel puts the row back as it was.
+  await outrunner.getByRole('button', { name: 'Delete run', exact: true }).click();
+  await expect(outrunner.getByRole('button', { name: 'Open results', exact: true })).toHaveCount(0);
+  await outrunner.getByRole('button', { name: 'Cancel', exact: true }).click();
+  await expect(outrunner.getByRole('button', { name: 'Open results', exact: true })).toBeVisible();
+  await outrunner.getByRole('button', { name: 'Delete run', exact: true }).click();
+  await outrunner.getByRole('button', { name: 'Delete permanently', exact: true }).click();
+  await expect(list.getByRole('status')).toContainText('Deleted the Beta outrunner run');
+  // Its design is gone with it, so the list returns to every run.
+  await expect(rows).toHaveCount(2);
+  await expect(filter.getByRole('button')).toHaveCount(0);
+  await expect(list).toContainText('1.18 GB of 9.31 GB used');
+
+  // One click anywhere on a finished run opens it; a click on a cancelled run does nothing.
+  await cancelled.locator('td').nth(1).click();
+  expect(opened).toEqual([]);
+  await rated.locator('td').nth(2).click();
+  await expect.poll(() => opened).toEqual(['a2']);
+  // A run that cannot be read says why, and the list stays open and usable.
+  await expect(list.getByRole('alert')).toBeVisible();
+  await expect(list.getByRole('status')).toHaveCount(0);
+  await expect(rated.getByRole('button', { name: 'Open results', exact: true })).toBeEnabled();
+});
+
+test('Compare waits for the run list and for each run before it offers a choice', async ({ page }) => {
+  let releaseRuns: () => void = () => {};
+  let releaseComparisons: () => void = () => {};
+  const runsHeld = new Promise<void>(resolve => { releaseRuns = resolve; });
+  const comparisonsHeld = new Promise<void>(resolve => { releaseComparisons = resolve; });
+  const records = [0, 1].map(index => ({ project_slug: 'multi', run_id: `r${index}`, project_name: 'Comparison motor',
+    status: 'complete', solver_name: 'magneto2d-test', completed_at: `2026-11-14T12:0${index}:00Z` }));
+  await page.route('**/runs', async route => {
+    await runsHeld;
+    await route.fulfill({ json: { runs: records, storage: { used_bytes: 1000, max_bytes: 10000, available_bytes: 9000, accepting_new_runs: true } } });
+  });
+  await page.route('**/runs/*/*/comparison', async route => {
+    await comparisonsHeld;
+    await route.fulfill({ json: multiRunFixture(Number(new URL(route.request().url()).pathname.split('/').at(-2)!.slice(1))) });
+  });
+  await openViewportHarness(page, 'run-comparison');
+  const compare = page.getByRole('region', { name: 'Compare saved runs', exact: true });
+  try {
+    await expect(compare.getByRole('status').filter({ hasText: 'Loading saved runs…' })).toBeVisible();
+    await expect(compare.getByLabel('Run A · baseline')).toBeDisabled();
+    await expect(compare.getByLabel('Run B · candidate')).toBeDisabled();
+    await expect(compare.getByText('Complete one more Magneto2D analysis to compare two runs.', { exact: true })).toHaveCount(0);
+    releaseRuns();
+    await expect(compare.getByRole('status').filter({ hasText: 'Preparing comparison…' })).toBeVisible();
+    await expect(compare.getByLabel('Run A · baseline')).toBeEnabled();
+    await expect(compare.getByText('Complete one more Magneto2D analysis to compare two runs.', { exact: true })).toHaveCount(0);
+  } finally {
+    releaseRuns();
+    releaseComparisons();
+  }
+  await expect(compare.getByRole('region', { name: 'Run comparison metric differences', exact: true })).toBeVisible();
+  await expect(compare.getByRole('status').filter({ hasText: /Loading saved runs|Preparing comparison/ })).toHaveCount(0);
+});
 
 test('Open results shows the stored report and Rerun settings opens Solve', async ({ page }) => {
   const errors: string[] = [];
@@ -1815,18 +1949,33 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
   await page.route('**/runs', route => route.fulfill({ json: {
     storage: { used_bytes: 1000, max_bytes: 10000, available_bytes: 9000, accepting_new_runs: true }, runs: [run],
   } }));
-  await page.route('**/runs/reopened-motor/stored', route => route.fulfill({ json: {
-    integrity: { valid: true }, project: { openem_schema_version: 4, name: 'Reopened motor', ...design },
-    request: { submitted: { solver: 'magneto2d' }, resolved_config: design }, result: fixture,
-    saved_run: { ...run, schema_version: 'coilem.solve_run.v2' },
-  } }));
+  let releaseStored: () => void = () => {};
+  const storedHeld = new Promise<void>(resolve => { releaseStored = resolve; });
+  await page.route('**/runs/reopened-motor/stored', async route => {
+    await storedHeld;
+    await route.fulfill({ json: {
+      integrity: { valid: true }, project: { openem_schema_version: 4, name: 'Reopened motor', ...design },
+      request: { submitted: { solver: 'magneto2d' }, resolved_config: design }, result: fixture,
+      saved_run: { ...run, schema_version: 'coilem.solve_run.v2' },
+    } });
+  });
   await page.goto('/');
   await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
   await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
   const dialog = page.getByRole('dialog', { name: 'Previous runs', exact: true });
-  await dialog.locator('summary').filter({ hasText: 'Manage stored runs' }).click();
-  await dialog.locator('[data-run-id="stored"]').getByRole('button', { name: 'Open results', exact: true }).click();
+  const storedRow = dialog.locator('[data-run-id="stored"]');
+  await storedRow.getByRole('button', { name: 'Open results', exact: true }).click();
+  // A stored result takes time to read. The dialog stays and says so, rather than showing the page behind it.
+  try {
+    await expect(dialog.getByRole('status')).toContainText('Loading the Reopened motor run');
+    await expect(storedRow.getByRole('button', { name: 'Loading…', exact: true })).toBeDisabled();
+    await expect(storedRow.getByRole('button', { name: 'Delete run', exact: true })).toBeDisabled();
+    await expect(page.getByRole('heading', { name: 'Electromagnetic performance', exact: true })).toHaveCount(0);
+  } finally {
+    releaseStored();
+  }
   await expect(page.getByRole('heading', { name: 'Electromagnetic performance', exact: true })).toBeVisible();
+  await expect(dialog).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Download PDF', exact: true })).toBeVisible();
   await page.getByRole('button', { name: '← Back to Solve', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Run again', exact: true })).toBeEnabled({ timeout: 120_000 });
@@ -1926,20 +2075,16 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
   const dialog = page.getByRole('dialog', { name: 'Previous runs', exact: true });
   try {
     await expect(dialog.getByRole('status').filter({ hasText: 'Loading saved runs…' })).toBeVisible();
-    await expect(dialog.getByLabel('Run A · baseline')).toBeDisabled();
-    await expect(dialog.getByLabel('Run B · candidate')).toBeDisabled();
-    await expect(dialog.getByText('Complete one more Magneto2D analysis to compare two runs.', { exact: true })).toHaveCount(0);
     releaseRuns();
-    await expect(dialog.getByRole('status').filter({ hasText: 'Preparing comparison…' })).toBeVisible();
-    await expect(dialog.getByLabel('Run A · baseline')).toBeEnabled();
-    await expect(dialog.getByText('Complete one more Magneto2D analysis to compare two runs.', { exact: true })).toHaveCount(0);
+    await expect(dialog.locator('[data-run-id="current"]')).toBeVisible();
+    await expect(dialog.getByRole('status').filter({ hasText: 'Loading saved runs…' })).toHaveCount(0);
   } finally {
     releaseRuns();
     releaseComparisons();
   }
-  await expect(dialog.getByRole('region', { name: 'What changed between runs', exact: true })).toBeVisible();
-  await expect(dialog.getByRole('status').filter({ hasText: /Loading saved runs|Preparing comparison/ })).toHaveCount(0);
-  await dialog.locator('summary').filter({ hasText: 'Manage stored runs' }).click();
+  // The dialog lists runs and nothing else: comparing is done in Results.
+  await expect(dialog.getByRole('region', { name: 'What changed between runs', exact: true })).toHaveCount(0);
+  await expect(dialog.getByText('To compare runs, open one and choose Compare runs in Results.', { exact: true })).toBeVisible();
   await dialog.locator('[data-run-id="current"]').getByRole('button', { name: 'Open results', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Electromagnetic performance', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Compare with previous run', exact: true }).click();
@@ -1959,7 +2104,7 @@ print(result_for(config(torque_sweep=True, back_emf=True)).model_dump_json())
     await expect(changes.locator('[data-input-path="run_setup.version"] td')).toHaveText(['1', '2']);
     const details = changes.getByRole('rowgroup', { name: 'Recorded run details', exact: true });
     await expect(details.getByRole('row', { name: /^Saved setup/ })).toHaveCount(0); // The Saved setup rows carry it.
-    await expect(details.getByRole('row', { name: /^Actual mesh/ }).locator('td')).toHaveText(['native · gmsh · normal', 'native · gmsh · normal']);
+    await expect(details.getByRole('row', { name: /^Actual mesh/ }).locator('td')).toHaveText(['native · gmsh · Medium', 'native · gmsh · Medium']);
     await expect(details.getByRole('rowheader', { name: 'Torque extraction', exact: true })).toBeVisible();
     await expect(details.getByRole('rowheader', { name: 'Excitation identity', exact: true })).toBeVisible();
     await expect(details.getByRole('rowheader', { name: 'Completed', exact: true })).toBeVisible();
@@ -2116,6 +2261,38 @@ test('priority fixes: unavailable losses have visible reasons and a subtotal', a
   await expect(page.getByRole('row', { name: /Known loss subtotal/ })).toBeVisible();
   await expect(page.getByRole('row', { name: /^Total loss/ })).toHaveCount(0);
   await page.screenshot({ path: info.outputPath('partial-losses.png') });
+});
+
+test('the Losses card keeps its numbers and the loss map is a panel of its own', async ({ page }, info) => {
+  await openViewportHarness(page, 'losses-split');
+  const card = page.locator('.losses-card');
+  await expect(card.getByRole('row', { name: /^Total loss/ })).toBeVisible();
+  await expect(card.getByRole('row', { name: /^Efficiency/ })).toBeVisible();
+  // Copper and iron loss open on their totals; their parts show when a row is opened.
+  const copper = card.getByRole('button', { name: 'Copper loss', exact: true });
+  await expect(copper).toHaveAttribute('aria-expanded', 'false');
+  await expect(card.getByRole('button', { name: 'Stator iron loss', exact: true })).toHaveAttribute('aria-expanded', 'false');
+  const endTurns = card.locator('tr').filter({ hasText: 'End turns' });
+  await expect(card.getByRole('row', { name: /^Copper loss/ })).toBeVisible();
+  await expect(endTurns).toHaveCount(0);
+  await copper.click();
+  await expect(endTurns).toBeVisible();
+  // The card no longer carries the map; it says where the map is.
+  await expect(card.locator('.losses-map')).toHaveCount(0);
+  await expect(card).not.toHaveClass(/has-map/);
+  await expect(card).toContainText('Where the loss is in the motor: the Losses tab below.');
+  // The map, with its loss choices and zoom, is the panel the Losses plot tab shows.
+  const panel = page.getByRole('region', { name: 'Loss map', exact: true });
+  await expect(panel.getByRole('heading', { name: 'Where the loss is', exact: true })).toBeVisible();
+  await expect(panel.getByRole('group', { name: 'Map zoom', exact: true })).toBeVisible();
+  await expect(panel.locator('canvas')).toBeVisible();
+  // Magnets are drawn as their own part and named as having no calculated loss.
+  await expect(panel.locator('.losses-map-parts')).toContainText('Magnets, loss not calculated');
+  await expect(panel.locator('.losses-map-parts')).toContainText('Rotor core, not on this map');
+  // The panel has the field map's frame: 1080 px at most, with the map drawn up to 620 px.
+  expect((await panel.boundingBox())!.width).toBeLessThanOrEqual(1080);
+  expect((await panel.locator('canvas').boundingBox())!.width).toBeGreaterThan(400);
+  await page.screenshot({ path: info.outputPath('losses-split.png') });
 });
 
 for (const width of [900, 375]) {
@@ -2415,16 +2592,15 @@ function multiRunFixture(index: number) {
     solve_params: { current_amplitude_A: 20 + index, current_amplitude_convention: 'rms' } },
     run_setup: { id: `setup-${index}`, name: `Setup ${index}`, version: 1 } } }) };
 }
-async function multiRunPage(page: Page) {
+async function multiRunPage(page: Page, view: 'run-comparison' | 'run-comparison-with-history' = 'run-comparison') {
   const records = Array.from({ length: 8 }, (_, index) => ({ project_slug: 'multi', run_id: `r${index}`, project_name: 'Comparison motor',
     status: 'complete', solver_name: 'magneto2d-test', completed_at: `2026-11-14T12:0${index}:00Z`, run_setup: { name: `Setup ${index}`, id: `setup-${index}`, version: 1 } }));
   const storage = { used_bytes: 1000, max_bytes: 10000, available_bytes: 9000, accepting_new_runs: true };
   await page.route('**/runs', route => route.fulfill({ json: { runs: records, storage } }));
   await page.route('**/runs/*/*/comparison', route => route.fulfill({ json: multiRunFixture(Number(new URL(route.request().url()).pathname.split('/').at(-2)!.slice(1))) }));
-  await page.goto('/');
-  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
-  await page.getByRole('button', { name: 'Previous runs', exact: true }).click();
-  return { dialog: page.getByRole('dialog', { name: 'Previous runs', exact: true }), records, storage };
+  await openViewportHarness(page, view);
+  // Compare is a part of Results; 'dialog' is its region, kept as the name these tests were written with.
+  return { dialog: page.getByRole('region', { name: 'Compare saved runs', exact: true }), records, storage };
 }
 
 test('Compare CSV: downloads two to six selected runs, follows the pinned baseline and blocks stale exports', async ({ page }, info) => {
@@ -2743,7 +2919,7 @@ test('Multi-run Compare: six runs retain identities and every table follows the 
 });
 
 test('Multi-run Compare: failed and stale loads recover without replacing the pinned run', async ({ page }) => {
-  const { dialog, records, storage } = await multiRunPage(page);
+  const { dialog, records, storage } = await multiRunPage(page, 'run-comparison-with-history');
   let fail = true;
   let release: () => void = () => {};
   const held = new Promise<void>(resolve => { release = resolve; });
@@ -2766,8 +2942,8 @@ test('Multi-run Compare: failed and stale loads recover without replacing the pi
   await dialog.getByRole('button', { name: 'Pin Run B as baseline', exact: true }).click();
   await expect(metrics.getByRole('columnheader')).toHaveText(['Metric', 'Run B · baseline', 'Run A · candidate', 'Δ (A − B)', 'Δ vs B (%)']);
   await page.route('**/runs/multi/r1', route => { records.splice(records.findIndex(record => record.run_id === 'r1'), 1); return route.fulfill({ json: { storage } }); });
-  await dialog.getByText('Manage stored runs', { exact: false }).click();
-  const stored = dialog.locator('[data-run-id="r1"]');
+  // The run is deleted in the run list; the open comparison hears of it and lets the run go.
+  const stored = page.getByRole('region', { name: 'Saved runs', exact: true }).locator('[data-run-id="r1"]');
   await stored.getByRole('button', { name: 'Delete run', exact: true }).click();
   await stored.getByRole('button', { name: 'Delete permanently', exact: true }).click();
   await expect(dialog.getByRole('combobox', { name: 'Run B · baseline', exact: true })).toHaveValue('');

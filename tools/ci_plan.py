@@ -7,6 +7,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -48,7 +49,7 @@ def changed_paths(root: Path, base: str, head: str, *, pull_request: bool) -> li
         return None
     try:
         diff = subprocess.check_output(
-            ['git', 'diff', '--name-only', '--no-renames', '-z', f'{base}{"..." if pull_request else ".."}{head}'],
+            [shutil.which('git') or 'git', 'diff', '--name-only', '--no-renames', '-z', f'{base}{"..." if pull_request else ".."}{head}'],
             cwd=root, stderr=subprocess.DEVNULL,
         )
     except subprocess.CalledProcessError:

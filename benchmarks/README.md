@@ -1,5 +1,9 @@
 # Benchmark reports and protocols
 
+[Phase G, protocol G-2.0.0](g-v2.0/README.md) is the loss benchmark: stator iron loss, copper loss and phase resistance on four motors at no load and one load, 1500 and 3000 rpm, graded against stored FEMM records, and rotor iron loss on the same motors (the outer-rotor one included) graded on its own convergence checks. It is separate from the registered A-F suite. Its stored results and FEMM records are kept in the private repository.
+
+[Phase H, protocol H-1.0.0](h-v1.0/README.md) is the thermal benchmark: 42 fixed thermal problems (seven designs, three cooling levels, a flat cross-section scope and a full scope), coilEM's answer to each, and a format for grading another tool against it. Its stored results and FEMM 5.0 references are kept in the private repository. It is separate from the A-F suite and needs no solver to run.
+
 [Protocol 1.10.0](af-v1.10/README.md) is the default combined A-F suite: 69 cases, 75 jobs and 68 reference records, with the existing planned unsupported Prius row. It retains the protocol 1.9.0 A-D requests and adds all 12 E and 10 F requests, using the registered very-fine native cohort for the three distributed cogging cases. Its registry preserves each reviewed reference source, the separate hub recipe and all original gates. The [Windows and macOS qualification](qualification-5e6fab283d16/publication-projection.json) passed all 68 supported cases and 468 gates on each platform at the same candidate. The [current platform records](records/README.md) cover the full A-F selection.
 
 [Protocol 1.9.0](abcd-v1.9/README.md) remains available for historical A-D replay. It changes only Picard to Newton in the 28 relevant protocol 1.6.0 requests, reusing the reviewed frozen references through its existing hash-bound bridge.

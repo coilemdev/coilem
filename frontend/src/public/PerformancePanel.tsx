@@ -1,4 +1,5 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useThermalRecord } from './ThermalPanel';
 import {
   downloadPerformanceReport,
   type PublicApiError,
@@ -6,6 +7,7 @@ import {
 import type { MotorConfig, SolveResult } from './model';
 import type {
   DriveControl,
+  DriveLimits,
   EfficiencyMap,
   PerformanceReportContext,
   PerformanceReportKind,
@@ -424,6 +426,7 @@ function ExportMenu({ disabled, downloading, onReport, onMapCsv }: {
 /** Read the immutable map and drive curves saved with this analysis. */
 export function PerformancePanel({ config, result, designName }: { config: MotorConfig; result: SolveResult; designName: string | null }) {
   const headingId = useId();
+  const thermal = useThermalRecord(config, result, 'rating');
   const [downloading, setDownloading] = useState<PerformanceReportKind | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const analysis = result.torque_speed_analysis;
@@ -470,8 +473,10 @@ export function PerformancePanel({ config, result, designName }: { config: Motor
     URL.revokeObjectURL(url);
   };
   const downloadReport = async (kind: PerformanceReportKind) => {
+    const thermalRating = thermal?.result.kind === 'thermally_limited_rating' ? thermal.result : null;
     const context: PerformanceReportContext = {
       design_name: designName, current_unit: units.unit, dc_bus_source: 'entered', map_preset: settings.preset,
+      thermal_rating: thermalRating && thermalRating.control === settings.control && Object.entries(settings.limits).every(([key, value]) => value === thermalRating.limits[key as keyof DriveLimits]) ? thermalRating : null,
       solved_point: solvedPoint ? { speed_rpm: solvedPoint.speedRpm, torque_Nm: solvedPoint.torqueNm, current_angle_deg: solvedPoint.gammaDeg } : null,
       magnet_temperature_derated: magnetsDerated,
       phase_resistance: winding ? resistanceStatus : null,

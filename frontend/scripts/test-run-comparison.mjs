@@ -214,6 +214,18 @@ assert.equal(compareRunLosses(withRotor, withRotor).find(row => row.key === 'tot
 const unavailableRotor = withLoss({ ...fullLoss, rotor_iron_loss_W: null, rotor_iron_loss_status: 'unavailable' });
 assert.equal(compareRunLosses(lossA, unavailableRotor).find(row => row.key === 'shaft').basisNote, undefined, 'an unavailable term is the partial rule, not this one');
 assert.equal(compareRunLosses(torqueOnly, torqueOnly), null);
+// A run solved with the rotor option off says Off for its rotor rows, as What changed? does (#348):
+// "Not recorded" is for a run that has no loss record at all.
+{
+  const rotorRows = compareRunLosses(lossA, withRotor).filter(row => row.key.startsWith('rotor_'));
+  assert.equal(rotorRows.length, 3);
+  for (const row of rotorRows) {
+    assert.equal(row.before.missing, 'Off', `${row.key} of the run without rotor loss`);
+    assert.equal(row.after.missing, undefined);
+  }
+  assert.equal(compareRunLosses(torqueOnly, withRotor).find(row => row.key === 'rotor_iron').before.missing, 'Not recorded');
+  assert.equal(compareRunLosses(unavailableRotor, withRotor).find(row => row.key === 'rotor_iron').before.missing, 'Unavailable');
+}
 assert.equal(compareRunLosses(torqueOnly, lossB).find(row => row.key === 'efficiency').before.missing, 'Not recorded');
 const partialLoss = { ...fullLoss, iron_loss_W: null, iron_hysteresis_loss_W: null, iron_eddy_loss_W: null,
   iron_loss_status: 'unavailable', iron_loss_status_reason: 'Requires a full electrical cycle.',
@@ -444,9 +456,9 @@ console.log('Multi-run comparison preserves pinned identities, the six-run limit
   const run = (metadata, summary = {}, angles = []) => ({ solve_metadata: { mesh_source: 'native', mesher: 'gmsh', mesh_density: 'fine', ...metadata },
     summary, torque_waveform: { electrical_angle_deg: angles, torque_Nm: angles.map(() => 1) } });
   const grid = (count) => Array.from({ length: count }, (_, index) => index * 360 / count);
-  assert.equal(actualMeshProvenance(run({ sector_repeats: 2 })), 'native · gmsh · fine · 1/2 sector');
-  assert.equal(actualMeshProvenance(run({ sector_repeats: null })), 'native · gmsh · fine');
-  assert.equal(actualMeshProvenance(run({})), 'native · gmsh · fine');
+  assert.equal(actualMeshProvenance(run({ sector_repeats: 2 })), 'native · gmsh · Fine · 1/2 sector');
+  assert.equal(actualMeshProvenance(run({ sector_repeats: null })), 'native · gmsh · Fine');
+  assert.equal(actualMeshProvenance(run({})), 'native · gmsh · Fine');
   assert.equal(actualPositionsProvenance(run({}, { cogging: { positions_per_period: 48 } }, grid(96))), '96 loaded · 48 per cogging period');
   assert.equal(actualPositionsProvenance(run({}, {}, grid(48))), '48 loaded');
   assert.equal(actualPositionsProvenance(run({}, {})), 'Not recorded');

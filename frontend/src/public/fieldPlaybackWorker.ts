@@ -11,7 +11,7 @@ import {
   tintFieldArrowImage,
 } from './fieldArrows';
 import { fieldStrokeScale } from './fieldStrokeWidth';
-import { FIXED_FLUX_SCALE, FLUX_OVER_RANGE_INDEX, fluxColor, fluxColorIndex } from './fluxColorScale';
+import { FLUX_OVER_RANGE_INDEX, fixedFluxScaleFor, fluxColor, fluxColorIndex } from './fluxColorScale';
 
 type RasterSource = 'resultant' | 'pm' | 'armature';
 
@@ -110,7 +110,8 @@ function rasterize(plot: FieldPlotPayload, source: RasterSource) {
   const values = plot.element_b_mag_t.filter(Number.isFinite);
   const minB = values.length ? Math.min(...values) : 0;
   const maxB = values.length ? Math.max(...values) : 0;
-  // The fixed 0–2.0 T scale, with an over-range colour, as in the server's images.
+  // The view's fixed scale (0–2.0 T, or the stator-only field's own), with an over-range colour, as in the server's images.
+  const scale = fixedFluxScaleFor(source);
   const buckets = Array.from({ length: FLUX_OVER_RANGE_INDEX + 1 }, () => [] as number[]);
   let triangleCount = 0;
   plot.triangles.forEach((triangle, index) => {
@@ -118,7 +119,7 @@ function rasterize(plot: FieldPlotPayload, source: RasterSource) {
     triangleCount += 1;
     const value = plot.element_b_mag_t[index];
     if (!Number.isFinite(value)) return;
-    buckets[fluxColorIndex(value, FIXED_FLUX_SCALE)].push(index);
+    buckets[fluxColorIndex(value, scale)].push(index);
   });
 
   const baseLayer = configuredCanvas(viewBox);
@@ -223,7 +224,7 @@ function rasterize(plot: FieldPlotPayload, source: RasterSource) {
     viewBox: viewBox.join(' '),
     minB,
     maxB,
-    colorScale: FIXED_FLUX_SCALE,
+    colorScale: scale,
     triangleCount,
     contourLevelCount: playbackContourLevels.length,
     contourSegmentCount,

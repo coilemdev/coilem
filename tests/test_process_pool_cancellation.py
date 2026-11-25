@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import gc
 import os
+import subprocess
+import sys
 import threading
 import time
 from contextlib import ExitStack
@@ -16,6 +18,46 @@ from backend.solver import _process_pool
 from backend.solver_contract import SolveCancelledError
 
 pytestmark = pytest.mark.pr
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows console process groups")
+@pytest.mark.parametrize("pool_kind", ["solver", "playback"])
+def test_console_break_is_handled_by_the_parent(pool_kind, monkeypatch):
+    # Start a separate group so the real Ctrl+Break cannot interrupt pytest.
+    monkeypatch.delenv("COILEM_MAGNETO2D_ALLOW_PY_PROCESS_POOL", raising=False)
+    monkeypatch.delenv("COILEM_MAGNETO2D_ALLOW_PLAYBACK_PROCESS_POOL", raising=False)
+    script = """
+import os, signal, sys, threading, time
+from backend.public_field_playback import _playback_executor, _PLAYBACK_PROCESS_MIN_FRAMES
+from backend.solver._process_pool import cancellable_process_pool
+
+received = threading.Event()
+signal.signal(signal.SIGBREAK, lambda *_: received.set())
+group = int(input())
+pool = cancellable_process_pool(1) if sys.argv[1] == 'solver' else _playback_executor(_PLAYBACK_PROCESS_MIN_FRAMES)
+with pool as executor:
+    worker = executor.submit(os.getpid).result(timeout=20)
+    assert worker != os.getpid()
+    os.kill(group, signal.CTRL_BREAK_EVENT)
+    deadline = time.monotonic() + 5
+    while not received.is_set() and time.monotonic() < deadline:
+        time.sleep(0.02)
+    assert received.is_set(), 'parent never received Ctrl+Break'
+    assert executor.submit(signal.getsignal, signal.SIGBREAK).result(timeout=5) == signal.SIG_IGN
+"""
+    with subprocess.Popen(
+        [sys.executable, "-c", script, pool_kind],
+        cwd=Path(__file__).resolve().parents[1],
+        creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+    ) as process:
+        try:
+            _, error = process.communicate(str(process.pid), timeout=45)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.communicate()
+            raise
+    assert process.returncode == 0, error
 
 
 def _probe_cancellation(started: str, release: str) -> tuple[int, bool]:

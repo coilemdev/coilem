@@ -20,7 +20,6 @@ export function rotorIronLossUnavailableReason(config: MotorConfig, solver: Publ
   if (solver === 'elmer') return 'Rotor iron loss is available with Magneto2D.';
   if (!(params.rated_speed_rpm > 0)) return 'Rotor iron loss needs a speed above zero.';
   if (params.symmetry !== 'full') return 'Rotor iron loss needs the full motor. Set Solved region to Full motor.';
-  if ((config.rotor_layout ?? 'inner') !== 'inner') return 'Rotor iron loss is not available for outer-rotor motors yet.';
   if (config.topology === 'IPM' && config.rotor.ipm_topology !== 'flat_buried') {
     return 'Rotor iron loss is not available for V-shape IPM rotors yet.';
   }

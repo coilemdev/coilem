@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -94,7 +95,8 @@ def main():
         if head != options.candidate:
             raise ValueError("Checkout does not match the pinned qualification candidate")
         completed = subprocess.run([sys.executable, "-B", "-u", "-m", "tools.run_benchmarks",
-            "--suite", str(SUITE), "--reference-bundle", str(BUNDLE), "--phases", "E", "--out-dir", str(output)], cwd=ROOT)
+            "--suite", str(SUITE), "--reference-bundle", str(BUNDLE), "--phases", "E", "--out-dir", str(output)],
+            cwd=ROOT, env=os.environ.copy())
         if completed.returncode and not (output / "run_manifest.json").is_file():
             return completed.returncode
     result = assess(output, options.candidate)

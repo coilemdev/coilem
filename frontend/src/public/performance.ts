@@ -278,6 +278,7 @@ export type PerformanceReportKind = 'pdf' | 'csv' | 'idiq';
 
 /** What the report needs beyond the drive request (backend/performance_report.py ReportContext). */
 export interface PerformanceReportContext {
+  thermal_rating?: import('./thermal').ThermalRating | null;
   design_name: string | null;
   current_unit: 'A rms' | 'A peak';
   dc_bus_source: 'design' | 'entered' | 'estimated';

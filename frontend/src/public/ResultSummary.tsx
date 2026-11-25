@@ -1,3 +1,6 @@
+import { meshDensityLabel } from './meshLabels';
+import { ThermalSummaryCard } from './ThermalPanel';
+import { useThermalRun } from './ThermalRun';
 import { useId, type ReactNode } from 'react';
 import { MotorConstants } from './MotorConstants';
 import { LossesCard } from './LossesCard';
@@ -77,6 +80,8 @@ export function ResultSummary({
 }: ResultSummaryProps) {
   const loadingHeadingId = useId();
   const assumptionsHeadingId = useId();
+  // The same thermal state as Solve and the Thermal tab, so an estimate from earlier inputs says so here too.
+  const thermal = useThermalRun(config, result, null);
   const { summary, solve_metadata: metadata } = result;
   const hasTorque = metadata.torque_sweep_computed !== false && summary.avg_torque_Nm !== null;
   const hasBackEmf = metadata.back_emf_computed !== false && summary.back_emf_fundamental_V !== null;
@@ -119,7 +124,7 @@ export function ResultSummary({
       ? `${fixed(metadata.commutation_advance_deg ?? config.solve_params.commutation_advance_deg, 0)}° advance`
       : `${fixed(config.solve_params.current_angle_deg, 0)}° current angle`,
     sixStep ? 'Ideal six-step (120°)' : 'Sinusoidal',
-    `${positionCounts ? `${positionCounts} positions` : result.torque_speed_analysis ? `${result.torque_speed_analysis.map.points.length} map points` : `${metadata.rotor_positions} preview position`} · ${metadata.mesh_density || 'native'} mesh`,
+    `${positionCounts ? `${positionCounts} positions` : result.torque_speed_analysis ? `${result.torque_speed_analysis.map.points.length} map points` : `${metadata.rotor_positions} preview position`} · ${meshDensityLabel(metadata.mesh_density) ?? 'native'} mesh`,
   ];
   // Solver, torque method and positions are in Run settings, so the footer
   // keeps only the timings.
@@ -128,6 +133,18 @@ export function ResultSummary({
     ...(result.workflow_elapsed_s != null ? [`total elapsed ${fixed(result.workflow_elapsed_s, 1)} s`] : []),
   ];
 
+  const magneticLoading = (
+    <section className="public-magnetic-loading" aria-labelledby={loadingHeadingId}>
+      <h3 id={loadingHeadingId}>Magnetic loading</h3>
+      <LoadingBar label="Peak tooth B" valueT={summary.peak_flux_density_teeth_T} scaleMaxT={scaleMaxT} knee={knee} />
+      <LoadingBar label="Peak yoke B" valueT={summary.peak_flux_density_yoke_T} scaleMaxT={scaleMaxT} knee={knee} />
+      <p>
+        Scale 0–{scaleMaxT} T.
+        {knee ? ` Shaded: the stator steel's saturation knee, ${knee[0]}–${knee[1]} T.` : ' This steel declares no saturation knee.'}
+      </p>
+      {hasBackEmf && <p>{thd != null && Number.isFinite(thd) ? `${thdLabel} ${fixed(thd, 1)}%` : 'Back-EMF THD: not computed for this run'}</p>}
+    </section>
+  );
   return (
     <div className="public-result-summary">
       {metadata.run_setup && <p className="public-result-setup">Run setup: {metadata.run_setup.name} · version {metadata.run_setup.version}</p>}
@@ -208,23 +225,16 @@ export function ResultSummary({
       </div>
       <div className="public-result-detail">
         <MotorConstants summary={summary} variant="report" />
+        {magneticLoading}
         <DqCard
           dq={summary.dq_flux_linkage}
           currentUnit={config.solve_params.current_amplitude_convention === 'peak' ? 'A peak' : 'A rms'}
           variant="report"
         />
-        <section className="public-magnetic-loading" aria-labelledby={loadingHeadingId}>
-          <h3 id={loadingHeadingId}>Magnetic loading</h3>
-          <LoadingBar label="Peak tooth B" valueT={summary.peak_flux_density_teeth_T} scaleMaxT={scaleMaxT} knee={knee} />
-          <LoadingBar label="Peak yoke B" valueT={summary.peak_flux_density_yoke_T} scaleMaxT={scaleMaxT} knee={knee} />
-          <p>
-            Scale 0–{scaleMaxT} T.
-            {knee ? ` Shaded: the stator steel's saturation knee, ${knee[0]}–${knee[1]} T.` : ' This steel declares no saturation knee.'}
-          </p>
-          {hasBackEmf && <p>{thd != null && Number.isFinite(thd) ? `${thdLabel} ${fixed(thd, 1)}%` : 'Back-EMF THD: not computed for this run'}</p>}
-        </section>
-        {/* Full width below the three compact cards: the cogging period and its harmonics (#185), then the losses. */}
+        {/* Full width below the three compact cards: the cogging period and its harmonics (#185). */}
         <CoggingCard result={result} poleCount={config.rotor.pole_count} variant="report" />
+        {/* Thermal starts from the losses, so it sits after every electromagnetic card and directly before them. */}
+        <ThermalSummaryCard analysis={thermal.analysis} stale={thermal.stale} />
         <LossesCard
           loss={summary.loss_breakdown}
           iron={summary.iron_loss}
@@ -234,6 +244,7 @@ export function ResultSummary({
           winding={summary.winding_resistance}
           slotCount={config.stator.slot_count}
           variant="report"
+          map={false}
         />
       </div>
       <p className="public-result-timings" title={TIMING_HELP}>{timings.join(' · ')}</p>

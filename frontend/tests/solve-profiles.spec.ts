@@ -132,6 +132,52 @@ test('losses request a full cycle while mesh choices, saved setups and legacy fi
   expect(errors).toEqual([]);
 });
 
+test('rotor iron loss is offered for an outer-rotor motor on a sinusoidal drive', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Use Example Motor', exact: true }).click();
+  await page.getByRole('button', { name: 'Design file menu', exact: true }).click();
+  await page.getByRole('menuitem', { name: 'Examples', exact: true }).hover();
+  await page.getByRole('menuitem', { name: /^SPM outrunner 14p\/12s/ }).click();
+  await page.getByRole('button', { name: 'Continue to Solve', exact: true }).click();
+  const drive = await operating(page);
+  await drive.getByRole('radio', { name: /^Sinusoidal/ }).click();
+  const analysis = page.locator('button[aria-controls="param-group-content-analysis"]');
+  if (await analysis.getAttribute('aria-expanded') !== 'true') await analysis.click();
+  await page.getByRole('checkbox', { name: 'Losses & efficiency', exact: true }).check();
+  const rotor = page.getByRole('checkbox', { name: 'Include rotor iron loss', exact: true });
+  await expect(rotor).toBeEnabled();
+  await expect(page.getByText(/not available for outer-rotor/)).toHaveCount(0);
+  await rotor.check();
+  await expect(rotor).toBeChecked();
+  await expect(page.getByText(/Supports full-motor SPM and flat-IPM models, inner or outer rotor/)).toBeVisible();
+  // A six-step drive is what the rotor stage does not cover yet, for any rotor.
+  await (await operating(page)).getByRole('radio', { name: /^Ideal six-step/ }).click();
+  if (await analysis.getAttribute('aria-expanded') !== 'true') await analysis.click();
+  await expect(rotor).toBeDisabled();
+  await expect(page.getByText('Rotor iron loss needs sinusoidal drive.', { exact: true })).toBeVisible();
+});
+
+test('the DC bus voltage is one value in Operating point and in the torque–speed map settings', async ({ page }) => {
+  await start(page);
+  // The example's own bus contains its operating point (#274): 96 V, not the 48 V default.
+  const bus = (await operating(page)).getByRole('spinbutton', { name: 'DC bus voltage', exact: true });
+  await expect(bus).toHaveValue('96');
+  const analysis = page.locator('button[aria-controls="param-group-content-analysis"]');
+  if (await analysis.getAttribute('aria-expanded') !== 'true') await analysis.click();
+  await page.getByRole('checkbox', { name: 'Torque–speed map', exact: true }).check();
+  const settings = page.getByRole('region', { name: 'Torque–speed map settings', exact: true });
+  const mapBus = settings.getByLabel('DC bus', { exact: true });
+  await expect(mapBus).toHaveValue('96');
+  await mapBus.fill('120');
+  await mapBus.press('Tab');
+  await expect((await operating(page)).getByRole('spinbutton', { name: 'DC bus voltage', exact: true })).toHaveValue('120');
+  const operatingBus = (await operating(page)).getByRole('spinbutton', { name: 'DC bus voltage', exact: true });
+  await operatingBus.fill('200');
+  await operatingBus.press('Tab');
+  if (await analysis.getAttribute('aria-expanded') !== 'true') await analysis.click();
+  await expect(settings.getByLabel('DC bus', { exact: true })).toHaveValue('200');
+});
+
 test('saved designs and named setups use the effective experimental rotor iron loss selection', async ({ page }, info) => {
   await start(page);
   const openSection = async (section: string) => {

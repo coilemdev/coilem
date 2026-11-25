@@ -49,7 +49,9 @@ def test_pdf_labels_peak_currents_and_plain_settings_without_changing_csv_values
 
 def test_report_display_names_are_scoped_to_the_setting():
     assert _setting_entry("solve_quality", "fine") == ("Solve quality", "High accuracy")
-    assert _setting_entry("mesh_density", "fine") == ("Mesh density", "fine")
+    # Mesh densities read as Solve names them; the same word "fine" means something else for the plan.
+    assert _setting_entry("mesh_density", "fine") == ("Mesh density", "Fine")
+    assert _setting_entry("mesh_density", "normal") == ("Mesh density", "Medium")
     assert _setting_entry("unknown_setting", "custom") == ("Unknown setting", "custom")
     assert _setting_entry("unknown_setting", "standard") == ("Unknown setting", "standard")
 

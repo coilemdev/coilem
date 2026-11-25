@@ -1,4 +1,5 @@
 """The PR gate owns freshness; historical replay tests need no live-tree pin."""
+import shutil
 import subprocess
 
 import pytest
@@ -7,7 +8,7 @@ from tools import physics_impact
 
 
 def git(root, *args):
-    return subprocess.check_output(['git', '-C', str(root), *args], stderr=subprocess.DEVNULL).decode().strip()
+    return subprocess.check_output([shutil.which('git') or 'git', '-C', str(root), *args], stderr=subprocess.DEVNULL).decode().strip()
 
 
 def put(root, name, text):

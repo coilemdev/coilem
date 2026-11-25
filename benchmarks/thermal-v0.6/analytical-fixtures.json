@@ -1,0 +1,394 @@
+{
+  "schema_version": 1,
+  "protocol": "thermal-analytical-0.6.0-1",
+  "evidence_kind": "analytical_verification",
+  "claim": "Idealized steady-state equations and explicitly identified mean-path reductions; no physical motor qualification.",
+  "tolerances": {
+    "absolute_temperature_K": 1e-08,
+    "absolute_heat_W": 1e-08,
+    "absolute_dimensionless": 1e-10,
+    "relative": 1e-10
+  },
+  "comparison_rule": "Absolute error <= max(unit-specific numerical floor, relative * abs(reference)). Temperature relative scale uses rise above the case datum, not absolute Celsius. No YELLOW band. Model-reduction FAIL means disagreement with an exact idealized solution, not a measured motor accuracy verdict.",
+  "cases": [
+    {
+      "id": "series_heated",
+      "family": "series",
+      "scope": "solver",
+      "parameters": {
+        "ambient_C": 20,
+        "heat_W": 10,
+        "resistances_K_W": [
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "id": "series_zero_heat",
+      "family": "series",
+      "scope": "solver",
+      "parameters": {
+        "ambient_C": 20,
+        "heat_W": 0,
+        "resistances_K_W": [
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "id": "parallel_paths",
+      "family": "parallel",
+      "scope": "solver",
+      "parameters": {
+        "ambient_C": 25,
+        "heat_W": 12,
+        "resistances_K_W": [
+          2,
+          4
+        ]
+      }
+    },
+    {
+      "id": "unequal_boundaries",
+      "family": "two_boundaries",
+      "scope": "solver",
+      "parameters": {
+        "left_C": 20,
+        "right_C": 40,
+        "heat_W": 10,
+        "resistances_K_W": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "id": "unheated_disconnected_node",
+      "family": "disconnected",
+      "scope": "solver",
+      "parameters": {}
+    },
+    {
+      "id": "slab_one_face",
+      "family": "slab",
+      "scope": "solver",
+      "parameters": {
+        "boundary_C": 25,
+        "length_m": 0.02,
+        "area_m2": 0.01,
+        "k_W_mK": 2,
+        "heat_W": 12,
+        "two_sided": false
+      }
+    },
+    {
+      "id": "slab_two_faces",
+      "family": "slab",
+      "scope": "solver",
+      "parameters": {
+        "boundary_C": 25,
+        "length_m": 0.02,
+        "area_m2": 0.01,
+        "k_W_mK": 2,
+        "heat_W": 12,
+        "two_sided": true
+      }
+    },
+    {
+      "id": "cylindrical_housing",
+      "family": "cylinder",
+      "scope": "solver",
+      "parameters": {
+        "boundary_C": 25,
+        "inner_radius_m": 0.1,
+        "outer_radius_m": 0.103,
+        "length_m": 0.1,
+        "k_W_mK": 205,
+        "heat_W": 100
+      }
+    },
+    {
+      "id": "layered_winding_only",
+      "family": "layered",
+      "scope": "model_reduction",
+      "parameters": {
+        "ambient_C": 25,
+        "area_m2": 0.01,
+        "outer_resistance_K_W": 1,
+        "contacts_K_W": [
+          0.1,
+          0.05
+        ],
+        "layers": [
+          {
+            "name": "winding",
+            "length_m": 0.01,
+            "k_W_mK": 1,
+            "heat_W": 10
+          },
+          {
+            "name": "teeth",
+            "length_m": 0.02,
+            "k_W_mK": 20,
+            "heat_W": 0
+          },
+          {
+            "name": "yoke",
+            "length_m": 0.01,
+            "k_W_mK": 20,
+            "heat_W": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "layered_iron_only",
+      "family": "layered",
+      "scope": "model_reduction",
+      "parameters": {
+        "ambient_C": 25,
+        "area_m2": 0.01,
+        "outer_resistance_K_W": 1,
+        "contacts_K_W": [
+          0.1,
+          0.05
+        ],
+        "layers": [
+          {
+            "name": "winding",
+            "length_m": 0.01,
+            "k_W_mK": 1,
+            "heat_W": 0
+          },
+          {
+            "name": "teeth",
+            "length_m": 0.02,
+            "k_W_mK": 20,
+            "heat_W": 3
+          },
+          {
+            "name": "yoke",
+            "length_m": 0.01,
+            "k_W_mK": 20,
+            "heat_W": 7
+          }
+        ]
+      }
+    },
+    {
+      "id": "layered_combined",
+      "family": "layered",
+      "scope": "model_reduction",
+      "parameters": {
+        "ambient_C": 25,
+        "area_m2": 0.01,
+        "outer_resistance_K_W": 1,
+        "contacts_K_W": [
+          0.1,
+          0.05
+        ],
+        "layers": [
+          {
+            "name": "winding",
+            "length_m": 0.01,
+            "k_W_mK": 1,
+            "heat_W": 10
+          },
+          {
+            "name": "teeth",
+            "length_m": 0.02,
+            "k_W_mK": 20,
+            "heat_W": 3
+          },
+          {
+            "name": "yoke",
+            "length_m": 0.01,
+            "k_W_mK": 20,
+            "heat_W": 7
+          }
+        ]
+      }
+    },
+    {
+      "id": "layered_zero_heat",
+      "family": "layered",
+      "scope": "model_reduction",
+      "parameters": {
+        "ambient_C": 25,
+        "area_m2": 0.01,
+        "outer_resistance_K_W": 1,
+        "contacts_K_W": [
+          0.1,
+          0.05
+        ],
+        "layers": [
+          {
+            "name": "winding",
+            "length_m": 0.01,
+            "k_W_mK": 1,
+            "heat_W": 0
+          },
+          {
+            "name": "teeth",
+            "length_m": 0.02,
+            "k_W_mK": 20,
+            "heat_W": 0
+          },
+          {
+            "name": "yoke",
+            "length_m": 0.01,
+            "k_W_mK": 20,
+            "heat_W": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "layered_single_source_control",
+      "family": "layered",
+      "scope": "model_reduction",
+      "parameters": {
+        "ambient_C": 25,
+        "area_m2": 0.01,
+        "outer_resistance_K_W": 1,
+        "contacts_K_W": [],
+        "layers": [
+          {
+            "name": "winding",
+            "length_m": 0.01,
+            "k_W_mK": 1,
+            "heat_W": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "split_slab_equal_faces",
+      "family": "split_slab",
+      "scope": "model_reduction",
+      "parameters": {
+        "left_C": 20,
+        "right_C": 20,
+        "length_m": 0.02,
+        "area_m2": 0.01,
+        "k_W_mK": 2,
+        "heat_W": 12
+      }
+    },
+    {
+      "id": "split_slab_unequal_faces",
+      "family": "split_slab",
+      "scope": "model_reduction",
+      "parameters": {
+        "left_C": 20,
+        "right_C": 40,
+        "length_m": 0.02,
+        "area_m2": 0.01,
+        "k_W_mK": 2,
+        "heat_W": 12
+      }
+    },
+    {
+      "id": "copper_one_stable",
+      "family": "copper_one",
+      "scope": "solver",
+      "parameters": {
+        "ambient_C": 20,
+        "heat_20C_W": 10,
+        "alpha_per_K": 0.00393,
+        "resistance_K_W": 2
+      }
+    },
+    {
+      "id": "copper_one_zero_current",
+      "family": "copper_one",
+      "scope": "solver",
+      "parameters": {
+        "ambient_C": 20,
+        "heat_20C_W": 0,
+        "alpha_per_K": 0.00393,
+        "resistance_K_W": 2
+      }
+    },
+    {
+      "id": "copper_one_constant_resistance",
+      "family": "copper_one",
+      "scope": "solver",
+      "parameters": {
+        "ambient_C": 20,
+        "heat_20C_W": 10,
+        "alpha_per_K": 0,
+        "resistance_K_W": 2
+      }
+    },
+    {
+      "id": "copper_one_critical",
+      "family": "copper_one",
+      "scope": "solver",
+      "parameters": {
+        "ambient_C": 20,
+        "heat_20C_W": 125,
+        "alpha_per_K": 0.004,
+        "resistance_K_W": 2
+      }
+    },
+    {
+      "id": "copper_one_supercritical",
+      "family": "copper_one",
+      "scope": "solver",
+      "parameters": {
+        "ambient_C": 20,
+        "heat_20C_W": 150,
+        "alpha_per_K": 0.004,
+        "resistance_K_W": 2
+      }
+    },
+    {
+      "id": "copper_two_separate_temperatures",
+      "family": "copper_two",
+      "scope": "solver",
+      "parameters": {
+        "ambient_C": 20,
+        "active_heat_20C_W": 10,
+        "end_heat_20C_W": 5,
+        "housing_heat_W": 4,
+        "alpha_per_K": 0.004,
+        "active_resistance_K_W": 3,
+        "end_resistance_K_W": 5,
+        "housing_resistance_K_W": 2
+      }
+    },
+    {
+      "id": "copper_two_warm_ambient",
+      "family": "copper_two",
+      "scope": "solver",
+      "parameters": {
+        "ambient_C": 45,
+        "active_heat_20C_W": 10,
+        "end_heat_20C_W": 5,
+        "housing_heat_W": 4,
+        "alpha_per_K": 0.004,
+        "active_resistance_K_W": 3,
+        "end_resistance_K_W": 5,
+        "housing_resistance_K_W": 2
+      }
+    },
+    {
+      "id": "copper_two_shared_path_instability",
+      "family": "copper_two",
+      "scope": "solver",
+      "parameters": {
+        "ambient_C": 20,
+        "active_heat_20C_W": 150,
+        "end_heat_20C_W": 150,
+        "housing_heat_W": 0,
+        "alpha_per_K": 0.004,
+        "active_resistance_K_W": 0.1,
+        "end_resistance_K_W": 0.1,
+        "housing_resistance_K_W": 1
+      }
+    }
+  ]
+}

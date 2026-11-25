@@ -16,7 +16,7 @@ from packaging.specifiers import SpecifierSet
 from packaging.tags import Tag
 
 from backend import __version__, resources
-from tools.release import artifacts, native_deps, policy, rust_licenses, verify_wheel, version
+from tools.release import artifacts, disclosures, native_deps, policy, rust_licenses, verify_wheel, version
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 GMSH = [
@@ -318,7 +318,7 @@ def test_native_dependency_parsers_and_rules(tmp_path: Path) -> None:
 def _write_wheel(
     path: Path, *, requires: list[str], binary: bytes = b"binary", stamp_binary: bytes | None = None,
     runtime_version: str = "0.2.0", crate_licenses: str | None = None, without: tuple[str, ...] = (),
-    commit: str = "a" * 40,
+    commit: str = "a" * 40, extra: dict[str, bytes] | None = None,
 ) -> Path:
     dist_info = "coilem-0.2.0.dist-info"
     ui = {"index.html": b"<!doctype html>", "assets/index-AbCd1234.js": b"export {};", "assets/Lesson-AbCd1234.js": b"export {};"}
@@ -362,6 +362,8 @@ def _write_wheel(
         for relative in (*resources.PACKAGE_DATA_FILES, *verify_wheel.PACKAGE_FILES):
             if not without or relative not in without:
                 archive.writestr(relative, (REPO_ROOT / relative).read_bytes())
+        for name, data in (extra or {}).items():
+            archive.writestr(name, data)
     return path
 
 
@@ -393,6 +395,52 @@ def test_wheel_checks(tmp_path: Path) -> None:
     public = ("coilem/__init__.py", "coilem/__main__.py")
     unnamed = _write_wheel(tmp_path / "coilem-0.2.0-py3-none-macosx_12_0_arm64.whl", requires=lock, without=public)
     assert verify_wheel.check_wheel(unnamed)[0] == "unexpected top-level entries: []; missing: ['coilem']"
+
+
+def test_wheel_refuses_private_benchmark_evidence(tmp_path: Path) -> None:
+    lock = [str(item) for item in policy.read_lock(REPO_ROOT / "requirements.lock")]
+    # What a release review found in a built wheel: thermal records and both native comparison bundles,
+    # plus a Phase H record. The thermal gates and fixtures beside them stay packaged.
+    leaked = {
+        f"backend/_data/{relative}": b"{}"
+        for relative in (
+            "benchmarks/thermal-v0.6/analytical-results.json",
+            "benchmarks/thermal-v0.6/rotor-heat-recomputed.json",
+            "benchmarks/thermal-v0.6/spm_8p12s_concentrated-native.json",
+            "benchmarks/thermal-v0.6/ipm_flat_8p12s_fsae-native.json",
+            "benchmarks/h-v1.0/results/coilem.json",
+        )
+    }
+    path = tmp_path / "coilem-0.2.0-py3-none-macosx_12_0_arm64.whl"
+    wheel = _write_wheel(path, requires=lock, extra=leaked)
+    assert verify_wheel.check_wheel(wheel) == [
+        "private benchmark evidence is packaged (it is kept in the private repository): " + ", ".join(sorted(leaked))
+    ]
+    assert verify_wheel.main([str(wheel)]) == 1
+    names = {name for name in zipfile.ZipFile(wheel).namelist()}
+    assert "backend/_data/benchmarks/thermal-v0.6/map-interpolation-gates.json" in names
+    assert verify_wheel.packaged_private_evidence(names - set(leaked)) == []
+
+
+def test_wheel_refuses_a_packaged_file_that_quotes_a_known_measured_claim(tmp_path: Path) -> None:
+    lock = [str(item) for item in policy.read_lock(REPO_ROOT / "requirements.lock")]
+    # What a release review found: a packaged solver source whose comment quoted a private benchmark comparison.
+    claim = "its made-up rotor loss reads about thrice the imaginary reference (Phase Z, 2031-01-02)"
+    known = disclosures.Fingerprints.from_phrases([claim])
+    source = ("POSITIONS = 384\n# Newton's tolerance. At Standard quality its made-up rotor loss\n"
+              "# reads about thrice the imaginary reference (Phase Z, 2031-01-02).\nTOLERANCE = 1e-7\n")
+    path = tmp_path / "coilem-0.2.0-py3-none-macosx_12_0_arm64.whl"
+    wheel = _write_wheel(path, requires=lock, binary=b"\xcf\xfa\xed\xfe" + claim.encode(),
+                         extra={"backend/rotor_loss_solver.py": source.encode(),
+                                "backend/_ui/assets/Results-AbCd1234.js": f'const note="{claim}";'.encode()})
+    claims = verify_wheel.check_wheel(wheel, fingerprints=known)
+    assert claims == [f"known private benchmark claim (fingerprint 0) in {entry}; it is kept in the private repository"
+                      for entry in ("backend/_ui/assets/Results-AbCd1234.js", "backend/rotor_loss_solver.py")]
+    (tmp_path / "clean").mkdir()
+    clean = _write_wheel(tmp_path / "clean" / path.name, requires=lock, extra={"backend/rotor_loss_solver.py": b"TOLERANCE = 1e-7\n"})
+    assert verify_wheel.check_wheel(clean, fingerprints=known) == []
+    # The declared claims are checked by default.
+    assert verify_wheel.check_wheel(clean) == []
 
 
 def test_wheel_requires_the_exact_expected_commit(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:

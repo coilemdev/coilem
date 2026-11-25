@@ -37,6 +37,7 @@ from backend.public_routes.solve import (
     _public_field_frame_descriptors,
     _public_result_payload,
     _release_solve,
+    _SolveLaneStream,
     _sse_event,
     _stream_error_payload,
 )
@@ -953,9 +954,9 @@ async def lesson_one_solve_stream(
                 solver.cancel_active_solve()
             _release_solve(solver)
 
-    return StreamingResponse(
+    return _SolveLaneStream(
         event_generator(),
-        media_type="text/event-stream",
+        abandon=lambda: _release_solve(solver),
         headers={
             "Cache-Control": "no-cache",
             "Connection": "keep-alive",

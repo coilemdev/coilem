@@ -230,3 +230,30 @@ print(hashlib.sha256(json.dumps(physical, sort_keys=True).encode()).hexdigest())
         assert completed.returncode == 0, f"{name}: {completed.stderr}"
         fingerprints.append(completed.stdout.strip())
     assert fingerprints[0] == fingerprints[1]
+
+
+def test_a_caller_tolerance_reaches_the_solver_and_its_record_but_never_a_shell_one(monkeypatch, tmp_path):
+    seen = []
+
+    def runner(command, **kwargs):
+        seen.append(kwargs["env"].get("MAGNETO2D_NONLINEAR_TOL"))
+        Path(command[command.index("-o") + 1]).write_text("{}")
+        return subprocess.CompletedProcess(command, 0, "", "")
+
+    # A replaced subprocess.run is what receives the solver's environment.
+    monkeypatch.setattr(adapter.subprocess, "run", runner)
+    monkeypatch.setattr(adapter, "ensure_magneto2d_binary", lambda: Path("unused"))
+    monkeypatch.setenv("MAGNETO2D_NONLINEAR_TOL", "0.99")
+    standard = config()
+    standard.solve_params.solve_quality = "standard"
+    plain = adapter.run_magneto2d_report(standard, sweep=False, solve_mesh_artifact={}, runner=runner)
+    tight = adapter.run_magneto2d_report(standard, sweep=False, solve_mesh_artifact={}, runner=runner,
+                                         nonlinear_tolerance=1e-7)
+    # Standard quality picks 0.01; the rotor iron loss turn passes its own and the run records it.
+    assert seen == ["0.01", "1e-07"]
+    assert json.dumps(tight["solver_environment"]) != json.dumps(plain["solver_environment"])
+    for bad in (0.0, 1.0, -1e-7):
+        with pytest.raises(ValueError, match="between 0 and 1"):
+            adapter.run_magneto2d_report(standard, sweep=False, solve_mesh_artifact={}, runner=runner,
+                                         nonlinear_tolerance=bad)
+    assert len(seen) == 2

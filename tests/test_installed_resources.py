@@ -13,6 +13,7 @@ import pytest
 from backend import __version__, resources
 from backend import magneto2d_adapter as adapter
 from backend.material_contract import M350_50A_SPEC, load_electrical_steel_curve
+from tools.release import private_evidence
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = {entry["path"]: entry for entry in json.loads((REPO_ROOT / "snapshot-manifest.json").read_text())["files"]}
@@ -20,7 +21,13 @@ MANIFEST = {entry["path"]: entry for entry in json.loads((REPO_ROOT / "snapshot-
 
 def test_packaged_files_cover_every_runtime_schema_and_the_frozen_curve() -> None:
     schemas = {f"schemas/v1/{path.name}" for path in (REPO_ROOT / "schemas" / "v1").glob("*.json")}
-    assert set(resources.PACKAGED_DATA_FILES) == schemas | {M350_50A_SPEC.relative_path}
+    assert set(resources.PACKAGED_DATA_FILES) == schemas | {
+        M350_50A_SPEC.relative_path, "benchmarks/thermal-v0.6/map-interpolation-gates.json",
+        "benchmarks/thermal-v0.6/conduction-gates.json",
+        "benchmarks/thermal-v0.6/bench-gate.json",
+        "benchmarks/thermal-v0.6/analytical-fixtures.json",
+        "benchmarks/thermal-v0.6/path-audit-fixtures.json",
+    }
     assert M350_50A_SPEC.sha256 == MANIFEST[M350_50A_SPEC.relative_path]["sha256"]
     assert M350_50A_SPEC.sha256 == "d6096df7cc7103e8b9fc77407b1750e8ddf9f5d0cd1fdf8ad748d9febf896c3d"
     pyproject = (REPO_ROOT / "pyproject.toml").read_text()
@@ -28,11 +35,40 @@ def test_packaged_files_cover_every_runtime_schema_and_the_frozen_curve() -> Non
         assert Path(relative).parent.relative_to("backend").as_posix() + "/*.json" in pyproject
 
 
+def test_no_packaged_file_is_private_benchmark_evidence() -> None:
+    packaged = (*resources.PACKAGED_DATA_FILES, *resources.PACKAGE_DATA_FILES, *resources.benchmark_data_files(REPO_ROOT))
+    assert private_evidence.private_paths(packaged) == []
+    # The runtime registrations the thermal preview needs are public definitions.
+    thermal = [relative for relative in resources.PACKAGED_DATA_FILES if relative.startswith("benchmarks/")]
+    assert thermal and all(private_evidence.is_public_definition(relative) for relative in thermal)
+
+
 def test_checkout_reads_repository_files() -> None:
     assert resources.source_checkout_root() == REPO_ROOT
     assert Path(str(resources.data_file(M350_50A_SPEC.relative_path))) == REPO_ROOT / M350_50A_SPEC.relative_path
     assert resources.stamped_build_info() is None
     assert resources.build_identity() == {"installation": "source"}
+
+
+def test_analytical_suite_runs_from_installed_resources_without_the_private_records(installed: Path) -> None:
+    from backend.benchmark_suite import thermal_analytical
+
+    # build_py copies Python modules before staging data. Supply those files
+    # for the suite's source-identity reads in this simulated installed layout.
+    for relative in thermal_analytical.SOURCES:
+        target = installed / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(REPO_ROOT / "backend" / relative, target)
+    assert resources.source_checkout_root() is None
+    assert str(resources.data_file(thermal_analytical.REGISTRATION)).startswith(str(installed))
+    assert len(thermal_analytical.registration()["cases"]) == 23
+    result = thermal_analytical.run_suite(["copper_two_separate_temperatures"])
+    assert result["status"] == "PASS" and result["selection"] == "subset"
+    assert thermal_analytical.run_suite(["layered_combined"])["status"] == "PASS"
+    # The stored analytical records are private evidence: never packaged.
+    for record in ("analytical-results.json", "analytical-surface-mean-results.json"):
+        with pytest.raises(FileNotFoundError, match="missing from this installation"):
+            resources.data_file(f"benchmarks/thermal-v0.6/{record}")
 
 
 def test_packaged_reference_assets_are_the_same_fixed_model(installed: Path) -> None:
@@ -122,6 +158,8 @@ def test_packaged_backend_has_the_distribution_version(installed: Path) -> None:
 def test_installed_package_resolves_every_runtime_file(installed: Path) -> None:
     for relative in resources.PACKAGED_DATA_FILES:
         assert (installed / "_data" / relative).read_bytes() == (REPO_ROOT / relative).read_bytes()
+    staged = [path.relative_to(installed / "_data").as_posix() for path in (installed / "_data").rglob("*") if path.is_file()]
+    assert staged and private_evidence.private_paths(staged) == []
     curve = load_electrical_steel_curve("M350-50A")
     assert curve.sha256 == M350_50A_SPEC.sha256
     assert Path(str(curve.path)) == installed / "_data" / M350_50A_SPEC.relative_path
@@ -183,6 +221,14 @@ def test_build_rejects_data_that_differs_from_the_snapshot_manifest(monkeypatch,
         setup_module._check_packaged_sources()
 
 
+def test_build_refuses_to_package_private_benchmark_evidence(monkeypatch) -> None:
+    setup_module = _load_setup()
+    leaked = "benchmarks/thermal-v0.6/spm_8p12s_concentrated-native.json"
+    monkeypatch.setattr(setup_module.resources, "PACKAGED_DATA_FILES", (*setup_module.resources.PACKAGED_DATA_FILES, leaked))
+    with pytest.raises(SystemExit, match="spm_8p12s_concentrated-native.json is private benchmark evidence"):
+        setup_module._check_packaged_sources()
+
+
 def test_health_run_provenance_and_report_carry_the_build(installed: Path, monkeypatch, tmp_path: Path) -> None:
     from fastapi.testclient import TestClient
 
@@ -205,3 +251,20 @@ def test_health_run_provenance_and_report_carry_the_build(installed: Path, monke
     labels = [label for label, _ in _build_rows(provenance["build"])]
     assert labels == ["Magneto2D build", "Magneto2D binary SHA-256", "UI bundle SHA-256"]
     assert _build_rows({"installation": "source"}) == []
+
+
+def test_packaged_path_audit_runs_and_native_acceptance_is_not_compared(installed: Path):
+    from backend.benchmark_suite import thermal_path_audit
+    from backend.public_routes import thermal
+
+    for relative in thermal_path_audit.SOURCES:
+        target = installed / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(REPO_ROOT / 'backend' / relative, target)
+    assert thermal_path_audit.run_suite()['status'] == 'PASS'
+    for record in ('path-audit-results.json', 'path-audit-recomputed.json', 'rotor-heat-recomputed.json',
+                   'spm_8p12s_concentrated-native.json', 'ipm_flat_8p12s_fsae-native.json'):
+        with pytest.raises(FileNotFoundError, match='missing from this installation'):
+            resources.data_file(f'benchmarks/thermal-v0.6/{record}')
+    # Without the native comparison bundles an installed rating reports its interpolation check as NOT_COMPARED.
+    assert thermal._acceptance(object()) is None

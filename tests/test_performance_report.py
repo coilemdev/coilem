@@ -213,3 +213,22 @@ def test_the_route_carries_the_tabs_resistance_status(client):
     rows = list(csv.reader(io.StringIO(client.post("/performance/report/csv", json=body).text)))
     status = {row[1]: row[3] for row in rows if len(row) >= 4 and row[0] == "status"}
     assert (status["phase_resistance"], status["phase_resistance_reason"]) == ("qualified", "Passes the gate.")
+
+
+def test_thermal_supplement_keeps_status_inputs_and_limit_in_both_reports(data):
+    from pypdf import PdfReader
+
+    record = dict(status="experimental", status_reason="Uncalibrated estimate under stated cooling assumptions",
+        inputs=dict(cooling="still_air", hotspot_allowance_K=15, calibration_source=None),
+        points=[dict(speed_rpm=1000, limiting_constraint="winding_temperature", status="experimental",
+                     status_reason="Missing rotor heat", point=dict(torque_Nm=1.234567, winding_temperature_C=139.5,
+                     magnet_temperature_C=65, verification_status="NOT_COMPARED"))])
+    context = CONTEXT.model_copy(update={"thermal_rating": record})
+    rows = _csv_rows(build_performance_csv(data, context))
+    assert any(row[0] == "thermal_rating" and row[1] == "inputs.hotspot_allowance_K" and row[3] == "15" for row in rows)
+    assert any(row[0] == "thermal_rating" and row[1] == "points[0].limiting_constraint" and row[3] == "winding_temperature" for row in rows)
+    text = "\n".join(page.extract_text() for page in PdfReader(io.BytesIO(build_performance_pdf(data, context))).pages)
+    assert "Thermally limited torque" in text
+    assert "Uncalibrated estimate" in text
+    assert "Missing rotor heat" in text
+    assert "1.235" in text

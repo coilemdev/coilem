@@ -19,6 +19,10 @@ coilem solve motor.coilem --setup "High Speed" --out result.json
 ```
 
 ```bash
+coilem thermal motor.coilem --ambient 40 --out thermal.json
+```
+
+```bash
 coilem schema --out motor-schema.json
 ```
 
@@ -36,6 +40,7 @@ folder is not on `PATH`. Bare `coilem`, its `--port`, `--no-browser` and
 |---|---|---|
 | `coilem check DESIGN` | Chooses the run setup, builds the request and runs the app's pre-solve checks; reports the effective settings and warnings (winding feasibility, and a requested rotor iron loss the design cannot get) | None: no mesh, no solve |
 | `coilem solve DESIGN` | Solves the design and writes compact results | Yes |
+| `coilem thermal DESIGN` | Estimates the steady-state temperature of each part (experimental). A design file is solved first; a result file from `coilem solve` is used as it is | Only for a design file |
 | `coilem setups DESIGN` | Lists the design's saved run setups, which one is active, and whether each can be used | None |
 | `coilem schema` | Describes every design input with its unit, limits and allowed values, the run-setup format, the output documents, exit codes and error codes | None |
 | `coilem version` | The installed coilEM, its build, Python and platform | None |
@@ -43,7 +48,7 @@ folder is not on `PATH`. Bare `coilem`, its `--port`, `--no-browser` and
 `DESIGN` is a `.coilem` file saved by the app (schema 4) or a request JSON
 that the Python client reads.
 
-`check` and `solve` take the same settings:
+`check`, `solve` and `thermal` (for a design file) take the same settings:
 
 | Option | Meaning |
 |---|---|
@@ -65,6 +70,66 @@ that the Python client reads.
 Every command takes `--out PATH` (default: standard output), `--compact`
 (JSON on one line) and `--quiet` (no messages on standard error, except
 errors).
+
+## Thermal estimate
+
+`coilem thermal` gives the steady-state temperature of the winding, teeth,
+yoke, housing or mount, magnets and rotor, with the winding's margin to its
+insulation limit. It is the same experimental estimate as the app's Thermal
+setup, and it starts from the torque and losses of a solved run.
+
+```bash
+coilem thermal motor.coilem --out thermal.json
+```
+
+solves the design first, with the torque and losses analyses added to
+whatever the design had selected, and takes the same settings as `solve`
+(`--setup`, `--quality`, `--mesh`, `--set`, `--server`, `--progress`).
+
+```bash
+coilem solve motor.coilem --analyses torque,back_emf,losses --out result.json
+```
+
+```bash
+coilem thermal result.json --ambient 40 --out thermal.json
+```
+
+uses a result that is already solved. Nothing is solved again, so trying
+several cooling assumptions on one result takes a moment each.
+
+| Option | Meaning |
+|---|---|
+| `--cooling NAME` | `still_air` (default), `forced_air` or `liquid_jacket` |
+| `--ambient C` | Temperature of the air or coolant that carries the heat away (default 25) |
+| `--insulation CLASS` | Winding insulation class `A`, `B`, `F` (default) or `H` |
+| `--thermal NAME=VALUE` | Set any thermal input, for example `--thermal housing_h_W_m2K=60`. Repeat for more. `coilem schema` lists them with their units and limits |
+| `--thermal-inputs PATH` | A JSON file of thermal inputs. A document written by `coilem thermal` works too: its inputs are reused |
+| `--no-copper-feedback` | Keep the solved copper loss instead of letting it rise with the winding temperature |
+
+Without cooling options the app's still-air starter values are used. They are
+illustrative, not measured, and the output records every input in
+`thermal_inputs`, starter values included.
+
+- **Another kind of cooling needs its own numbers.** With `--cooling
+  forced_air` or `liquid_jacket`, give `housing_h_W_m2K`,
+  `end_space_h_W_m2K`, `airgap_h_W_m2K` and a `coefficient_source` saying
+  where they come from. The still-air values are not carried over.
+- **An outer-rotor motor** is cooled through its mount and its rotor shell.
+  `mount_to_ambient_K_W` (default 10) is the resistance from the stator hub
+  through the mount to the surroundings, and `housing_h_W_m2K` acts on the
+  rotor shell.
+- **A design with mechanical loss** needs `mechanical_split`, the share of
+  that heat in each part, for example
+  `--thermal 'mechanical_split={"bearings": 1, "housing": 0, "rotor": 0}'`.
+
+The document has `metrics` (hottest part and its temperature, winding
+temperature, limit and margin, magnet temperature, total heat), `thermal`
+(every part with its temperature, limit, margin and heat) and `thermal_inputs`.
+When no estimate can be given, for example for a motor that would settle far
+too hot for the entered cooling, the command still exits 0:
+`thermal.status` is `unavailable` and `thermal.status_reason` says why.
+
+The thermally limited torque curve is not a command yet; it is in the app.
 
 ## Which settings are solved
 

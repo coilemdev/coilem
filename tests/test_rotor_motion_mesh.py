@@ -78,6 +78,108 @@ def template():
     return config, artifact
 
 
+OUTER_FIXTURE = FIXTURE.parents[2] / "af-v1.10/measured-fixtures/spm_outer_14p12s_drone__baseline.json"
+
+
+def outer_template():
+    """Synthetic outrunner: an open stator bore, the stator ring, the gap and a rotor ring outside it."""
+    config = MotorConfig.model_validate(json.loads(OUTER_FIXTURE.read_text()))
+    n = 128
+    a = 2*math.pi*np.arange(n)/n
+    nodes = np.concatenate([r*np.column_stack((np.cos(a), np.sin(a))) for r in (10., 29.5, 30., 50.)])
+    bore, inner, outer, far = (np.arange(k*n, (k+1)*n) for k in range(4))
+    stator, gap, core = annular_strip(nodes, bore, inner), annular_strip(nodes, inner, outer), annular_strip(nodes, outer, far)
+    triangles = np.concatenate((stator, gap, core))
+    ids = ["stator_yoke"]*len(stator)+["airgap"]*len(gap)+["rotor_core"]*len(core)
+    ids[0] = "slot_winding_0"
+    regions = [{"id": "rotor_core", "kind": "RotorCore", "motion_group": "rotor"},
+               {"id": "airgap", "kind": "Airgap", "motion_group": "sliding_airgap"},
+               {"id": "stator_yoke", "kind": "StatorYoke", "motion_group": "stationary"},
+               {"id": "slot_winding_0", "kind": "SlotWinding", "motion_group": "stationary",
+                "winding": {"phase": "A", "direction": "in", "turn_fraction": 1.,
+                            "area_mm2": float(triangle_metrics(nodes, triangles[:1])[0][0]), "current_density_a_per_m2": 0.}}]
+    kinds = {r["id"]: r["kind"] for r in regions}
+    artifact = {"mesh": {"nodes": nodes.tolist(), "triangles": triangles.tolist(), "regions": [kinds[r] for r in ids],
+                         "length_units": "mm", "boundary_nodes": np.concatenate((bore, far)).tolist(), "sector_edge_pairs": [],
+                         "info": {"total_span_deg": 360, "rotor_layout": "outer",
+                                  "airgap_inner_radius_mm": 29.5, "airgap_outer_radius_mm": 30.}},
+                "element_region_ids": ids, "element_magnetization": [None]*len(ids),
+                "element_current_density_a_per_m2": [0.]+[None]*(len(ids)-1), "rotor_angle_mech_deg": 0.,
+                "topology_provenance": build_topology_provenance(config),
+                "physics_contract": {"topology_hint": "SPM", "regions": regions,
+                                     "motion": {"rotor_angle_mech_deg": 0., "rotor_state": "baked_in_mesh"},
+                                     "provenance": {"element_region_sources": ["synthetic"]*len(ids)}}}
+    return config, artifact
+
+
+@pytest.mark.parametrize("theta", [0, -0.9375, 3.7, -360, 725.123])
+def test_outer_rotor_ring_turns_rigidly_around_a_fixed_stator_and_its_open_bore(theta):
+    config, artifact = outer_template()
+    original = copy.deepcopy(artifact)
+    motion = FixedMaterialRotorMesh(artifact, angular_divisions=128)
+    assert motion.outer_rotor and motion.holes == 1
+    pose = motion.at_angle(config, theta)
+    mesh = pose["mesh"]
+    validate_conforming_disk(mesh["nodes"], mesh["triangles"], mesh["boundary_nodes"], holes=1)
+    with pytest.raises(ValueError, match="single filled disk"):
+        validate_conforming_disk(mesh["nodes"], mesh["triangles"], mesh["boundary_nodes"])
+    old = np.asarray(artifact["mesh"]["nodes"])[artifact["mesh"]["triangles"]]
+    new = np.asarray(mesh["nodes"])[mesh["triangles"]][:len(motion.keep)]
+    rotating = np.asarray(artifact["element_region_ids"])[motion.keep] == "rotor_core"
+    a = math.radians(theta)
+    to_material = np.array([[math.cos(a), -math.sin(a)], [math.sin(a), math.cos(a)]])
+    np.testing.assert_allclose(new[rotating] @ to_material, old[motion.keep[rotating]], rtol=0, atol=1e-12)
+    np.testing.assert_array_equal(new[~rotating], old[motion.keep[~rotating]])
+    # The outer boundary turns with the rotor and stays on its circle; the bore does not move.
+    radius = np.hypot(*np.asarray(mesh["nodes"])[mesh["boundary_nodes"]].T)
+    np.testing.assert_allclose(np.sort(radius), np.r_[np.full(128, 10.), np.full(128, 50.)], rtol=0, atol=1e-12)
+    assert pose["rotor_angle_mech_deg"] == theta and artifact == original
+
+
+def test_outer_rotor_motion_refuses_buried_magnets_and_a_mesh_declared_the_wrong_way_round():
+    _, artifact = outer_template()
+    artifact["physics_contract"]["topology_hint"] = "IPM"
+    with pytest.raises(ValueError, match="full-circle"):
+        FixedMaterialRotorMesh(artifact)
+    _, artifact = outer_template()
+    del artifact["mesh"]["info"]["rotor_layout"]
+    with pytest.raises(ValueError, match="do not bound"):
+        FixedMaterialRotorMesh(artifact)
+    # An inner-rotor template is a filled disk: the same rings with the rotor inside and its centre left open are refused.
+    _, artifact = outer_template()
+    del artifact["mesh"]["info"]["rotor_layout"]
+    third = len(artifact["element_region_ids"])//3
+    artifact["element_region_ids"] = ["rotor_core"]*third+["airgap"]*third+["stator_yoke"]*third
+    with pytest.raises(ValueError, match="filled disk"):
+        FixedMaterialRotorMesh(artifact)
+
+
+def test_real_outrunner_material_mesh_keeps_a_static_material_field_lossless():
+    pytest.importorskip("gmsh")
+    from backend.gmsh_solver import run_gmsh_mesh_preview
+
+    config = MotorConfig.model_validate_json(OUTER_FIXTURE.read_text())
+    config.solve_params.mesh_density = "coarse"
+    template = run_gmsh_mesh_preview(config, rotor_angle_deg=0)["solve_mesh_artifact"]
+    motion = FixedMaterialRotorMesh(template, angular_divisions=128)
+    assert motion.outer_rotor and motion.holes == 1
+    plan = RotorSamplingPlan(3000, 8)
+    samples = []
+    for angle in plan.mechanical_angles_deg:
+        mesh = motion.at_angle(config, angle)["mesh"]
+        a = math.radians(angle)
+        material_xy = np.asarray(mesh["nodes"]) @ np.array([[math.cos(a), -math.sin(a)], [math.sin(a), math.cos(a)]])
+        report = {"mesh_info": {"total_span_deg": 360}, "field_plot": {"total_span_deg": 360,
+            "nodes_mm": mesh["nodes"], "triangles": mesh["triangles"], "regions": mesh["regions"],
+            "az_nodal": static_potential(material_xy).tolist()}}
+        samples.append(field_sample(report, angle))
+    assert all(np.allclose(samples[0].corners_mm, sample.corners_mm, rtol=0, atol=1e-9) for sample in samples)
+    history = rotor_flux_history(plan, samples)
+    coefficients = SteinmetzCoefficients(kh=0.02, alpha=2.1, kc=0.0003, density_kg_m3=7650)
+    estimate = harmonic_rotor_iron_loss(history, material=RotorLossMaterial("synthetic", "analytical", coefficients), stack_length_m=0.05)
+    assert estimate.total_W < 1e-16
+
+
 @pytest.mark.parametrize("theta", [0, -0.9375, -22.5, 3.7, -360, 725.123])
 def test_rigid_rotor_fixed_stator_shared_interfaces_and_fresh_unwrapped_pose(theta):
     config, artifact = template()

@@ -9,7 +9,7 @@ const {
   PHASE_RESISTANCE_UNRECORDED_STATUS_REASON,
 } = await importTypeScriptModule(new URL('../src/public/outputStatus.ts', import.meta.url));
 
-const { EXPAND_SHARE, STEEL_RAMP, densityColor, formatPower, lossesView, lossSegments, notModelledText, rampColor, roundShares, rotorSamplingText, shareText, stackCopperWPerKg } = await importTypeScriptModule(
+const { STEEL_RAMP, densityColor, formatPower, lossesView, lossSegments, notModelledText, rampColor, roundShares, rotorSamplingText, shareText, stackCopperWPerKg } = await importTypeScriptModule(
   new URL('../src/public/lossesView.ts', import.meta.url),
 );
 
@@ -56,7 +56,7 @@ const view = lossesView(loss, iron);
   const rotorView = lossesView({ ...combined, rotor_iron_loss_status_reason: 'Pilot.' }, iron, null, rotor);
   assert.ok(rotorView.rows.some(row => row.key === 'rotor_iron'));
   assert.deepEqual(rotorView.rows.filter((row) => row.parent === 'rotor_iron').map((row) => row.key), ['rotor_hysteresis', 'rotor_eddy']);
-  assert.equal(rotorView.rows.find((row) => row.key === 'rotor_iron').expanded, true, 'a few-percent rotor loss opens');
+  assert.equal(rotorView.rows.find((row) => row.key === 'rotor_iron').expanded, false, 'a breakdown starts closed, whatever its share');
   // The sampling note sits on the rotor row's tooltip and status, not between the table and the bar.
   const note = 'Rotor iron: M350-50A, 384 positions over a full mechanical turn. 98.6% of the estimate is above the material model’s 1000 Hz range.';
   assert.equal(rotorSamplingText(rotor), note);
@@ -64,13 +64,12 @@ const view = lossesView(loss, iron);
   assert.equal(rotorSamplingText({ ...rotor, status: 'unavailable' }), '');
   assert.ok(rotorView.rows.find((row) => row.key === 'rotor_iron').hint.includes(note));
   assert.equal(rotorView.statuses.find((item) => item.key === 'rotor_iron').reason, `Pilot. ${note}`);
-  // A negligible rotor loss stays closed and reads "<1%", as in a surface-magnet motor.
+  // A negligible rotor loss reads "<1%", as in a surface-magnet motor.
   const tiny = { ...combined, rotor_iron_loss_W: 0.0132, rotor_hysteresis_loss_W: 0.004, rotor_lamination_eddy_loss_W: 0.0092,
     total_loss_W: loss.total_loss_W + 0.0132 };
   const tinyRow = lossesView(tiny, iron).rows.find((row) => row.key === 'rotor_iron');
   assert.equal(tinyRow.expanded, false);
   assert.equal(tinyRow.share, '<1%');
-  assert.ok(0.0132 / tiny.total_loss_W < EXPAND_SHARE);
   const { segments, totalW } = lossSegments(combined);
   assert.equal(segments.length, 7);
   assert.equal(totalW, combined.total_loss_W);
@@ -98,7 +97,7 @@ assert.deepEqual(view.rows.map((row) => row.key),
   assert.equal(byKey.iron.color, undefined, 'a loss row with segment rows has no swatch of its own');
   assert.equal(byKey.mechanical.color, 'var(--loss-mechanical)', 'a loss row with one segment carries its swatch');
   assert.equal(byKey.mechanical.expanded, undefined, 'and has nothing to open');
-  assert.equal(byKey.iron.expanded, true);
+  assert.equal(byKey.iron.expanded, false, 'a row with parts can be opened and starts closed');
   assert.equal(byKey.total.share, undefined, 'the total row has no share');
   // 60 + 40 + 10 W: shares of 100 split by largest remainder, then within each loss row.
   assert.deepEqual(['copper', 'copper_stack', 'copper_end', 'iron', 'iron_hysteresis', 'iron_eddy', 'mechanical'].map((key) => byKey[key].share),

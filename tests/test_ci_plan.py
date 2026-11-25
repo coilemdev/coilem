@@ -1,5 +1,6 @@
 """Job selection must skip only proven unrelated jobs, including after renames."""
 import json
+import shutil
 import subprocess
 
 import pytest
@@ -64,7 +65,7 @@ def test_routine_pr_uses_two_environments():
 
 
 def git(root, *args):
-    return subprocess.check_output(['git', *args], cwd=root).decode().strip()
+    return subprocess.check_output([shutil.which('git') or 'git', *args], cwd=root).decode().strip()
 
 
 def test_diff_uses_pr_head_and_merge_base_and_keeps_both_sides_of_rename(tmp_path):

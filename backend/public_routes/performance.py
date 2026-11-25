@@ -191,9 +191,9 @@ async def stream_map(body: dict[str, Any]) -> StreamingResponse:
                 solver.cancel_active_solve()
             solve_routes._release_after_worker(solver, future)
 
-    return StreamingResponse(
+    return solve_routes._SolveLaneStream(
         events(),
-        media_type="text/event-stream",
+        abandon=lambda: solve_routes._release_solve(solver),
         headers={"Cache-Control": "no-cache", "Connection": "keep-alive", "X-Accel-Buffering": "no"},
     )
 

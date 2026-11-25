@@ -70,8 +70,8 @@ its newest 5 completed runs, configurable with
 request, result, material record and reports, and stay comparable and
 exportable. The manifest keeps each removed artifact's path and hash, marked
 `removed_at`, and records `retention.field_playback_removed_at`. The
-integrity check skips those artifacts, and **Manage previous runs** marks the run
-"field playback removed".
+integrity check skips those artifacts, and **Previous runs** marks the run
+"playback removed".
 
 The workspace has a 10 GiB default hard limit, configurable with
 `COILEM_SOLVE_WORKSPACE_MAX_BYTES`. When it is full, coilEM first removes field
@@ -83,8 +83,10 @@ recommends keeping the latest 25 runs per project. The delete API requires the
 caller to repeat the exact run ID and refuses paths outside the configured
 root.
 
-**Manage previous runs** opens a dialog showing the workspace total and the size and status
-of each saved, failed, or cancelled run. Deletion is always a two-step explicit
+**Previous runs** (the clock button, or **Manage previous runs** on a storage error) opens a
+dialog listing every saved, failed, or cancelled run with its size, and the workspace total.
+Each finished run also shows its current, speed, torque, efficiency and back EMF, read from
+the run's small report summary; the large result is not opened for the list. Deletion is always a two-step explicit
 action for one run. A running solve cannot be deleted from the dialog. When the
 workspace is full, the solve error offers **Manage previous runs** so the user
 can open this dialog and remove an

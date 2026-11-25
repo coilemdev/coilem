@@ -1,0 +1,319 @@
+{
+  "schema": "coilem.phase_g_loss/v2",
+  "protocol_version": "G-2.0.0",
+  "scope": "Full-motor loss numbers on four motors at no load and one load, 1500 and 3000 rpm. Sinusoidal drive, current on the q axis, M350-50A steel, N42 magnets, 0.8 mm wire with two strands, 20 C winding, no mechanical loss.",
+  "motors": [
+    {
+      "id": "inner_spm",
+      "description": "Inner-rotor SPM, 8 poles, 12 slots, concentrated winding"
+    },
+    {
+      "id": "flat_ipm",
+      "description": "Inner-rotor flat IPM, 8 poles, 12 slots (FSAE)"
+    },
+    {
+      "id": "distributed_spm",
+      "description": "Inner-rotor SPM, 8 poles, 24 slots, distributed winding"
+    },
+    {
+      "id": "outer_spm",
+      "description": "Outer-rotor SPM, 10 poles, 12 slots, single-layer winding"
+    }
+  ],
+  "stator_copper_reference": {
+    "solver": "FEMM 4.2",
+    "collected": "2026-11-17",
+    "directory": "references/femm-stator-copper-20261117",
+    "manifest_sha256": "0de84d0cf5591c85ade49ccb3f25ae031954913f45b8a00f435d140026fe3eab",
+    "review_sha256": "19b1660ebabe1f60bc765f8dc96ee0a145676423b6b216bc42f5193027d4b236",
+    "note": "Stator iron loss from FEMM field histories over one electrical period (96 samples); copper from the specified wire, turn count and end-turn geometry of the FEMM winding blocks."
+  },
+  "rotor": {
+    "positions": 384,
+    "position_counts": [
+      96,
+      192,
+      384
+    ],
+    "collection_speed_rpm": 3000,
+    "evaluation_speeds_rpm": [
+      1500,
+      3000
+    ],
+    "reference": null
+  },
+  "gates": {
+    "reference_relative": 0.1,
+    "absolute_W": 0.001,
+    "copper_relative": 0.01,
+    "angular_relative": 0.05,
+    "closure_max_T": 1e-06,
+    "closure_rms_T": 1e-07
+  },
+  "not_included": [
+    "magnet and other solid-part eddy currents",
+    "AC winding loss",
+    "inverter loss",
+    "excess loss, minor loops and rotating-flux corrections"
+  ],
+  "cases": [
+    {
+      "id": "loss_inner_spm_no_load_1500rpm",
+      "motor": "inner_spm",
+      "load": "no_load",
+      "speed_rpm": 1500,
+      "current_peak_A": 0.0,
+      "fixture": "fixtures/loss_inner_spm_no_load_1500rpm.json",
+      "fixture_sha256": "5499d9977935ffc712f1130c80c384efb679c5fcb820a8c163116496127c4568",
+      "reference": "references/femm-stator-copper-20261117/loss_inner_spm_no_load_1500rpm.json",
+      "reference_sha256": "d211f699c8369841c32e0bd92f1726eb6f25c3b6ee72c4697372b481a05086c7",
+      "rotor_history": "inner_spm_no_load"
+    },
+    {
+      "id": "loss_inner_spm_no_load_3000rpm",
+      "motor": "inner_spm",
+      "load": "no_load",
+      "speed_rpm": 3000,
+      "current_peak_A": 0.0,
+      "fixture": "fixtures/loss_inner_spm_no_load_3000rpm.json",
+      "fixture_sha256": "1d4a517092c4d6cbe2c2bd42c3f8dc3babc9e167f33247d265590a66a2be0478",
+      "reference": "references/femm-stator-copper-20261117/loss_inner_spm_no_load_3000rpm.json",
+      "reference_sha256": "4a422f189a39a3dc070484f31746fa01bdc5e7d0e8c8eb82053f3ff618b07387",
+      "rotor_history": "inner_spm_no_load"
+    },
+    {
+      "id": "loss_inner_spm_loaded_1500rpm",
+      "motor": "inner_spm",
+      "load": "loaded",
+      "speed_rpm": 1500,
+      "current_peak_A": 20.0,
+      "fixture": "fixtures/loss_inner_spm_loaded_1500rpm.json",
+      "fixture_sha256": "6d1b57b65d985ffc8a014bcf964d56a50347b51757c91de02c2125e4ded02404",
+      "reference": "references/femm-stator-copper-20261117/loss_inner_spm_loaded_1500rpm.json",
+      "reference_sha256": "e87143c6497ce13f35416a9d395e92761d0604d6f64d158cf65a428169182e84",
+      "rotor_history": "inner_spm_loaded"
+    },
+    {
+      "id": "loss_inner_spm_loaded_3000rpm",
+      "motor": "inner_spm",
+      "load": "loaded",
+      "speed_rpm": 3000,
+      "current_peak_A": 20.0,
+      "fixture": "fixtures/loss_inner_spm_loaded_3000rpm.json",
+      "fixture_sha256": "66723ce3a9f7f15a6333177d4de1f651f5020926fcd33fbd33566ee5eb311235",
+      "reference": "references/femm-stator-copper-20261117/loss_inner_spm_loaded_3000rpm.json",
+      "reference_sha256": "74548756f85bd0e06afd495222135534701859616dea8de720894a242ff52d35",
+      "rotor_history": "inner_spm_loaded"
+    },
+    {
+      "id": "loss_flat_ipm_no_load_1500rpm",
+      "motor": "flat_ipm",
+      "load": "no_load",
+      "speed_rpm": 1500,
+      "current_peak_A": 0.0,
+      "fixture": "fixtures/loss_flat_ipm_no_load_1500rpm.json",
+      "fixture_sha256": "bdfe831827c375ccb05976b1025bdc2a8423bf6c094798840bc88fba514ce0fc",
+      "reference": "references/femm-stator-copper-20261117/loss_flat_ipm_no_load_1500rpm.json",
+      "reference_sha256": "958a40e09b91240072beb2bd82bfa186f64188b3625684567ad57a194f1fb6a8",
+      "rotor_history": "flat_ipm_no_load"
+    },
+    {
+      "id": "loss_flat_ipm_no_load_3000rpm",
+      "motor": "flat_ipm",
+      "load": "no_load",
+      "speed_rpm": 3000,
+      "current_peak_A": 0.0,
+      "fixture": "fixtures/loss_flat_ipm_no_load_3000rpm.json",
+      "fixture_sha256": "a7683cfa57ca9aa3f7f76caaa23c1ad6fd11b76426afd76b887171d2de2ed2b5",
+      "reference": "references/femm-stator-copper-20261117/loss_flat_ipm_no_load_3000rpm.json",
+      "reference_sha256": "fdf2a98d86da935d06a4b2ce6fc24cac924a31a5543195c7f0d189c97ed61de8",
+      "rotor_history": "flat_ipm_no_load"
+    },
+    {
+      "id": "loss_flat_ipm_loaded_1500rpm",
+      "motor": "flat_ipm",
+      "load": "loaded",
+      "speed_rpm": 1500,
+      "current_peak_A": 50.0,
+      "fixture": "fixtures/loss_flat_ipm_loaded_1500rpm.json",
+      "fixture_sha256": "12e5aa6fd41a2f320cd977fdb632729264794279973d234b8dbeaa708e747473",
+      "reference": "references/femm-stator-copper-20261117/loss_flat_ipm_loaded_1500rpm.json",
+      "reference_sha256": "00ddf7a772b7de9160e95142e25d46bc544606efbb4ad7da60c6a31a917b1cd3",
+      "rotor_history": "flat_ipm_loaded"
+    },
+    {
+      "id": "loss_flat_ipm_loaded_3000rpm",
+      "motor": "flat_ipm",
+      "load": "loaded",
+      "speed_rpm": 3000,
+      "current_peak_A": 50.0,
+      "fixture": "fixtures/loss_flat_ipm_loaded_3000rpm.json",
+      "fixture_sha256": "f2d919d5492ca9de9daff0649834a4051f5cc12d2c6fff9d2328ae38fa515250",
+      "reference": "references/femm-stator-copper-20261117/loss_flat_ipm_loaded_3000rpm.json",
+      "reference_sha256": "0c46b8f33b587b56318fe4d500e14570153f777840cdbaae323178a74dd570f0",
+      "rotor_history": "flat_ipm_loaded"
+    },
+    {
+      "id": "loss_distributed_spm_no_load_1500rpm",
+      "motor": "distributed_spm",
+      "load": "no_load",
+      "speed_rpm": 1500,
+      "current_peak_A": 0.0,
+      "fixture": "fixtures/loss_distributed_spm_no_load_1500rpm.json",
+      "fixture_sha256": "5c30e67cf67585ed73ce77e9232fca41fa5f16e6d0c6dd9534ea75690ea4a5b9",
+      "reference": "references/femm-stator-copper-20261117/loss_distributed_spm_no_load_1500rpm.json",
+      "reference_sha256": "b21a5d7e1a627eca476c958bf9f224f8895b0568311a879f2f28860fed4dbdfa",
+      "rotor_history": "distributed_spm_no_load"
+    },
+    {
+      "id": "loss_distributed_spm_no_load_3000rpm",
+      "motor": "distributed_spm",
+      "load": "no_load",
+      "speed_rpm": 3000,
+      "current_peak_A": 0.0,
+      "fixture": "fixtures/loss_distributed_spm_no_load_3000rpm.json",
+      "fixture_sha256": "25f3a267c7a850acf7609cb91b2d6fbb0a3281c2d305af603fa0b4ca37a7c174",
+      "reference": "references/femm-stator-copper-20261117/loss_distributed_spm_no_load_3000rpm.json",
+      "reference_sha256": "711493807f96a12f300bf73f10f7521e2a05422a8dabd1f51085723259289493",
+      "rotor_history": "distributed_spm_no_load"
+    },
+    {
+      "id": "loss_distributed_spm_loaded_1500rpm",
+      "motor": "distributed_spm",
+      "load": "loaded",
+      "speed_rpm": 1500,
+      "current_peak_A": 8.0,
+      "fixture": "fixtures/loss_distributed_spm_loaded_1500rpm.json",
+      "fixture_sha256": "725ff12f669c855a26c9097a69c6d06cb53a21d0faf01947711906d3843876d8",
+      "reference": "references/femm-stator-copper-20261117/loss_distributed_spm_loaded_1500rpm.json",
+      "reference_sha256": "8e7d88a094f9cc17fa1d2806cda1445d551fbf82647bf795d383c082d62bef8a",
+      "rotor_history": "distributed_spm_loaded"
+    },
+    {
+      "id": "loss_distributed_spm_loaded_3000rpm",
+      "motor": "distributed_spm",
+      "load": "loaded",
+      "speed_rpm": 3000,
+      "current_peak_A": 8.0,
+      "fixture": "fixtures/loss_distributed_spm_loaded_3000rpm.json",
+      "fixture_sha256": "0beecd4cd249fd49d1a912696c79db1682c8e05db85aa835077ccf2283016aeb",
+      "reference": "references/femm-stator-copper-20261117/loss_distributed_spm_loaded_3000rpm.json",
+      "reference_sha256": "d0c30222c42a4e230f7d1758f6535d6beeca2b052ff86b31c46c59558f383c52",
+      "rotor_history": "distributed_spm_loaded"
+    },
+    {
+      "id": "loss_outer_spm_no_load_1500rpm",
+      "motor": "outer_spm",
+      "load": "no_load",
+      "speed_rpm": 1500,
+      "current_peak_A": 0.0,
+      "fixture": "fixtures/loss_outer_spm_no_load_1500rpm.json",
+      "fixture_sha256": "470a276dd37fa6c078e82549413452b8431f9db21fa11f2c319e6bf745833642",
+      "reference": "references/femm-stator-copper-20261117/loss_outer_spm_no_load_1500rpm.json",
+      "reference_sha256": "dcce3662c972e0eef4e5cedd457fc71f58921003d0a23854b36ce8ff6ed66a45",
+      "rotor_history": "outer_spm_no_load"
+    },
+    {
+      "id": "loss_outer_spm_no_load_3000rpm",
+      "motor": "outer_spm",
+      "load": "no_load",
+      "speed_rpm": 3000,
+      "current_peak_A": 0.0,
+      "fixture": "fixtures/loss_outer_spm_no_load_3000rpm.json",
+      "fixture_sha256": "afe81b12d282786650fb32f01280dbdc23ed4a079ff906e99be9b337930c7677",
+      "reference": "references/femm-stator-copper-20261117/loss_outer_spm_no_load_3000rpm.json",
+      "reference_sha256": "39592dc4d97d2c749632b9caaff80fb586c0666fad4172ec2b1a78820e438164",
+      "rotor_history": "outer_spm_no_load"
+    },
+    {
+      "id": "loss_outer_spm_loaded_1500rpm",
+      "motor": "outer_spm",
+      "load": "loaded",
+      "speed_rpm": 1500,
+      "current_peak_A": 15.0,
+      "fixture": "fixtures/loss_outer_spm_loaded_1500rpm.json",
+      "fixture_sha256": "8dc6c6e7239647754b15942a54f28b54bf06f859226e13ce5ea179fca91b2060",
+      "reference": "references/femm-stator-copper-20261117/loss_outer_spm_loaded_1500rpm.json",
+      "reference_sha256": "57cbe979ce02ff4191a017d7e8834b2b1873beea6c4460c0db911890f18ce309",
+      "rotor_history": "outer_spm_loaded"
+    },
+    {
+      "id": "loss_outer_spm_loaded_3000rpm",
+      "motor": "outer_spm",
+      "load": "loaded",
+      "speed_rpm": 3000,
+      "current_peak_A": 15.0,
+      "fixture": "fixtures/loss_outer_spm_loaded_3000rpm.json",
+      "fixture_sha256": "725a211dc36ee9d2ed9a7903c8303f805bcee09d828bb5689d9a45c6418b416f",
+      "reference": "references/femm-stator-copper-20261117/loss_outer_spm_loaded_3000rpm.json",
+      "reference_sha256": "c3819b16686b785bdd14367f123d358f2c7d7e9b17ff30ecece343b5bf771900",
+      "rotor_history": "outer_spm_loaded"
+    }
+  ],
+  "rotor_histories": [
+    {
+      "id": "inner_spm_no_load",
+      "motor": "inner_spm",
+      "load": "no_load",
+      "rotor_layout": "inner",
+      "fixture": "fixtures/loss_inner_spm_no_load_3000rpm.json",
+      "fixture_sha256": "1d4a517092c4d6cbe2c2bd42c3f8dc3babc9e167f33247d265590a66a2be0478"
+    },
+    {
+      "id": "inner_spm_loaded",
+      "motor": "inner_spm",
+      "load": "loaded",
+      "rotor_layout": "inner",
+      "fixture": "fixtures/loss_inner_spm_loaded_3000rpm.json",
+      "fixture_sha256": "66723ce3a9f7f15a6333177d4de1f651f5020926fcd33fbd33566ee5eb311235"
+    },
+    {
+      "id": "flat_ipm_no_load",
+      "motor": "flat_ipm",
+      "load": "no_load",
+      "rotor_layout": "inner",
+      "fixture": "fixtures/loss_flat_ipm_no_load_3000rpm.json",
+      "fixture_sha256": "a7683cfa57ca9aa3f7f76caaa23c1ad6fd11b76426afd76b887171d2de2ed2b5"
+    },
+    {
+      "id": "flat_ipm_loaded",
+      "motor": "flat_ipm",
+      "load": "loaded",
+      "rotor_layout": "inner",
+      "fixture": "fixtures/loss_flat_ipm_loaded_3000rpm.json",
+      "fixture_sha256": "f2d919d5492ca9de9daff0649834a4051f5cc12d2c6fff9d2328ae38fa515250"
+    },
+    {
+      "id": "distributed_spm_no_load",
+      "motor": "distributed_spm",
+      "load": "no_load",
+      "rotor_layout": "inner",
+      "fixture": "fixtures/loss_distributed_spm_no_load_3000rpm.json",
+      "fixture_sha256": "25f3a267c7a850acf7609cb91b2d6fbb0a3281c2d305af603fa0b4ca37a7c174"
+    },
+    {
+      "id": "distributed_spm_loaded",
+      "motor": "distributed_spm",
+      "load": "loaded",
+      "rotor_layout": "inner",
+      "fixture": "fixtures/loss_distributed_spm_loaded_3000rpm.json",
+      "fixture_sha256": "0beecd4cd249fd49d1a912696c79db1682c8e05db85aa835077ccf2283016aeb"
+    },
+    {
+      "id": "outer_spm_no_load",
+      "motor": "outer_spm",
+      "load": "no_load",
+      "rotor_layout": "outer",
+      "fixture": "fixtures/loss_outer_spm_no_load_3000rpm.json",
+      "fixture_sha256": "afe81b12d282786650fb32f01280dbdc23ed4a079ff906e99be9b337930c7677"
+    },
+    {
+      "id": "outer_spm_loaded",
+      "motor": "outer_spm",
+      "load": "loaded",
+      "rotor_layout": "outer",
+      "fixture": "fixtures/loss_outer_spm_loaded_3000rpm.json",
+      "fixture_sha256": "725a211dc36ee9d2ed9a7903c8303f805bcee09d828bb5689d9a45c6418b416f"
+    }
+  ]
+}

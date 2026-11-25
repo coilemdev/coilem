@@ -8,6 +8,9 @@ import {
 } from './machineConstants';
 import { dqAgreement } from './dqView';
 
+const KV_HELP = 'Estimated from Ke using peak line-to-line back-EMF. '
+  + 'Divide 1,000 by √2 × Ke in line-to-line RMS volts per 1,000 RPM.';
+
 const CONSISTENCY_HELP = 'Average torque divided by the torque the back EMF predicts, Kt / (1.5·Ke). '
   + '100% is ideal for magnet torque with the current on the q-axis (0° current angle); a few percent low '
   + 'under load is normal. Saturation, reluctance torque or another current angle move it. '
@@ -34,7 +37,7 @@ function Label({ symbol, name }: { symbol: string; name: string }) {
 }
 
 /**
- * Kt, Ke, λpm and the torque–EMF consistency of a completed run (#99), as a
+ * Kt, Ke, estimated Kv, λpm and the torque–EMF consistency of a completed run, as a
  * table whose numbers share one right-aligned column. Renders nothing for a
  * run that reported none of them.
  */
@@ -56,6 +59,10 @@ export function MotorConstants({ summary, variant = 'panel' }: { summary: MotorC
           <tr>
             <th scope="row"><Label symbol="Ke" name="back-EMF constant" /></th>
             <Value item={view.ke} />
+          </tr>
+          <tr>
+            <th scope="row" title={KV_HELP}><Label symbol="Kv" name="speed constant estimate" /></th>
+            <Value item={view.kv} />
           </tr>
           <tr>
             <th scope="row"><Label symbol="λpm" name="magnet flux linkage" /></th>

@@ -88,7 +88,7 @@ def test_hybrid_raster_manifest_keeps_numerical_frames_for_exact_zoom_detail(
     assert manifest is not None
     assert manifest["schema_version"] == "coilem.field_playback.v2"
     assert manifest["encoding"] == "layered-raster-v1"
-    assert manifest["renderer_revision"] == "medium-b-arrows-mesh-fixed-flux-scale-v5"
+    assert manifest["renderer_revision"] == "medium-b-arrows-mesh-fixed-flux-scale-stator-0p5t-v7"
     assert manifest["width_px"] == 1536
     assert manifest["height_px"] == 1536
     assert "detail_width_px" not in manifest
@@ -562,6 +562,30 @@ def test_flux_colours_use_one_fixed_scale_with_magenta_above_two_tesla() -> None
         "max": 2.0,
         "over_range_color": "#f43cf5",
     }
+
+
+def test_the_stator_only_view_has_its_own_fixed_scale(tmp_path: Path, monkeypatch) -> None:
+    """Its few tenths of a tesla are not all the lowest colour (#348); the other views keep 0-2 T."""
+
+    monkeypatch.setattr(public_field_playback, "encode_solve_cache_artifact_id", lambda path: path.name)
+
+    colors = public_field_playback._HEAT_COLORS
+    assert public_field_playback.STATOR_FIELD_SCALE_MAX_T == 0.5
+    assert public_field_playback.STATOR_FLUX_COLOR_SCALE == {**public_field_playback.FLUX_COLOR_SCALE, "max": 0.5}
+    assert public_field_playback._flux_color(0.24) == colors[0]
+    assert public_field_playback._flux_color(0.24, 0.5) == colors[3]
+    assert public_field_playback._flux_color(0.5, 0.5) == colors[7]
+    assert public_field_playback._flux_color(0.6, 0.5) == (244, 60, 245, 255)
+    refs = {"base_ref": {"artifact_id": "base"}, "mesh_ref": {"artifact_id": "mesh"}}
+    scales = {
+        composition: public_field_playback._render_composition(
+            None, None, _plot(0.0), output_dir=tmp_path, frame_index=0, composition=composition, draw=False, **refs,
+        )["legend"]["color_scale"]["max"]
+        for composition in ("armature", "resultant", "pm")
+    }
+    assert scales == {"armature": 0.5, "resultant": 2.0, "pm": 2.0}
+    # Stored playback drawn before this scale existed is drawn again.
+    assert "stator" in public_field_playback.PLAYBACK_RENDERER_REVISION
 
 
 def test_heat_layer_keeps_the_data_range_but_colours_by_the_fixed_scale() -> None:

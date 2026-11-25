@@ -451,7 +451,8 @@ function drawHeat(
 ): void {
   let paths = prepared.heatPaths;
   let counts = prepared.heatBucketCounts;
-  if (!scale.fixed) {
+  // The prepared paths are for 0–2.0 T; any other scale, fitted or another view's fixed one, is cached by range.
+  if (scale !== FIXED_FLUX_SCALE) {
     const key = `${scale.minB.toFixed(6)}:${scale.maxB.toFixed(6)}`;
     let cached = prepared.heatPathCache.get(key);
     if (!cached) {
@@ -643,6 +644,7 @@ export function FieldResultPlot({
   showFieldLines: controlledShowFieldLines,
   fieldLineDensity = 'medium',
   colorRangeMode = 'fixed',
+  fixedScale = FIXED_FLUX_SCALE,
   saturationTicks = [],
   showRangeControl = false,
   onColorRangeModeChange,
@@ -687,6 +689,8 @@ export function FieldResultPlot({
   showFieldLines?: boolean;
   fieldLineDensity?: FieldLineDensity;
   colorRangeMode?: FieldColorRangeMode;
+  /** The view's fixed scale: 0–2.0 T, or the stator-only field's own (fluxColorScale.ts fixedFluxScaleFor). */
+  fixedScale?: FluxColorScale;
   /** The stator steel's knee and saturation, marked on the fixed scale. */
   saturationTicks?: SaturationTick[];
   showRangeControl?: boolean;
@@ -889,7 +893,11 @@ export function FieldResultPlot({
     });
   }, []);
   useEffect(() => () => {
-    if (loupeFrameRef.current !== null) window.cancelAnimationFrame(loupeFrameRef.current);
+    if (loupeFrameRef.current === null) return;
+    window.cancelAnimationFrame(loupeFrameRef.current);
+    // A cancelled frame never runs, so it must not stay on record: left there it would block every
+    // later redraw, and the panel would stay empty (React's development double mount ends up here).
+    loupeFrameRef.current = null;
   }, []);
 
   // The magnifier panel: the picture around the pointer, redrawn from the solved
@@ -945,7 +953,7 @@ export function FieldResultPlot({
           showHeatmap
             ? (colorRangeMode === 'viewport' && viewportRange
               ? fittedFluxScale(viewportRange.minB, viewportRange.maxB)
-              : FIXED_FLUX_SCALE)
+              : fixedScale)
             : null,
           showMesh ? navigation.scale * LOUPE_MAGNIFICATION : null,
         );
@@ -1194,7 +1202,7 @@ export function FieldResultPlot({
           translateY,
         );
         drawBase(context, prepared);
-        if (showHeatmap) drawHeat(context, prepared, visibleRange ? fittedFluxScale(visibleRange.minB, visibleRange.maxB) : FIXED_FLUX_SCALE);
+        if (showHeatmap) drawHeat(context, prepared, visibleRange ? fittedFluxScale(visibleRange.minB, visibleRange.maxB) : fixedScale);
         if (showMesh) drawMeshEdges(context, prepared, navigation.scale);
         if (showFieldLines) drawFieldArrowLayer(context, prepared, fieldLineDensity, primaryTone, navigation.scale);
         drawOverlayLines(context, true);
@@ -1398,15 +1406,18 @@ export function FieldResultPlot({
   const legendScale: FluxColorScale = vectorDetailShown || !raster
     ? (colorRangeMode === 'viewport' && viewportRange
       ? fittedFluxScale(viewportRange.minB, viewportRange.maxB)
-      : FIXED_FLUX_SCALE)
+      : fixedScale)
     : raster.colorScale ?? { minB, maxB, overAboveT: null, fixed: false };
-  const legendLabel = (value: number) => (legendScale.fixed ? value.toFixed(1) : value.toFixed(3));
+  // A fixed scale below 1 T (the stator-only view's) needs two decimals, so its midpoint reads 0.25, not 0.3.
+  const legendLabel = (value: number) => (legendScale.fixed ? value.toFixed(legendScale.maxB < 1 ? 2 : 1) : value.toFixed(3));
   const legendTicks = saturationTicks.filter((tick) => (
     legendScale.overAboveT !== null && tick.bT > legendScale.minB && tick.bT < legendScale.maxB
   ));
-  // Where the flux legend is drawn over the view (the Solve tab), the motor is
-  // fitted beside it, never under its labels; the canvas, its overlays and the
-  // probe all live in the narrowed box. Below the plot (Results) nothing moves.
+  // In the Solve tab the flux legend is a strip over the view's right edge.
+  // The motor keeps the place the geometry and mesh views give it; only when
+  // the centred motor would reach the strip is it fitted beside it, never
+  // under its labels: the canvas, its overlays and the probe then live in the
+  // narrowed box. Below the plot (Results) nothing moves.
   const plotRootRef = useRef<HTMLElement>(null);
   const legendRef = useRef<HTMLDivElement>(null);
   const [motorFitWidth, setMotorFitWidth] = useState<number | null>(null);
@@ -1421,6 +1432,12 @@ export function FieldResultPlot({
     }
     const measure = () => {
       const boxRect = box.getBoundingClientRect();
+      // A legend laid out below the view or beside it, not over it, cannot cover the motor.
+      const legendRect = legend.getBoundingClientRect();
+      if (legendRect.left >= boxRect.right - 0.5 || legendRect.top >= boxRect.bottom - 0.5) {
+        setMotorFitWidth(null);
+        return;
+      }
       // Every label, which sit outside the legend's own box (the colour bar),
       // in px from the view's left and top edges.
       const parts = [legend, ...legend.querySelectorAll<HTMLElement>('*')]

@@ -1,3 +1,4 @@
+import { meshDensityLabel } from './meshLabels';
 import { motorConstantsView } from './machineConstants';
 import { torqueRippleView } from './resultMetrics';
 import { COGGING_METHOD_LABELS } from './coggingView';
@@ -34,7 +35,7 @@ export function actualMeshProvenance(result: ComparisonResult): string {
   const metadata = result.solve_metadata;
   // What was actually solved: a sector request on a motor that does not repeat solves the full motor.
   const sector = typeof metadata.sector_repeats === 'number' && metadata.sector_repeats > 1 ? `1/${metadata.sector_repeats} sector` : null;
-  return [metadata.mesh_source, metadata.mesher, metadata.mesh_density, metadata.mesh_source_detail, sector]
+  return [metadata.mesh_source, metadata.mesher, meshDensityLabel(metadata.mesh_density), metadata.mesh_source_detail, sector]
     .filter((value): value is string => typeof value === 'string' && value.length > 0)
     .join(' · ') || 'Not recorded';
 }

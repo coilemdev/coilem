@@ -4,6 +4,7 @@ import { mergeProfileDocuments, physicalModel, profileMatches, profileProvenance
 import { keepProfileScope, loadProfileDocument, newSessionProfileDocument, profileScopeForFile, profileStorageKey, readStoredProfileDocument,
   STARTER_SETUP_SCOPE, storeProfileDocument } from './profileStorage';
 import { savedResultPlayback } from './savedRunPlayback';
+import { designDcBusV } from './torqueSpeedAnalysis';
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
@@ -69,7 +70,7 @@ import { setAnalysisOption, type AnalysisKey } from './analysisOptions';
 import { projectMaterialCatalog, type CustomSteel, type SteelTarget } from './customSteel';
 import { resetDesignViewMemory } from './designViewMemory';
 import { acceptDesignSection, designPartsComplete, fitPoleMagnets, fitUnbuiltParts, newBuildConfig, revealEditedPart, type BuiltParts, type DesignIssue } from './progressiveDesign';
-import { createPublicExampleDesign, type PublicExampleId } from './exampleDesigns';
+import { createPublicExampleDesign, starterDesignConfig, type PublicExampleId } from './exampleDesigns';
 import {
   cloneDefaultConfig,
   type GeometryPreview,
@@ -545,7 +546,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   const [tutorialsStage, setTutorialsStage] = useState<LearningLessonStage>('design');
   const [tutorialHeaderProgress, setTutorialHeaderProgress] = useState<LearningLessonHeaderProgress | null>(null);
   const [initialSetup] = useState(() => restoreActiveProfile(
-    initialNewDesign ? newBuildConfig('inner') : cloneDefaultConfig(),
+    initialNewDesign ? newBuildConfig('inner') : starterDesignConfig(),
     initialNewDesign ? newSessionProfileDocument() : loadProfileDocument(STARTER_SETUP_SCOPE), BUILTIN_SOLVE_PROFILES,
   ));
   const [config, setConfig] = useState<MotorConfig>(initialSetup.config);
@@ -950,7 +951,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
   }, [config, prepareMesh]);
 
   const updateSolveSetting = useCallback((
-    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'magnet_temperature_C' | 'max_nonlinear_iterations',
+    field: 'current_amplitude_A' | 'rated_speed_rpm' | 'nonlinear_solver' | 'current_amplitude_convention' | 'current_angle_deg' | 'excitation_mode' | 'commutation_advance_deg' | 'mechanical_loss_W' | 'motor_input_dc_bus_V' | 'magnet_temperature_C' | 'max_nonlinear_iterations',
     value: MotorConfig['solve_params']['nonlinear_solver'] | MotorConfig['solve_params']['current_amplitude_convention'] | MotorConfig['solve_params']['excitation_mode'] | number,
   ) => {
     if (field === 'magnet_temperature_C' && config.geometry_reference === 'pyleecan_prius_2004') {
@@ -974,8 +975,13 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
         excitationDraftRef.current = switched.drafts;
         return switched.config;
       }
+      // The torque–speed map's voltage limit is the design's supply voltage: one value, shown in both places.
+      const map = field === 'motor_input_dc_bus_V' && current.torque_speed_analysis
+        ? { torque_speed_analysis: { ...current.torque_speed_analysis, limits: { ...current.torque_speed_analysis.limits, dc_bus_V: Number(value) } } }
+        : {};
       return {
         ...current,
+        ...map,
         solve_params: {
           ...current.solve_params,
           // No mechanical loss is stored as unset, not 0 W; a 20 °C magnet is the catalogue, also unset.
@@ -1008,7 +1014,12 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
 
   const updateTorqueSpeed = useCallback((settings: TorqueSpeedAnalysisSettings) => {
     validationRequestId.current += 1;
-    setConfig((current) => ({ ...current, torque_speed_analysis: settings }));
+    setConfig((current) => {
+      // A DC bus typed in the map's settings is the design's supply voltage, so Operating point shows it too.
+      const bus = settings.limits.dc_bus_V;
+      return { ...current, torque_speed_analysis: settings,
+        ...(bus !== designDcBusV(current) ? { solve_params: { ...current.solve_params, motor_input_dc_bus_V: bus } } : {}) };
+    });
     setValidation(null);
     setValidationChecking(false);
     setValidationError(null);
@@ -1480,7 +1491,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
 
   /** The starter motor with its browser setup library and that library's active setup, as at launch. */
   const loadStarterMotor = () => {
-    const starter = restoreActiveProfile(cloneDefaultConfig(), loadProfileDocument(STARTER_SETUP_SCOPE), BUILTIN_SOLVE_PROFILES);
+    const starter = restoreActiveProfile(starterDesignConfig(), loadProfileDocument(STARTER_SETUP_SCOPE), BUILTIN_SOLVE_PROFILES);
     rememberPresetSweep(starter.config);
     setConfig(starter.config);
     setRunSetups(starter.document);
@@ -1692,10 +1703,11 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     }
   };
 
+  /** Loads a saved run into the app. Resolves to null once it is shown, or to why it could not be. */
   const restoreSavedRun = async (
     savedRun: PublicSavedRun,
     destination: 'design' | 'solve' | 'results',
-  ) => {
+  ): Promise<string | null> => {
     try {
       const payload = await loadPublicRun(savedRun.project_slug, savedRun.run_id);
       const integrity = payload.integrity as { valid?: unknown } | undefined;
@@ -1763,7 +1775,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
           parsed.solverSettingsNotice,
           parsed.runSetupsNotice,
         ].filter(Boolean).join(' '));
-        return;
+        return null;
       }
       setView(destination);
       // Rerun settings lands in Solve as Continue to Solve does: with the mesh being prepared.
@@ -1774,8 +1786,11 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
           : `Saved ${replaySolver === 'elmer' ? 'Elmer' : 'Magneto2D'} settings restored. Review them, then explicitly start a new analysis.`
         : 'Saved project opened. Its stored result remains immutable; edit or solve explicitly.';
       setNotice([restoredNotice, parsed.solverSettingsNotice, parsed.runSetupsNotice].filter(Boolean).join(' '));
+      return null;
     } catch (requestError) {
-      setNotice(errorMessage(requestError));
+      const message = errorMessage(requestError);
+      setNotice(message);
+      return message;
     }
   };
 
@@ -1995,7 +2010,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
           onNewDesign={startNewDesign}
           experimentalRotors={experimentalRotors.enabled}
           workflowDisabled
-          onOpenRunResults={(savedRun) => void restoreSavedRun(savedRun, 'results')}
+          onOpenRunResults={(savedRun) => restoreSavedRun(savedRun, 'results')}
         />
         <PublicLanding
           onStartGuided={() => openWorkspace(true)}
@@ -2127,7 +2142,7 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
       onDownloadRunExport={downloadSavedRunExport}
       onOpenRunProject={(savedRun) => void restoreSavedRun(savedRun, 'design')}
       onRerun={(savedRun) => void restoreSavedRun(savedRun, 'solve')}
-      onOpenRunResults={(savedRun) => void restoreSavedRun(savedRun, 'results')}
+      onOpenRunResults={(savedRun) => restoreSavedRun(savedRun, 'results')}
       onUndoDesignEdit={undoLastDesignEdit}
       onDismissDesignEdit={() => setEditFeedback(null)}
     />

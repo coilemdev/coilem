@@ -456,6 +456,45 @@ def test_comparison_inputs_are_immutable_resolved_settings_and_recorded_setup(tm
     assert listed["run_id"] == location.run_id
 
 
+def test_run_list_carries_each_finished_run_s_drive_and_headline_numbers(tmp_path: Path) -> None:
+    config = deepcopy(VALID_CONFIG)
+    config["solve_params"] = {**config.get("solve_params", {}), "current_amplitude_A": 30, "current_amplitude_convention": "rms",
+                              "rated_speed_rpm": 2400, "current_angle_deg": 0}
+    workspace = SolveWorkspace(tmp_path / "data")
+    writer = workspace.begin_run(project_name="headline", config=config, submitted_request={"config": config, "solver": "magneto2d"})
+    result = _result("cache-frame")
+    result["summary"].update({"back_emf_fundamental_V": 31.2, "solve_time_s": 9.6, "cogging": {"peak_to_peak_Nm": 0.004},
+                              "loss_breakdown": {"efficiency_pct": 95.2, "copper_loss_W": 40.0}})
+    location = writer.complete(result)
+
+    listed = workspace.list_runs()[0]
+    assert listed["headline"] == {"mean_torque_Nm": 4.25, "back_emf_fundamental_V": 31.2, "cogging_peak_to_peak_Nm": 0.004,
+                                  "efficiency_pct": 95.2, "solve_time_s": 9.6}
+    point = listed["operating_point"]
+    assert (point["current_A"], point["current_convention"], point["speed_rpm"], point["current_angle_deg"]) == (30.0, "rms", 2400.0, 0.0)
+
+    # The numbers come from the small report summary: the large result is never opened for the list.
+    (location.path / "result.json").write_text("unreadable result", encoding="utf-8")
+    assert workspace.list_runs()[0]["headline"] == listed["headline"]
+    # A torque recorded for a run with no loaded sweep is not a result, and nonsense is left out.
+    summary_path = location.path / "report" / "summary.json"
+    report = json.loads(summary_path.read_text(encoding="utf-8"))
+    report["solve_metadata"] = {**(report.get("solve_metadata") or {}), "torque_sweep_computed": False}
+    report["summary"]["back_emf_fundamental_V"] = float("nan")
+    summary_path.write_text(json.dumps(report), encoding="utf-8")
+    trimmed = workspace.list_runs()[0]["headline"]
+    assert "mean_torque_Nm" not in trimmed and "back_emf_fundamental_V" not in trimmed and trimmed["efficiency_pct"] == 95.2
+    # A damaged summary leaves the run listed without its numbers; a changed request loses its drive too.
+    summary_path.write_text("{", encoding="utf-8")
+    damaged = workspace.list_runs()[0]
+    assert "headline" not in damaged and damaged["run_id"] == location.run_id and "operating_point" in damaged
+    request_path = location.path / "request.json"
+    request = json.loads(request_path.read_text(encoding="utf-8"))
+    request["resolved_config"]["solve_params"]["rated_speed_rpm"] = 9999
+    request_path.write_text(json.dumps(request), encoding="utf-8")
+    assert "operating_point" not in workspace.list_runs()[0]
+
+
 def test_failed_run_remains_explicit_partial_diagnostic(tmp_path: Path) -> None:
     workspace = SolveWorkspace(tmp_path / "data")
     writer = workspace.begin_run(
