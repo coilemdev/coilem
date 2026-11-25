@@ -8215,8 +8215,8 @@
     },
     {
       "path": "tests/test_performance_report.py",
-      "bytes": 11967,
-      "sha256": "9a8d85004ec11236b2c8695b41c13b75b3da521424ae75ebe65a0176039040d5"
+      "bytes": 12190,
+      "sha256": "bd17b311ac250f6210b3a20013605d420f5bf58dfcac31b0797ae33b22782744"
     },
     {
       "path": "tests/test_performance_routes.py",
@@ -46382,6 +46382,12 @@
       "path": "tests/test_thermal_reporting_legacy.py",
       "source_sha256": "0d0d1b210d821925a1bbc8155a4c3314f2fbb783fe1d84d607007cae3a5c0137",
       "reason": "Keep per-speed thermal search diagnostics in the CSV and summarize the torque curve in the PDF."
+    },
+    {
+      "base_commit": "d86071974a0cffaa126f31f0da8b6fbbd8334df6",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "9a8d85004ec11236b2c8695b41c13b75b3da521424ae75ebe65a0176039040d5",
+      "reason": "Check that the performance CSV retains per-speed diagnostics and the PDF shows the compact thermal summary."
     }
   ]
 }

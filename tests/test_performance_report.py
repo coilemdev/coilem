@@ -227,8 +227,10 @@ def test_thermal_supplement_keeps_status_inputs_and_limit_in_both_reports(data):
     rows = _csv_rows(build_performance_csv(data, context))
     assert any(row[0] == "thermal_rating" and row[1] == "inputs.hotspot_allowance_K" and row[3] == "15" for row in rows)
     assert any(row[0] == "thermal_rating" and row[1] == "points[0].limiting_constraint" and row[3] == "winding_temperature" for row in rows)
+    assert any(row[0] == "thermal_rating" and row[1] == "points[0].status_reason" and row[3] == "Missing rotor heat" for row in rows)
     text = "\n".join(page.extract_text() for page in PdfReader(io.BytesIO(build_performance_pdf(data, context))).pages)
     assert "Thermally limited torque" in text
-    assert "Uncalibrated estimate" in text
-    assert "Missing rotor heat" in text
+    assert "experimental: Uncalibrated estimate" in text
+    assert "Missing rotor heat" not in text
+    assert "The CSV lists the detailed checks for each speed." in text
     assert "1.235" in text
