@@ -53,6 +53,15 @@ the private release review and publication are pending; see
   worker processes no longer break when Ctrl+C or Ctrl+Break reaches the
   console. A client that leaves a solve, map, thermal or lesson stream at any
   point frees the solver for the next run.
+- **Update check and upgrade from the app.** Once a day `coilem` asks
+  coilem.com whether a newer version is released, and an **Update** tag appears
+  beside the version when there is one. On macOS and Linux the tag opens
+  **Upgrade and restart**, which upgrades coilEM the way it was installed and
+  reloads the page; on Windows it gives the command to run. The request
+  carries the coilEM version, the operating system and whether it is the first
+  check that week or month, with no identifier and nothing about designs or
+  runs. `COILEM_UPDATE_CHECK=0` turns it off. See the
+  [README](README.md#update-check).
 
 ## Known limitations
 

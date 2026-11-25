@@ -65,18 +65,18 @@
     },
     {
       "path": "README.md",
-      "bytes": 7848,
-      "sha256": "55dbff3468799abb50d6f148e659f9bc2f91d57bb68939f2afc30ebda0476ec1"
+      "bytes": 8859,
+      "sha256": "65e17fac1f8ecc786fde0562e82b8ff22064585e0f1e35063e010d9099a19929"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 39473,
-      "sha256": "8a9e386db83d8c15b25340de5033e2c0bd9b1d18ec8b3ba0eb056cca79daed98"
+      "bytes": 40091,
+      "sha256": "3302b984197a5b0ea95d5bc681d630d453b969511e3cd5af394a440a451a7c10"
     },
     {
       "path": "SECURITY.md",
-      "bytes": 1330,
-      "sha256": "d2656b97690cc6b7a1c92b09715bedf7b8b741cadd51820756c22284a40a442f"
+      "bytes": 1569,
+      "sha256": "c33d3a7af1eee7e403f15144f9486515f3872be41be727ca4cfc623e6620da45"
     },
     {
       "path": "SUPPORT.md",
@@ -395,8 +395,8 @@
     },
     {
       "path": "backend/launcher.py",
-      "bytes": 20290,
-      "sha256": "f909e0e912a68d56cef21b7f51db0c71259c3a1ace8351d7156ca7b69f0f148e"
+      "bytes": 21966,
+      "sha256": "a6225d206694072359e4f6c4b5910e92cf2c6f110df1b17bbe3bbdd3c51e094e"
     },
     {
       "path": "backend/local_file_safety.py",
@@ -540,8 +540,8 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 11701,
-      "sha256": "142ea060e2c962a9bdc0278bd79140a26b8f4bf5f692ee7926fc85e2e5cfefd1"
+      "bytes": 13911,
+      "sha256": "d86547c95eaff3b6f285bde028c97454fc208344fc332129f635ac5f6688b82d"
     },
     {
       "path": "backend/public_material_catalog.py",
@@ -5915,8 +5915,8 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "bytes": 16115,
-      "sha256": "c5f998fd0281d714f2aa2d42e8140448cd1513554d7eaedc1fee17eed830a859"
+      "bytes": 17364,
+      "sha256": "6de72b4e36379bc643b51e06b3b58ce3602bec1beedb99da3f0f0203c3304b39"
     },
     {
       "path": "docs/BENCHMARK_PERFORMANCE.md",
@@ -6030,8 +6030,8 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 15186,
-      "sha256": "15e8aba1b2b3e4d1440627cd6bb75ef7387f3b391c0c72985738bd370a64be70"
+      "bytes": 15229,
+      "sha256": "28d25dc356928e4816ee18079a3362c3d26a6caffacd8bd3a68e9c83c18d203d"
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
@@ -6425,8 +6425,8 @@
     },
     {
       "path": "frontend/playwright.public.config.ts",
-      "bytes": 3214,
-      "sha256": "37128c610e9a530f00090eae676241f1d3b7b004cb9f1676aae53794f21ff892"
+      "bytes": 3238,
+      "sha256": "b42622d211b0e8bd3c411d97fe0a16bbe6c9d88cfcfe11eed8e8a1b9a3c635f0"
     },
     {
       "path": "frontend/public/brand/coilem-mark.svg",
@@ -7030,8 +7030,8 @@
     },
     {
       "path": "frontend/src/public/CoilEmWorkspace.tsx",
-      "bytes": 315634,
-      "sha256": "5465136b5ab7329089b42f36fc969731a0c0d3bf4ad869c807428e63b868a770"
+      "bytes": 315612,
+      "sha256": "a77b045dcad8e56a3f0e8874a2b263dec74fbcd9a1910b6acd3e8bf4b262c735"
     },
     {
       "path": "frontend/src/public/CustomSteelImport.tsx",
@@ -7155,8 +7155,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 18608,
-      "sha256": "8301e3f0b6b1034a4639202c755365db411f62b3067b47d66a94281716852d83"
+      "bytes": 19615,
+      "sha256": "afed58cbf6847370af34a33018eeff2bf54d76b75be914f3709a5b08199ed813"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -7355,8 +7355,8 @@
     },
     {
       "path": "frontend/src/public/halbach/HalbachWorkspace.tsx",
-      "bytes": 60647,
-      "sha256": "03b772c2c9cfa655be878b2299aa746d1be5d4a5f46600aaa34e90d57b94a644"
+      "bytes": 60626,
+      "sha256": "c7d7337bf00e104e7b29ff19939b30d8b8bb8721855e36504997074992ad27ba"
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbach2DViewport.tsx",
@@ -7370,8 +7370,8 @@
     },
     {
       "path": "frontend/src/public/halbach/LinearHalbachWorkspace.tsx",
-      "bytes": 59018,
-      "sha256": "1ae09c3952fdbc5a53c54701a4340a7c0d358891606c71f36727b4e38dbbbf70"
+      "bytes": 58997,
+      "sha256": "c9fabbb402066dfc65491813e834464c1353579258b1c8ef11d030fc75f216e3"
     },
     {
       "path": "frontend/src/public/halbach/api.ts",
@@ -7535,8 +7535,8 @@
     },
     {
       "path": "frontend/src/public/styles.css",
-      "bytes": 362480,
-      "sha256": "da757fef93c96b444ea893105645103f90c3ec496c061f464dc68bd978c50229"
+      "bytes": 363672,
+      "sha256": "73498035d413f4ab53ccc3afca7a4629f9418ca34aeffc2db9d8933d32096be1"
     },
     {
       "path": "frontend/src/public/toothCoils.ts",
@@ -21162,6 +21162,41 @@
       "path": "tests/test_thermal_reporting_legacy.py",
       "bytes": 11151,
       "sha256": "d96d3b72dee060ae1405ddac57504c1dc5bcd17b1c23379a1313d86e284e83b0"
+    },
+    {
+      "path": "backend/self_upgrade.py",
+      "bytes": 11046,
+      "sha256": "3785fe9d9492b4ab205d764b123466c10c655d03975a9ac0ae89ff738cd8bb5d"
+    },
+    {
+      "path": "backend/update_check.py",
+      "bytes": 9620,
+      "sha256": "7135d41fdae676944840c1f4a7e6e462c3c0e3b91d61a194fc4fe67e6fb86bf5"
+    },
+    {
+      "path": "backend/upgrade_steps.py",
+      "bytes": 9405,
+      "sha256": "4eb9fbcae61273ef44faf59b7ef31381340da5f5376ec5ecf03fbd740a3a15d4"
+    },
+    {
+      "path": "frontend/src/public/VersionLabel.tsx",
+      "bytes": 4766,
+      "sha256": "d7a081c19673729f61c028cb67abf8ce1e87ee0242a1bf30fbfcc88297affc38"
+    },
+    {
+      "path": "frontend/tests/update-check.spec.ts",
+      "bytes": 4676,
+      "sha256": "e58c7ae1ad1ca57c92e16c75729318fded3927fb0bb9311b63fe8f1b39bb9f78"
+    },
+    {
+      "path": "tests/test_self_upgrade.py",
+      "bytes": 23764,
+      "sha256": "16febe0caa6ba6f9cb1e87b44dc21dd7171512ee6ac4d8720c750d1c514f3591"
+    },
+    {
+      "path": "tests/test_update_check.py",
+      "bytes": 13790,
+      "sha256": "c1c70573f5ced3b9c4533927bf51dfba929a2f6f713fe797bf9fb6aeaa37e662"
     }
   ],
   "public_patches": [
@@ -46424,6 +46459,84 @@
       "path": "frontend/tests/thermal.spec.ts",
       "source_sha256": "ea7106e9b57ededc8f55edb14ff9e9177db23c93f09a72e5edf01a7d09f247a4",
       "reason": "Keep thermal outputs Experimental and report the recorded calibration state in the app and exports."
+    },
+    {
+      "base_commit": "995f16caae90f2276fe588b3dfb42c069be1ae02",
+      "path": "README.md",
+      "source_sha256": "55dbff3468799abb50d6f148e659f9bc2f91d57bb68939f2afc30ebda0476ec1",
+      "reason": "Daily update check with Upgrade and restart"
+    },
+    {
+      "base_commit": "995f16caae90f2276fe588b3dfb42c069be1ae02",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "8a9e386db83d8c15b25340de5033e2c0bd9b1d18ec8b3ba0eb056cca79daed98",
+      "reason": "Daily update check with Upgrade and restart"
+    },
+    {
+      "base_commit": "995f16caae90f2276fe588b3dfb42c069be1ae02",
+      "path": "SECURITY.md",
+      "source_sha256": "d2656b97690cc6b7a1c92b09715bedf7b8b741cadd51820756c22284a40a442f",
+      "reason": "Daily update check with Upgrade and restart"
+    },
+    {
+      "base_commit": "995f16caae90f2276fe588b3dfb42c069be1ae02",
+      "path": "backend/launcher.py",
+      "source_sha256": "f909e0e912a68d56cef21b7f51db0c71259c3a1ace8351d7156ca7b69f0f148e",
+      "reason": "Daily update check with Upgrade and restart"
+    },
+    {
+      "base_commit": "995f16caae90f2276fe588b3dfb42c069be1ae02",
+      "path": "backend/public_main.py",
+      "source_sha256": "142ea060e2c962a9bdc0278bd79140a26b8f4bf5f692ee7926fc85e2e5cfefd1",
+      "reason": "Daily update check with Upgrade and restart"
+    },
+    {
+      "base_commit": "995f16caae90f2276fe588b3dfb42c069be1ae02",
+      "path": "docs/ARCHITECTURE.md",
+      "source_sha256": "c5f998fd0281d714f2aa2d42e8140448cd1513554d7eaedc1fee17eed830a859",
+      "reason": "Daily update check with Upgrade and restart"
+    },
+    {
+      "base_commit": "995f16caae90f2276fe588b3dfb42c069be1ae02",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "15e8aba1b2b3e4d1440627cd6bb75ef7387f3b391c0c72985738bd370a64be70",
+      "reason": "Daily update check with Upgrade and restart"
+    },
+    {
+      "base_commit": "995f16caae90f2276fe588b3dfb42c069be1ae02",
+      "path": "frontend/playwright.public.config.ts",
+      "source_sha256": "37128c610e9a530f00090eae676241f1d3b7b004cb9f1676aae53794f21ff892",
+      "reason": "Daily update check with Upgrade and restart"
+    },
+    {
+      "base_commit": "995f16caae90f2276fe588b3dfb42c069be1ae02",
+      "path": "frontend/src/public/CoilEmWorkspace.tsx",
+      "source_sha256": "5465136b5ab7329089b42f36fc969731a0c0d3bf4ad869c807428e63b868a770",
+      "reason": "Daily update check with Upgrade and restart"
+    },
+    {
+      "base_commit": "995f16caae90f2276fe588b3dfb42c069be1ae02",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "8301e3f0b6b1034a4639202c755365db411f62b3067b47d66a94281716852d83",
+      "reason": "Daily update check with Upgrade and restart"
+    },
+    {
+      "base_commit": "995f16caae90f2276fe588b3dfb42c069be1ae02",
+      "path": "frontend/src/public/halbach/HalbachWorkspace.tsx",
+      "source_sha256": "03b772c2c9cfa655be878b2299aa746d1be5d4a5f46600aaa34e90d57b94a644",
+      "reason": "Daily update check with Upgrade and restart"
+    },
+    {
+      "base_commit": "995f16caae90f2276fe588b3dfb42c069be1ae02",
+      "path": "frontend/src/public/halbach/LinearHalbachWorkspace.tsx",
+      "source_sha256": "1ae09c3952fdbc5a53c54701a4340a7c0d358891606c71f36727b4e38dbbbf70",
+      "reason": "Daily update check with Upgrade and restart"
+    },
+    {
+      "base_commit": "995f16caae90f2276fe588b3dfb42c069be1ae02",
+      "path": "frontend/src/public/styles.css",
+      "source_sha256": "da757fef93c96b444ea893105645103f90c3ec496c061f464dc68bd978c50229",
+      "reason": "Daily update check with Upgrade and restart"
     }
   ]
 }
