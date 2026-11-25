@@ -8550,8 +8550,8 @@
     },
     {
       "path": "tools/release/acceptance.py",
-      "bytes": 33732,
-      "sha256": "7500044e639cfac91263e1c79ab249d82ab86f3992861eeab96119c7889db40c"
+      "bytes": 34426,
+      "sha256": "df4bebfb5542ec9b250bb621754c963abe0709e3137a09873f2a8582a0d501d3"
     },
     {
       "path": "tools/release/artifacts.py",
@@ -46597,6 +46597,12 @@
       "path": "README.md",
       "source_sha256": "3a6088f99445fa9bce38334bbbbe128ebe6224c0f693674d9be1fd5f162c2b4a",
       "reason": "README: save before Upgrade and restart, link the privacy page"
+    },
+    {
+      "base_commit": "c2a8abfed5e63edb7f85ab3a9f584dfca73104c8",
+      "path": "tools/release/acceptance.py",
+      "source_sha256": "7500044e639cfac91263e1c79ab249d82ab86f3992861eeab96119c7889db40c",
+      "reason": "Keep the update check off in wheel acceptance tests"
     }
   ]
 }
