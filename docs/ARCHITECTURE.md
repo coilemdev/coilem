@@ -245,8 +245,9 @@ hashes. Downloads are served from this stored run and do not start a solver.
   user-installed runtime; this development opt-in does not expand the release claim.
 - The `coilem` launcher asks coilem.com once a day whether a newer version is
   released (`backend/update_check.py`). The request carries the coilEM version,
-  the operating system and whether it is the first check this week or month,
-  with no identifier; the answer is one version number. It
+  the operating system and whether it is the first check this week or month
+  or the first run on this computer (no earlier coilEM data folder), with no
+  identifier; the answer is one version number. It
   is off under `COILEM_UPDATE_CHECK=0`, under CI, for unreleased builds and for
   the development API, and the app works the same without it.
 - **Upgrade and restart** (`backend/self_upgrade.py`, `POST /updates/upgrade`)

@@ -362,12 +362,29 @@ def _accept_upgrade(server: Any, port: int) -> Any:
     return request
 
 
+# Whether this launch found no earlier coilEM on this computer (see launch()).
+_FIRST_RUN = False
+
+
+def first_run(root: Path) -> bool:
+    """Whether ``root`` shows no sign of an earlier coilEM: missing or empty.
+
+    Every launcher since 0.4.0 leaves its lock file there, so an upgrade, or
+    an older version started before, is not a first run.
+    """
+
+    try:
+        return not root.exists() or not any(root.iterdir())
+    except OSError:
+        return False
+
+
 def _start_update_check() -> None:
     """Allow the daily update check and say so the first time it runs."""
 
     from backend import update_check
 
-    update_check.arm()
+    update_check.arm(first_run=_FIRST_RUN)
     line = update_check.notice()
     if line is not None:
         print(line, flush=True)
@@ -487,6 +504,9 @@ def launch(args: argparse.Namespace) -> int:
     root_id = user_data_root_id()
     open_browser = not args.no_browser
 
+    # Looked at before the lock file below is created in it.
+    global _FIRST_RUN
+    _FIRST_RUN = first_run(root)
     lock = acquire_root_lock(root)
     if lock is None:
         found = _wait_for_locked_instance(root, root_id)

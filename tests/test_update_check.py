@@ -388,3 +388,49 @@ def test_a_data_folder_that_cannot_be_written_is_silent(monkeypatch: pytest.Monk
     assert thread is not None
     thread.join(timeout=5)
     assert update_check._running is False
+
+
+# --- New installs ---------------------------------------------------------------
+
+
+def test_a_first_run_says_install_until_a_check_is_answered() -> None:
+    tuesday = datetime(2026, 12, 1, 12, 0, tzinfo=timezone.utc)
+    update_check.arm(first_run=True)
+
+    assert _asked(tuesday, answered=False) == ("install", "week", "month")
+    assert _asked(tuesday + timedelta(days=1)) == ("install", "week", "month")
+    assert _asked(tuesday + timedelta(days=2)) == ()
+    # Starting again later is not a new install, even if the launcher said so.
+    update_check.arm(first_run=True)
+    assert _asked(tuesday + timedelta(days=7)) == ("week",)
+
+
+def test_a_copy_that_found_an_earlier_coilem_never_says_install() -> None:
+    update_check.arm(first_run=False)
+
+    assert _asked(datetime(2026, 12, 1, 12, 0, tzinfo=timezone.utc)) == ("week", "month")
+
+
+def test_the_install_flag_is_sent_first_in_the_header() -> None:
+    sent: list[str] = []
+
+    class Opener:
+        def open(self, request, timeout):  # noqa: ANN001 - urllib's shape
+            sent.append(request.get_header(update_check.FIRST_CHECK_HEADER.capitalize()))
+            raise OSError("not sending anywhere in a test")
+
+    import urllib.request as request_module
+
+    original = request_module.build_opener
+    request_module.build_opener = lambda *handlers: Opener()
+    try:
+        with pytest.raises(OSError):
+            update_check._fetch(("install", "week", "month"))
+    finally:
+        request_module.build_opener = original
+
+    assert sent == ["install, week, month"]
+
+
+def test_the_notice_names_the_install_flag() -> None:
+    assert "first time coilEM runs on this computer" in (update_check.notice() or "")
