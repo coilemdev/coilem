@@ -238,19 +238,8 @@ def thermal_story(record, *, rating=False, figure=None, heading=None, show_input
         if beyond:
             story.append(text(f"The {len(beyond)} speeds above it, {speed(beyond[0]['speed_rpm'])} to {speed(beyond[-1]['speed_rpm'])} rpm, "
                               "have no result either. The CSV lists every speed with its reason."))
-        # One paragraph per run of speeds that say the same thing, not one per speed.
-        groups = []
-        for row in shown:
-            point = row.get("point") or {}
-            message = " ".join(part for part in (str(row.get("status_reason") or "").strip(),
-                                                 str(point.get("verification_reason") or "").strip()) if part)
-            if groups and groups[-1][2] == message:
-                groups[-1][1] = row["speed_rpm"]
-            else:
-                groups.append([row["speed_rpm"], row["speed_rpm"], message])
-        for first, last, message in groups:
-            span = f"{speed(first)} rpm" if first == last else f"{speed(first)} to {speed(last)} rpm"
-            story.append(text(f"{span}: {message}"))
+        elif shown:
+            story.append(text("The CSV lists the detailed checks for each speed."))
         for row in shown:
             if row.get("user_magnet_case"):
                 case = row["user_magnet_case"]

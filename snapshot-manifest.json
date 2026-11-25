@@ -8215,8 +8215,8 @@
     },
     {
       "path": "tests/test_performance_report.py",
-      "bytes": 11967,
-      "sha256": "9a8d85004ec11236b2c8695b41c13b75b3da521424ae75ebe65a0176039040d5"
+      "bytes": 12190,
+      "sha256": "bd17b311ac250f6210b3a20013605d420f5bf58dfcac31b0797ae33b22782744"
     },
     {
       "path": "tests/test_performance_routes.py",
@@ -20530,8 +20530,8 @@
     },
     {
       "path": "backend/thermal_reporting.py",
-      "bytes": 18238,
-      "sha256": "8c0da6a76f7bf83b6573680667122604db6e6898d1f1cbc922d9d6827162c680"
+      "bytes": 17567,
+      "sha256": "918b3117889df6dce550389750b2f98a2da9f2591107da60a8dcc6a95ab0bf34"
     },
     {
       "path": "benchmarks/thermal-v0.6/ANALYTICAL_PROTOCOL.md",
@@ -20680,8 +20680,8 @@
     },
     {
       "path": "tests/test_thermal_routes.py",
-      "bytes": 30916,
-      "sha256": "560f2d6158fb24b46daecc98e5cc5332b775eae972f65a42879c001a9b7d7407"
+      "bytes": 31230,
+      "sha256": "fa32e0b310e2446edea88b74265a06334128fee03f68fc34000bf6b773e4f963"
     },
     {
       "path": "tests/test_thermal_slab.py",
@@ -21160,8 +21160,8 @@
     },
     {
       "path": "tests/test_thermal_reporting_legacy.py",
-      "bytes": 11023,
-      "sha256": "0d0d1b210d821925a1bbc8155a4c3314f2fbb783fe1d84d607007cae3a5c0137"
+      "bytes": 11151,
+      "sha256": "d96d3b72dee060ae1405ddac57504c1dc5bcd17b1c23379a1313d86e284e83b0"
     }
   ],
   "public_patches": [
@@ -46364,6 +46364,30 @@
       "path": "frontend/src/public/excitationDrafts.ts",
       "source_sha256": "0a4220351b7ce2365af29eff6b8f511a4ff1f649bf4284ed8482a5ef08cc7e8e",
       "reason": "Switching the drive keeps the current: the other drive starts at the same peak current."
+    },
+    {
+      "base_commit": "7cf3b39b2ad5441f2f3df2cfb2babc23eac88be2",
+      "path": "backend/thermal_reporting.py",
+      "source_sha256": "8c0da6a76f7bf83b6573680667122604db6e6898d1f1cbc922d9d6827162c680",
+      "reason": "Keep per-speed thermal search diagnostics in the CSV and summarize the torque curve in the PDF."
+    },
+    {
+      "base_commit": "7cf3b39b2ad5441f2f3df2cfb2babc23eac88be2",
+      "path": "tests/test_thermal_routes.py",
+      "source_sha256": "560f2d6158fb24b46daecc98e5cc5332b775eae972f65a42879c001a9b7d7407",
+      "reason": "Keep per-speed thermal search diagnostics in the CSV and summarize the torque curve in the PDF."
+    },
+    {
+      "base_commit": "7cf3b39b2ad5441f2f3df2cfb2babc23eac88be2",
+      "path": "tests/test_thermal_reporting_legacy.py",
+      "source_sha256": "0d0d1b210d821925a1bbc8155a4c3314f2fbb783fe1d84d607007cae3a5c0137",
+      "reason": "Keep per-speed thermal search diagnostics in the CSV and summarize the torque curve in the PDF."
+    },
+    {
+      "base_commit": "d86071974a0cffaa126f31f0da8b6fbbd8334df6",
+      "path": "tests/test_performance_report.py",
+      "source_sha256": "9a8d85004ec11236b2c8695b41c13b75b3da521424ae75ebe65a0176039040d5",
+      "reason": "Check that the performance CSV retains per-speed diagnostics and the PDF shows the compact thermal summary."
     }
   ]
 }
