@@ -264,19 +264,19 @@ export function ThermalRunMonitor({ run, solving = false, onOpenReport }: { run:
         {row('Heat to remove', thermalNumber(thermalTotalHeat(estimate)), 'W')}
       </tbody></table>
       <div className="thermal-run-monitor-foot">
-        <span>{run.stale ? 'From the previous inputs' : run.finishedAt ? `Finished ${run.finishedAt.toLocaleTimeString()}` : 'From the last estimate for this run'} · uncalibrated</span>
+        <span>{run.stale ? 'From the previous inputs' : run.finishedAt ? `Finished ${run.finishedAt.toLocaleTimeString()}` : 'From the last estimate for this run'} · Experimental · {estimate.calibrated ? 'calibrated' : 'uncalibrated'}</span>
         <button type="button" onClick={onOpenReport}>Thermal results →</button>
       </div>
     </>}
     {!working && curve && <div className="thermal-run-monitor-curve">
-      <p className="thermal-run-monitor-note"><strong>Torque curve</strong> · {held.length} of {curve.points.length} speeds{curve.cancelled ? ' · cancelled' : ''}{run.curveStale ? ' · from the previous inputs' : ''}</p>
+      <p className="thermal-run-monitor-note"><strong>Torque curve</strong> · {held.length} of {curve.points.length} speeds{curve.cancelled ? ' · cancelled' : ''}{run.curveStale ? ' · from the previous inputs' : ''} · Experimental</p>
       {run.curveStale && <p className="thermal-run-monitor-note needs-attention">The thermal inputs changed since this torque curve. Run it again under Torque curve to update it.</p>}
       {held.length > 0 && <table className={`motor-constants public-result-list thermal-run-monitor-results${run.curveStale ? ' is-previous' : ''}`}
         aria-label={run.curveStale ? 'Previous torque curve, from the previous inputs' : undefined}><tbody>
         {row(`Held at ${thermalNumber(held[0].speed_rpm)} rpm`, thermalNumber(held[0].point!.torque_Nm!), 'N·m')}
         {held.length > 1 && row(`Held at ${thermalNumber(held[held.length - 1].speed_rpm)} rpm`, thermalNumber(held[held.length - 1].point!.torque_Nm!), 'N·m')}
       </tbody></table>}
-      {hottest === null && <div className="thermal-run-monitor-foot"><span>Uncalibrated</span><button type="button" onClick={onOpenReport}>Thermal results →</button></div>}
+      {hottest === null && <div className="thermal-run-monitor-foot"><span>{curve.inputs.calibration_source ? 'Calibrated' : 'Uncalibrated'}</span><button type="button" onClick={onOpenReport}>Thermal results →</button></div>}
     </div>}
   </section>;
 }

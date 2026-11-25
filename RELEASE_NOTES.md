@@ -11,13 +11,15 @@ the private release review and publication are pending; see
   A refused estimate says why and names the input. Temperatures use one unit
   throughout, Celsius by default. Optional inputs show their defaults. The same
   estimate is `coilem thermal` on the [command line](docs/COMMAND_LINE.md) and
-  `coilem.thermal()` in the [Python client](docs/PYTHON_CLIENT.md).
+  `coilem.thermal()` in the [Python client](docs/PYTHON_CLIENT.md). Calibrated
+  estimates remain Experimental in the app and in reports.
 - **Experimental thermally limited torque curve.** For each speed, the curve
   finds the torque the motor can hold within its current, voltage and
   temperature limits, then checks that point with a direct solve. A speed whose
   direct solve rejects the point, or cannot run, has no result, and the curve,
-  PDF and CSV give the reason. The run reports its progress, and cancelling it
-  or closing the page stops the solver. See
+  PDF and CSV give the reason. The PDF summarizes the speed table, limits and
+  direct checks. The CSV keeps the detailed per-speed diagnostics. The run
+  reports its progress, and cancelling it or closing the page stops the solver. See
   [thermal coupling](docs/THERMAL_RATING.md).
 - **Thermal results.** Results has a Thermal card and tab. The loss map has its
   own **Losses** tab next to the Field map. Saved thermal results say when the
@@ -35,7 +37,8 @@ the private release review and publication are pending; see
   estimated Kv ([#353](https://github.com/coilemdev/coilem/pull/353)). **DC bus
   voltage** is set in the Operating point, and the torque–speed map uses the same
   value; each example motor carries its own bus
-  ([#274](https://github.com/coilemdev/coilem/issues/274)).
+  ([#274](https://github.com/coilemdev/coilem/issues/274)). Switching between
+  sinusoidal and six-step drive preserves peak current and each drive's angle.
 - **Results and runs.** The headline cards share the columns of the cards below.
   **Previous runs** is a list of saved runs with a loading state, and Compare
   lives in Results. The stator-only field view has its own fixed color scale.
@@ -53,9 +56,9 @@ the private release review and publication are pending; see
 
 ## Known limitations
 
-The thermal estimate and torque curve are experimental. They are uncalibrated
-model estimates, not bench-qualified, and the curve's interpolation between the
-cold and hot maps is reported as not compared for this build. Rotor iron loss
+The thermal estimate and torque curve remain Experimental with or without
+calibration. The curve's interpolation between the cold and hot maps is
+reported as not compared for this build. Rotor iron loss
 remains experimental and is unavailable on a sector solve
 ([#319](https://github.com/coilemdev/coilem/issues/319)).
 

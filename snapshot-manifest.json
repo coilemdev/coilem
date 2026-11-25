@@ -70,8 +70,8 @@
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 39225,
-      "sha256": "9984627ee133e6437a9547886a0368a350bf2e17aab50843a270b92c7a7913f5"
+      "bytes": 39473,
+      "sha256": "8a9e386db83d8c15b25340de5033e2c0bd9b1d18ec8b3ba0eb056cca79daed98"
     },
     {
       "path": "SECURITY.md",
@@ -20520,8 +20520,8 @@
     },
     {
       "path": "backend/thermal_network.py",
-      "bytes": 30884,
-      "sha256": "b301643d51b6e59e68fd789c43d8c4d059c9268f7cc2ae0573fd7f4adb5477e4"
+      "bytes": 30984,
+      "sha256": "a421cc6c664077bde846eb48397518f4db8587da7dd00d29b2353a8462f3625e"
     },
     {
       "path": "backend/thermal_rating.py",
@@ -20605,8 +20605,8 @@
     },
     {
       "path": "frontend/src/public/ThermalPanel.tsx",
-      "bytes": 25004,
-      "sha256": "c65917ed62ee715ea809af91db9abba42feebc229616b913e18fd5a6506227b0"
+      "bytes": 24980,
+      "sha256": "d82ed5ab8bc358bcdde3f0c108f86c801255eaac778b8c457241a45972eb5e41"
     },
     {
       "path": "frontend/src/public/ThermalResultsTab.tsx",
@@ -20680,8 +20680,8 @@
     },
     {
       "path": "tests/test_thermal_routes.py",
-      "bytes": 31230,
-      "sha256": "fa32e0b310e2446edea88b74265a06334128fee03f68fc34000bf6b773e4f963"
+      "bytes": 31892,
+      "sha256": "346be7af160b8d40dd0106771300b346214716ba91f48a3c248b1a7a5a8d2365"
     },
     {
       "path": "tests/test_thermal_slab.py",
@@ -20730,8 +20730,8 @@
     },
     {
       "path": "frontend/src/public/ThermalRun.tsx",
-      "bytes": 22789,
-      "sha256": "112d685ecb4d9e9163542a97e46e6ee6b438fbd4d67eb6e8bf712a5835eda206"
+      "bytes": 22915,
+      "sha256": "c5dba58ccfb4f503b67302c3e9b5ce4a1c7f3f64a9cfd20ad3a2ea80c9a29bce"
     },
     {
       "path": "frontend/src/public/apiErrors.ts",
@@ -20785,8 +20785,8 @@
     },
     {
       "path": "frontend/tests/thermal.spec.ts",
-      "bytes": 33493,
-      "sha256": "ea7106e9b57ededc8f55edb14ff9e9177db23c93f09a72e5edf01a7d09f247a4"
+      "bytes": 34054,
+      "sha256": "68119403c4c541a5d6e6e3fa0db4a9c2101ba1da715b5b521a85d014b178e5de"
     },
     {
       "path": "backend/benchmark_suite/thermal_phase_h.py",
@@ -46388,6 +46388,42 @@
       "path": "tests/test_performance_report.py",
       "source_sha256": "9a8d85004ec11236b2c8695b41c13b75b3da521424ae75ebe65a0176039040d5",
       "reason": "Check that the performance CSV retains per-speed diagnostics and the PDF shows the compact thermal summary."
+    },
+    {
+      "base_commit": "7737ff015f08ec930f2cfbb443563541108e5130",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "9984627ee133e6437a9547886a0368a350bf2e17aab50843a270b92c7a7913f5",
+      "reason": "Keep thermal outputs Experimental and report the recorded calibration state in the app and exports."
+    },
+    {
+      "base_commit": "7737ff015f08ec930f2cfbb443563541108e5130",
+      "path": "backend/thermal_network.py",
+      "source_sha256": "b301643d51b6e59e68fd789c43d8c4d059c9268f7cc2ae0573fd7f4adb5477e4",
+      "reason": "Keep thermal outputs Experimental and report the recorded calibration state in the app and exports."
+    },
+    {
+      "base_commit": "7737ff015f08ec930f2cfbb443563541108e5130",
+      "path": "frontend/src/public/ThermalPanel.tsx",
+      "source_sha256": "c65917ed62ee715ea809af91db9abba42feebc229616b913e18fd5a6506227b0",
+      "reason": "Keep thermal outputs Experimental and report the recorded calibration state in the app and exports."
+    },
+    {
+      "base_commit": "7737ff015f08ec930f2cfbb443563541108e5130",
+      "path": "tests/test_thermal_routes.py",
+      "source_sha256": "fa32e0b310e2446edea88b74265a06334128fee03f68fc34000bf6b773e4f963",
+      "reason": "Keep thermal outputs Experimental and report the recorded calibration state in the app and exports."
+    },
+    {
+      "base_commit": "7737ff015f08ec930f2cfbb443563541108e5130",
+      "path": "frontend/src/public/ThermalRun.tsx",
+      "source_sha256": "112d685ecb4d9e9163542a97e46e6ee6b438fbd4d67eb6e8bf712a5835eda206",
+      "reason": "Keep thermal outputs Experimental and report the recorded calibration state in the app and exports."
+    },
+    {
+      "base_commit": "7737ff015f08ec930f2cfbb443563541108e5130",
+      "path": "frontend/tests/thermal.spec.ts",
+      "source_sha256": "ea7106e9b57ededc8f55edb14ff9e9177db23c93f09a72e5edf01a7d09f247a4",
+      "reason": "Keep thermal outputs Experimental and report the recorded calibration state in the app and exports."
     }
   ]
 }
