@@ -67,10 +67,17 @@ const defaults = { solve_params: { excitation_mode: 'sinusoidal', current_amplit
 let config = structuredClone(defaults);
 let drafts = createExcitationDrafts(config, defaults);
 ({ config, drafts } = switchExcitationMode(config, 'ideal_six_step_120', drafts));
+// Switching the drive keeps the current: 30 A rms is a 42.43 A peak, which is the six-step plateau.
+assert.equal(config.solve_params.current_amplitude_A, 42.43);
+assert.equal(config.solve_params.current_amplitude_convention, 'plateau');
+// Straight back with the current untouched: the exact value it had, not 42.43 / sqrt(2).
+assert.equal(switchExcitationMode(config, 'sinusoidal', drafts).config.solve_params.current_amplitude_A, 30);
 config.solve_params.current_amplitude_A = 200;
 config.solve_params.commutation_advance_deg = 20;
 ({ config, drafts } = switchExcitationMode(config, 'sinusoidal', drafts));
-assert.equal(config.solve_params.current_amplitude_A, 30);
+// A current edited under six-step carries over at the same peak: 200 A peak is 141.4 A rms.
+assert.equal(config.solve_params.current_amplitude_A, 141.4);
+assert.equal(config.solve_params.current_amplitude_convention, 'rms');
 ({ config, drafts } = switchExcitationMode(config, 'ideal_six_step_120', drafts));
 assert.equal(config.solve_params.current_amplitude_A, 200, 'same design keeps BLDC current');
 assert.equal(config.solve_params.commutation_advance_deg, 20, 'same design keeps advance');
@@ -96,10 +103,25 @@ for (const loadedMode of ['sinusoidal', 'ideal_six_step_120']) {
     : { excitation_mode: loadedMode, current_amplitude_A: 42, current_amplitude_convention: 'plateau', commutation_advance_deg: -8 });
   replace(loaded);
   let state = switchExcitationMode(loaded, loadedMode === 'sinusoidal' ? 'ideal_six_step_120' : 'sinusoidal', excitationDraftRef.current);
-  assert.equal(state.config.solve_params.current_amplitude_A, 30, 'other mode gets fresh defaults, never preceding project current');
+  // The other mode starts at this project's own peak current (7 A peak, or a 42 A plateau), never a preceding project's.
+  assert.equal(state.config.solve_params.current_amplitude_A, loadedMode === 'sinusoidal' ? 7 : 42, 'other mode starts at the same peak current');
+  assert.equal(state.config.solve_params.current_amplitude_convention, loadedMode === 'sinusoidal' ? 'plateau' : 'peak');
   state = switchExcitationMode(state.config, loadedMode, state.drafts);
   assert.deepEqual(state.config.solve_params, loaded.solve_params, 'loaded active mode round-trips unchanged');
 }
 replace(structuredClone(defaults));
 assert.deepEqual(excitationDraftRef.current, createExcitationDrafts(defaults, defaults), 'reset clears both drafts');
 console.log('BLDC project draft lifecycle checks passed');
+
+{
+  // A small six-step motor: 10 A plateau stays 10 A (peak) under sinusoidal, never a default sized for a large motor.
+  const small = structuredClone(defaults);
+  Object.assign(small.solve_params, { excitation_mode: 'ideal_six_step_120', current_amplitude_A: 10, current_amplitude_convention: 'plateau' });
+  let state = switchExcitationMode(small, 'sinusoidal', createExcitationDrafts(small, defaults));
+  assert.equal(state.config.solve_params.current_amplitude_A, 10);
+  assert.equal(state.config.solve_params.current_amplitude_convention, 'peak');
+  state.config.solve_params.current_amplitude_A = 12;
+  state = switchExcitationMode(state.config, 'ideal_six_step_120', state.drafts);
+  assert.equal(state.config.solve_params.current_amplitude_A, 12, 'an edited current carries back too');
+  console.log('drive switch keeps the current');
+}

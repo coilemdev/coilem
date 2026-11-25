@@ -6450,8 +6450,8 @@
     },
     {
       "path": "frontend/scripts/test-bldc-chart-paths.mjs",
-      "bytes": 6810,
-      "sha256": "1876f2fac0b0625801af588681f0069016e1b8a81015639621bc13ab904cd195"
+      "bytes": 8520,
+      "sha256": "98a72ed8f674662ec95b75ae345d72a6b245a38d79ba18eca57e8e1f4fed221e"
     },
     {
       "path": "frontend/scripts/test-canvas-labels.mjs",
@@ -7015,8 +7015,8 @@
     },
     {
       "path": "frontend/src/public/App.tsx",
-      "bytes": 93763,
-      "sha256": "bf0c49caf1a8f8b31d7ec99b851b9daeebb029022b9334fe18a4a525f715b48d"
+      "bytes": 93673,
+      "sha256": "2af43cf4583ca114a458ac0401cd58bd88cc83828234ede87c6097aeadfc9d4c"
     },
     {
       "path": "frontend/src/public/BldcTorqueCurrentChart.tsx",
@@ -7280,8 +7280,8 @@
     },
     {
       "path": "frontend/src/public/excitationDrafts.ts",
-      "bytes": 2575,
-      "sha256": "cc74a4cca94a23ac0da8ca51f047d613b5d93de3e1a882058bbecb7ab1a9e925"
+      "bytes": 4043,
+      "sha256": "0a4220351b7ce2365af29eff6b8f511a4ff1f649bf4284ed8482a5ef08cc7e8e"
     },
     {
       "path": "frontend/src/public/fieldAxes.ts",
@@ -46334,6 +46334,24 @@
       "path": "tests/test_thermal_routes.py",
       "source_sha256": "6f28d31edcc7a333874e8fbdbcad6e29bdb175f9d87cd8159e2379f185430991",
       "reason": "The torque-curve pages of a report end at the first speed with no result and group repeated reasons; thermal inputs are printed once."
+    },
+    {
+      "base_commit": "d0688132a9d35983e01932f5d6af8db316676890",
+      "path": "frontend/scripts/test-bldc-chart-paths.mjs",
+      "source_sha256": "1876f2fac0b0625801af588681f0069016e1b8a81015639621bc13ab904cd195",
+      "reason": "Switching the drive keeps the current: the other drive starts at the same peak current."
+    },
+    {
+      "base_commit": "d0688132a9d35983e01932f5d6af8db316676890",
+      "path": "frontend/src/public/App.tsx",
+      "source_sha256": "bf0c49caf1a8f8b31d7ec99b851b9daeebb029022b9334fe18a4a525f715b48d",
+      "reason": "Switching the drive keeps the current: the other drive starts at the same peak current."
+    },
+    {
+      "base_commit": "d0688132a9d35983e01932f5d6af8db316676890",
+      "path": "frontend/src/public/excitationDrafts.ts",
+      "source_sha256": "cc74a4cca94a23ac0da8ca51f047d613b5d93de3e1a882058bbecb7ab1a9e925",
+      "reason": "Switching the drive keeps the current: the other drive starts at the same peak current."
     }
   ]
 }
