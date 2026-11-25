@@ -882,18 +882,11 @@ export function App({ initialNewDesign = false }: { initialNewDesign?: boolean }
     if (topology === config.topology) return;
     let nextConfig = changeTopologyPreservingAirgap(config, topology);
     if (topology !== 'SPM' && nextConfig.solve_params.excitation_mode === 'ideal_six_step_120') {
-      const sine = excitationDraftRef.current.sinusoidal;
-      nextConfig = {
-        ...nextConfig,
-        solve_params: {
-          ...nextConfig.solve_params,
-          excitation_mode: 'sinusoidal',
-          current_amplitude_A: sine.currentAmplitudeA,
-          current_amplitude_convention: sine.currentConvention,
-          current_angle_deg: sine.currentAngleDeg,
-          commutation_advance_deg: 0,
-        },
-      };
+      // Six-step is offered for SPM only. The drive becomes sinusoidal as if it were switched by hand:
+      // the current carries over at the same peak.
+      const switched = switchExcitationMode(nextConfig, 'sinusoidal', excitationDraftRef.current);
+      excitationDraftRef.current = switched.drafts;
+      nextConfig = switched.config;
     }
     const previousAirgapMm = magneticAirgapMm(config);
     const nextAirgapMm = magneticAirgapMm(nextConfig);
