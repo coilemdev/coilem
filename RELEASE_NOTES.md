@@ -59,8 +59,8 @@ the private release review and publication are pending; see
   **Upgrade and restart**, which upgrades coilEM the way it was installed and
   reloads the page; on Windows it gives the command to run. The request
   carries the coilEM version, the operating system and whether it is the first
-  check that week or month, with no identifier and nothing about designs or
-  runs. `COILEM_UPDATE_CHECK=0` turns it off. See the
+  check that week or month or the first run on that computer, with no
+  identifier and nothing about designs or runs. `COILEM_UPDATE_CHECK=0` turns it off. See the
   [README](README.md#update-check).
 
 ## Known limitations

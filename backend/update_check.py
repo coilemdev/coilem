@@ -6,10 +6,11 @@ request it makes on its own, so the rules are kept in one place:
 - **What is sent.** A plain ``GET`` of :data:`UPDATE_URL`. The ``User-Agent``
   names the coilEM version and the operating system (``coilEM/0.5.10
   (Windows)``). :data:`FIRST_CHECK_HEADER` says whether this is the first
-  answered check from this computer in the current week or month, so that
-  coilem.com can count installs per week and per month without ever being
-  given an identifier. There is no install id, no design data and nothing in
-  the URL.
+  answered check from this computer in the current week or month, and
+  whether coilEM had never run on this computer before (``install``), so that
+  coilem.com can count installs per week and per month, and new installs,
+  without ever being given an identifier. There is no install id, no design
+  data and nothing in the URL.
 - **What is read.** One version number. The release page and the upgrade
   command are built here, so a wrong answer from the server can show a wrong
   number and nothing else.
@@ -51,7 +52,7 @@ MAX_RESPONSE_BYTES = 2048
 _FILE_NAME = "update_check.json"
 _RELEASED_VERSION = re.compile(r"(\d{1,4})\.(\d{1,4})\.(\d{1,4})")
 _OFF_VALUES = frozenset({"0", "false", "no", "off"})
-_STATE_KEYS = frozenset({"checked_at", "answered_at", "latest"})
+_STATE_KEYS = frozenset({"checked_at", "answered_at", "latest", "new_install"})
 _LOCK = threading.Lock()
 _armed = False
 _running = False
@@ -112,16 +113,20 @@ def _checked_at(state: Mapping[str, Any]) -> datetime | None:
 
 
 def first_check_periods(state: Mapping[str, Any], now: datetime) -> tuple[str, ...]:
-    """Name the periods (``week``, ``month``) in which no check was answered yet.
+    """Name the periods (``install``, ``week``, ``month``) in which no check was answered yet.
 
-    Weeks are ISO weeks and both are in UTC, as coilem.com counts them. The
-    date used is the last *answered* check: an attempt that never reached the
-    server was not counted there and must not use up the period.
+    ``install`` is sent until the first answered check of a copy that found
+    no earlier coilEM on this computer (see :func:`arm`). Weeks are ISO weeks
+    and both are in UTC, as coilem.com counts them. The date used is the last
+    *answered* check: an attempt that never reached the server was not
+    counted there and must not use up the period.
     """
 
     last = _stamp(state, "answered_at")
     today = now.astimezone(timezone.utc)
     periods = []
+    if last is None and state.get("new_install") is True:
+        periods.append("install")
     if last is None or last.isocalendar()[:2] != today.isocalendar()[:2]:
         periods.append("week")
     if last is None or (last.year, last.month) != (today.year, today.month):
@@ -245,11 +250,23 @@ def check_if_due(fetch: Fetch = _fetch) -> threading.Thread | None:
     return thread
 
 
-def arm() -> None:
-    """Allow checks in this process. Only the ``coilem`` launcher calls this."""
+def arm(*, first_run: bool = False) -> None:
+    """Allow checks in this process. Only the ``coilem`` launcher calls this.
+
+    ``first_run`` says the launcher found no earlier coilEM on this computer:
+    its data folder did not exist or was empty. That is remembered until the
+    first answered check, which then says ``install``. Upgrading, or a
+    version from before the update check, leaves files there, so neither is
+    counted as a new install.
+    """
 
     global _armed
     _armed = True
+    if first_run and _stamp(_read(), "answered_at") is None:
+        try:
+            _write({"new_install": True})
+        except OSError:
+            pass  # not counted as new; the check itself still works
 
 
 def notice() -> str | None:
@@ -260,5 +277,6 @@ def notice() -> str | None:
     return (
         "coilEM asks coilem.com once a day whether a newer version is released. "
         "It sends the coilEM version, the operating system and whether this is the first check "
-        f"this week or month, and no identifier. Turn it off with {SWITCH}=0."
+        "this week or month, or the first time coilEM runs on this computer, and no identifier. "
+        f"Turn it off with {SWITCH}=0."
     )

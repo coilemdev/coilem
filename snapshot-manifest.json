@@ -65,18 +65,18 @@
     },
     {
       "path": "README.md",
-      "bytes": 8859,
-      "sha256": "65e17fac1f8ecc786fde0562e82b8ff22064585e0f1e35063e010d9099a19929"
+      "bytes": 8930,
+      "sha256": "6a978cb982826d99ea5a24b936d03f30442a43592856d459d0e563e754385104"
     },
     {
       "path": "RELEASE_NOTES.md",
-      "bytes": 40091,
-      "sha256": "3302b984197a5b0ea95d5bc681d630d453b969511e3cd5af394a440a451a7c10"
+      "bytes": 40125,
+      "sha256": "e212e8f916bcd315d3083d702b308d84a3db4bab528d58ab28863b32220afa91"
     },
     {
       "path": "SECURITY.md",
-      "bytes": 1569,
-      "sha256": "c33d3a7af1eee7e403f15144f9486515f3872be41be727ca4cfc623e6620da45"
+      "bytes": 1603,
+      "sha256": "349ca5b3861659a333b42956c1eabdc9969df4cf5016df34f029423b3bab1b1e"
     },
     {
       "path": "SUPPORT.md",
@@ -395,8 +395,8 @@
     },
     {
       "path": "backend/launcher.py",
-      "bytes": 21966,
-      "sha256": "a6225d206694072359e4f6c4b5910e92cf2c6f110df1b17bbe3bbdd3c51e094e"
+      "bytes": 22571,
+      "sha256": "9d8bab4264341ac28cd2cb3b750c9a85764771ec09ccb874dbd4088a42a88f99"
     },
     {
       "path": "backend/local_file_safety.py",
@@ -5915,8 +5915,8 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "bytes": 17364,
-      "sha256": "6de72b4e36379bc643b51e06b3b58ce3602bec1beedb99da3f0f0203c3304b39"
+      "bytes": 17432,
+      "sha256": "fbf6b0ce9606eb35bfe3749ce43918750e5310b76b56d0e5117fc51c9a4f6935"
     },
     {
       "path": "docs/BENCHMARK_PERFORMANCE.md",
@@ -8120,8 +8120,8 @@
     },
     {
       "path": "tests/test_launcher.py",
-      "bytes": 15111,
-      "sha256": "b030de3caf5808c136629732abd5214815d4b04f3e4212dfcc7fc903ea79e1bd"
+      "bytes": 15532,
+      "sha256": "86a5a6ec84cd0bba3b7d56b8afa364d8f01b8fc24d9cd88f8386c98543644779"
     },
     {
       "path": "tests/test_launcher_shutdown.py",
@@ -21170,8 +21170,8 @@
     },
     {
       "path": "backend/update_check.py",
-      "bytes": 9620,
-      "sha256": "7135d41fdae676944840c1f4a7e6e462c3c0e3b91d61a194fc4fe67e6fb86bf5"
+      "bytes": 10599,
+      "sha256": "1df3a81e460fdb6f83de75511dca7228f8f319280d6f506be04bfe29fb26dc58"
     },
     {
       "path": "backend/upgrade_steps.py",
@@ -21195,8 +21195,8 @@
     },
     {
       "path": "tests/test_update_check.py",
-      "bytes": 13790,
-      "sha256": "c1c70573f5ced3b9c4533927bf51dfba929a2f6f713fe797bf9fb6aeaa37e662"
+      "bytes": 15480,
+      "sha256": "b71fdf359070d19925d3cd4cc7c64eece4218d0f9e9728834b460ab249010019"
     }
   ],
   "public_patches": [
@@ -46537,6 +46537,54 @@
       "path": "frontend/src/public/styles.css",
       "source_sha256": "da757fef93c96b444ea893105645103f90c3ec496c061f464dc68bd978c50229",
       "reason": "Daily update check with Upgrade and restart"
+    },
+    {
+      "base_commit": "600225a9de00c849b5a76d8a60bca485ac551268",
+      "path": "README.md",
+      "source_sha256": "65e17fac1f8ecc786fde0562e82b8ff22064585e0f1e35063e010d9099a19929",
+      "reason": "Update check says when coilEM runs on a computer for the first time"
+    },
+    {
+      "base_commit": "600225a9de00c849b5a76d8a60bca485ac551268",
+      "path": "RELEASE_NOTES.md",
+      "source_sha256": "3302b984197a5b0ea95d5bc681d630d453b969511e3cd5af394a440a451a7c10",
+      "reason": "Update check says when coilEM runs on a computer for the first time"
+    },
+    {
+      "base_commit": "600225a9de00c849b5a76d8a60bca485ac551268",
+      "path": "SECURITY.md",
+      "source_sha256": "c33d3a7af1eee7e403f15144f9486515f3872be41be727ca4cfc623e6620da45",
+      "reason": "Update check says when coilEM runs on a computer for the first time"
+    },
+    {
+      "base_commit": "600225a9de00c849b5a76d8a60bca485ac551268",
+      "path": "backend/launcher.py",
+      "source_sha256": "a6225d206694072359e4f6c4b5910e92cf2c6f110df1b17bbe3bbdd3c51e094e",
+      "reason": "Update check says when coilEM runs on a computer for the first time"
+    },
+    {
+      "base_commit": "600225a9de00c849b5a76d8a60bca485ac551268",
+      "path": "docs/ARCHITECTURE.md",
+      "source_sha256": "6de72b4e36379bc643b51e06b3b58ce3602bec1beedb99da3f0f0203c3304b39",
+      "reason": "Update check says when coilEM runs on a computer for the first time"
+    },
+    {
+      "base_commit": "600225a9de00c849b5a76d8a60bca485ac551268",
+      "path": "tests/test_launcher.py",
+      "source_sha256": "b030de3caf5808c136629732abd5214815d4b04f3e4212dfcc7fc903ea79e1bd",
+      "reason": "Update check says when coilEM runs on a computer for the first time"
+    },
+    {
+      "base_commit": "600225a9de00c849b5a76d8a60bca485ac551268",
+      "path": "backend/update_check.py",
+      "source_sha256": "7135d41fdae676944840c1f4a7e6e462c3c0e3b91d61a194fc4fe67e6fb86bf5",
+      "reason": "Update check says when coilEM runs on a computer for the first time"
+    },
+    {
+      "base_commit": "600225a9de00c849b5a76d8a60bca485ac551268",
+      "path": "tests/test_update_check.py",
+      "source_sha256": "c1c70573f5ced3b9c4533927bf51dfba929a2f6f713fe797bf9fb6aeaa37e662",
+      "reason": "Update check says when coilEM runs on a computer for the first time"
     }
   ]
 }

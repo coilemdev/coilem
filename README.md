@@ -47,8 +47,9 @@ the upgrade fails the version you had starts again and the tag says why. On
 Windows, and for other installs, stop coilEM and run `uv tool upgrade coilem`
 (with uvx, `uvx coilem@latest`). The request carries the
 coilEM version, your operating system (for example `coilEM/0.5.10 (Windows)`)
-and whether it is the first check from your computer this week or this month,
-which lets installs be counted without an identifier. Nothing else is sent: no
+whether it is the first check from your computer this week or this month,
+and whether coilEM had never run on your computer before, which lets installs
+and new installs be counted without an identifier. Nothing else is sent: no
 identifier and nothing about your designs or runs. To turn
 it off, set `COILEM_UPDATE_CHECK=0` where you start coilEM. coilEM works the
 same offline.
