@@ -28,7 +28,7 @@ questions in [GitHub Discussions](https://github.com/coilemdev/coilem/discussion
 See [SUPPORT.md](SUPPORT.md) for the information that makes a report actionable.
 
 The public runtime is designed to bind only to loopback. It makes one outbound
-request of its own: the daily [update check](README.md#update-check), which
+request of its own: the daily [update check](README.md#updates), which
 sends coilem.com the coilEM version, the operating system and whether it is
 the first check that week or month or the first run on that computer, with no
 identifier, and is turned off with
