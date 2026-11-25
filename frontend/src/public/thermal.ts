@@ -36,6 +36,8 @@ export interface ThermalAnalysis {
   id: string; kind: 'point' | 'rating'; result: ThermalEstimate | ThermalRating; design_name: string;
   /** The inputs as the API recorded them, its defaults filled in. */
   inputs?: Record<string, unknown>;
+  curve_options?: {lowC: number; highC: number; userMagnetC: number | null};
+  bracket?: {low: {magnet_temperature_C: number}; high: {magnet_temperature_C: number}};
 }
 
 type RatingRow = ThermalRating['points'][number];
@@ -91,7 +93,11 @@ function shortName(text: string): string {
 /** Where a design's thermal setup is kept: the same for every operating point of one motor. */
 export const thermalDesignKey = (config: MotorConfig) => `coilem.thermal.inputs.${shortName(JSON.stringify([config.topology, config.stator, config.rotor, config.winding, config.materials]))}`;
 /** Where a solved run's latest thermal results are kept: one name per design and run. */
-export const thermalKey = (config: MotorConfig, result: SolveResult) => `coilem.thermal.run.${shortName(JSON.stringify(config))}.${shortName((result.solve_metadata as typeof result.solve_metadata & {timestamp?: string}).timestamp ?? JSON.stringify(result.summary))}`;
+export const legacyThermalKey = (config: MotorConfig, result: SolveResult) => `coilem.thermal.run.${shortName(JSON.stringify(config))}.${shortName((result.solve_metadata as typeof result.solve_metadata & {timestamp?: string}).timestamp ?? JSON.stringify(result.summary))}`;
+
+export const thermalKey = (config: MotorConfig, result: SolveResult) => result.saved_run
+  ? `coilem.thermal.saved.${result.saved_run.project_slug}/${result.saved_run.run_id}`
+  : legacyThermalKey(config, result);
 
 export const THERMAL_FIELDS = [
   ['ambient_C', 'Ambient / coolant temperature (°C)'],

@@ -70,6 +70,7 @@ PUBLIC_API_PATHS = frozenset(
         "/openapi.json",
         "/performance/thermal/point",
         "/performance/thermal/stream",
+        "/performance/thermal/latest/{project_slug}/{run_id}/{kind}",
         "/performance/thermal/record/{identity}",
         "/performance/thermal/report/{identity}/{kind}",
         "/performance/drive",

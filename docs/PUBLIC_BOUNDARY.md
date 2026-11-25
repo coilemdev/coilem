@@ -53,6 +53,7 @@ The coilEM launch service is local-only and exposes exactly these paths:
 - `GET /openapi.json`
 - `POST /performance/thermal/point`
 - `POST /performance/thermal/stream`
+- `GET /performance/thermal/latest/{project_slug}/{run_id}/{kind}`
 - `GET /performance/thermal/record/{identity}`
 - `GET /performance/thermal/report/{identity}/{kind}`
 - `POST /performance/drive`

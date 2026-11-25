@@ -118,9 +118,12 @@ def interpolate_temperature_map(bracket: TemperatureMapBracket, temperature_C: f
 
     low, high = bracket.low, bracket.high
     lo, hi = low.magnet_temperature_C, high.magnet_temperature_C
-    if not math.isfinite(temperature_C) or not lo <= temperature_C <= hi:
-        raise ValueError(f"The magnets would run outside the two solved maps ({bracket.low.magnet_temperature_C:g} to "
-                         f"{bracket.high.magnet_temperature_C:g} C). Values are never extrapolated: solve a wider pair of maps.")
+    if not math.isfinite(temperature_C):
+        raise ValueError("The magnet temperature must be finite. Values are never extrapolated.")
+    if not lo <= temperature_C <= hi:
+        boundary = "below the cold map" if temperature_C < lo else "above the hot map"
+        raise ValueError(f"The magnets would run {boundary}. Their estimated temperature is {temperature_C:.4g} C "
+                         f"and the solved range is {lo:g} to {hi:g} C. Values are never extrapolated.")
     grade = bracket.design.materials.magnet_grade
     weight = (br_scale(grade, temperature_C) - br_scale(grade, lo)) / (br_scale(grade, hi) - br_scale(grade, lo))
     weight = min(1.0, max(0.0, weight))

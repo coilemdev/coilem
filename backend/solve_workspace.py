@@ -1151,7 +1151,7 @@ class SolveWorkspace:
             raise FileNotFoundError("run artifact not found")
         return candidate
 
-    def load_run(self, project_slug: str, run_id: str) -> dict[str, Any]:
+    def load_run(self, project_slug: str, run_id: str, *, include_material: bool = False) -> dict[str, Any]:
         run = self.resolve_run(project_slug, run_id)
 
         def read_json(name: str) -> Any:
@@ -1256,6 +1256,7 @@ class SolveWorkspace:
             "project": project,
             "request": request,
             "result": result,
+            **({"material": material} if include_material else {}),
             "saved_run": RunLocation(
                 project_slug,
                 run_id,

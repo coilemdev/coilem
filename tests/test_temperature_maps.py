@@ -61,8 +61,10 @@ def test_two_resumable_maps_and_no_solver_inside_interpolation(tmp_path):
 
 @pytest.mark.parametrize("temperature", [19, 81, float("nan"), float("inf")])
 def test_no_extrapolation(bracket, temperature):
-    with pytest.raises(ValueError, match="never extrapolate"):
+    with pytest.raises(ValueError, match="never extrapolate") as refused:
         interpolate_temperature_map(bracket, temperature)
+    if temperature in (19, 81):
+        assert ("below the cold map" if temperature == 19 else "above the hot map") in str(refused.value)
 
 
 def test_every_point_field_has_an_explicit_temperature_interpolation_policy(bracket):

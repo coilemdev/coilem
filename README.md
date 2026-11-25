@@ -93,7 +93,7 @@ Things the model leaves out:
 
 - It is 2D: end effects and skew are not modelled.
 - Six-step drive is the ideal commanded current, without PWM, switching, ESC dynamics or thermal behavior.
-- There is no thermal solver. Winding and magnet temperatures are inputs.
+- Electromagnetic solves use entered winding and magnet temperatures. Solve → Thermal estimates steady-state part temperatures from losses and cooling assumptions. Its heat balance omits internally generated rotor iron loss, including when the electromagnetic run reports it.
 - Losses omit magnet and rotor eddy currents, AC copper loss and the inverter.
 - Each rotor position is meshed separately, so check mesh and angle settings
   before reading meaning into small torque-ripple or cogging differences.

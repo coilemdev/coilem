@@ -16,10 +16,14 @@ import copy
 import json
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from backend.client._errors import InputError
 from backend.client._results import Result
+
+if TYPE_CHECKING:
+    from backend.models import MotorConfig
+    from backend.models.thermal import ThermalInputs
 
 THERMAL_FILE_SCHEMA = "coilem.client_thermal/v1"
 COOLING_MODES: tuple[str, ...] = ("still_air", "forced_air", "liquid_jacket")
@@ -99,6 +103,9 @@ def _input_model(*, outer_rotor: bool, aluminium: bool, cooling: str | None, amb
     if not isinstance(inputs, Mapping) and inputs is not None:
         raise InputError("thermal inputs must be a mapping of input names to values", field="thermal")
     given = dict(inputs or {})
+    if cooling is not None and "cooling" in given and given["cooling"] != cooling:
+        for key in (*COEFFICIENTS, "coefficient_source"):
+            given.pop(key, None)
     for name, value in (("cooling", cooling), ("ambient_C", ambient_C), ("insulation_class", insulation_class)):
         if value is not None:
             given[name] = value
@@ -229,6 +236,23 @@ class ThermalEstimate:
         return f"ThermalEstimate({self.summary_text()})"
 
 
+def inputs_for_design(config: MotorConfig, *, cooling: str | None, ambient_C: float | None,
+                      insulation_class: str | None, inputs: Mapping[str, Any] | None) -> ThermalInputs:
+    from backend.rotor_layout import is_outer_rotor
+
+    values = _input_model(outer_rotor=is_outer_rotor(config), aluminium=config.materials.conductor == "aluminum",
+                          cooling=cooling, ambient_C=ambient_C, insulation_class=insulation_class, inputs=inputs)
+    mechanical = config.solve_params.mechanical_loss_W or 0
+    if mechanical > 0 and values.mechanical_split is None:
+        raise InputError(
+            f"This design has {mechanical:g} W of mechanical loss, and the estimate needs to know which parts it heats.",
+            field="thermal.mechanical_split",
+            suggestion='Give the shares, which must total 1, for example --thermal \'mechanical_split={"bearings": 1, "housing": 0, "rotor": 0}\'. '
+                       "For an outer-rotor motor the housing share heats the mount.",
+        )
+    return values
+
+
 def thermal(
     result: Result | str | Path,
     *,
@@ -271,8 +295,8 @@ def thermal(
     from backend.client._solve import prepared_config
     from backend.loss_breakdown import operating_point_losses
     from backend.models import IronLoss
-    from backend.rotor_layout import is_outer_rotor
     from backend.thermal_network import thermal_estimate
+    from backend.thermal_reporting import rotor_loss_scope_note
 
     if not isinstance(result, Result):
         try:
@@ -293,20 +317,13 @@ def thermal(
             suggestion="Solve again with the torque and losses analyses, for example --analyses torque,back_emf,losses.",
         )
     config = prepared_config(result.request)
-    values = _input_model(outer_rotor=is_outer_rotor(config), aluminium=config.materials.conductor == "aluminum",
-                          cooling=cooling, ambient_C=ambient_C, insulation_class=insulation_class, inputs=inputs)
+    values = inputs_for_design(config, cooling=cooling, ambient_C=ambient_C, insulation_class=insulation_class, inputs=inputs)
     iron = IronLoss.model_validate(summary["iron_loss"])
     winding, losses = operating_point_losses(config, float(summary["avg_torque_Nm"]), iron)
     if winding is None or losses is None:
         raise InputError("The winding resistance of this design cannot be formed, so its copper loss is unknown.", field="winding")
-    if losses.mechanical_loss_W > 0 and values.mechanical_split is None:
-        # The app asks the same: friction and windage heat has to be put somewhere before it can be balanced.
-        raise InputError(
-            f"This design has {losses.mechanical_loss_W:g} W of mechanical loss, and the estimate needs to know which parts it heats.",
-            field="thermal.mechanical_split",
-            suggestion='Give the shares, which must total 1, for example --thermal \'mechanical_split={"bearings": 1, "housing": 0, "rotor": 0}\'. '
-                       "For an outer-rotor motor the housing share heats the mount.",
-        )
     estimate = thermal_estimate(config, values, winding, losses, iron, with_copper_feedback=copper_feedback)
+    if note := rotor_loss_scope_note(summary):
+        estimate.notes.append(note)
     # The network itself is a few hundred lines of links; scripts read the parts.
     return ThermalEstimate(estimate.model_dump(mode="json", exclude={"network"}), values.model_dump(mode="json"))

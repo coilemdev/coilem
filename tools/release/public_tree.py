@@ -152,7 +152,8 @@ def export(repo: Path, source_ref: str, base_ref: str, branch: str, *, reason: s
     scratch = Path(tempfile.mkdtemp(prefix="coilem-public-tree-"))
     tree = scratch / "tree"
     try:
-        _git(repo, "worktree", "add", "--detach", "--quiet", str(tree), source)
+        # Hash the exported bytes in a canonical checkout even when the operator edits with CRLF.
+        _git(repo, "-c", "core.autocrlf=false", "-c", "core.eol=lf", "worktree", "add", "--detach", "--quiet", str(tree), source)
         if dropped:
             _git(tree, "--literal-pathspecs", "rm", "-q", "--pathspec-from-file=-", "--pathspec-file-nul", input="\0".join(dropped))
         version = _version(tree)

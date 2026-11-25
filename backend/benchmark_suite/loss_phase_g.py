@@ -183,6 +183,14 @@ def grade_rotor(history: dict, speed_rpm: int, gates: dict, reference: dict | No
     return (graded | {"missing_positions": missing}) if missing else graded
 
 
+def check_grading_inputs(only: str | None) -> None:
+    """Check registered stator/copper reference bytes before doing native solver work."""
+    for row in spec()["cases"]:
+        if only is None or row["motor"] == only:
+            reference(row)
+    rotor_references()
+
+
 def compare(result: dict) -> dict:
     """Grade a stored record. Reads nothing but the record, the spec and the registered references."""
     registered = spec()

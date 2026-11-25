@@ -186,9 +186,10 @@ export function parseDesignFile(text: string): ParsedDesignFile {
     config.reference_case = (caseId ?? null) as MotorConfig['reference_case'];
     config.solve_params.magnet_temperature_C = temperature;
     if (typeof source.solve_params.magneto2d_workers === 'number') config.solve_params.magneto2d_workers = source.solve_params.magneto2d_workers;
-    if (typeof source.solve_params.motor_input_dc_bus_V === 'number') config.solve_params.motor_input_dc_bus_V = source.solve_params.motor_input_dc_bus_V;
     config.solve_params.max_nonlinear_iterations = typeof source.solve_params.max_nonlinear_iterations === "number" ? source.solve_params.max_nonlinear_iterations : 200;
   }
+  const bus = isRecord(source.solve_params) ? source.solve_params.motor_input_dc_bus_V : undefined;
+  if (typeof bus === 'number' && Number.isFinite(bus)) config.solve_params.motor_input_dc_bus_V = bus;
   const customSteels = parseCustomSteels(isRecord(source.materials) ? source.materials.custom_steels : undefined);
   if (Object.keys(customSteels).length) config.materials.custom_steels = customSteels;
   for (const id of [config.materials.stator_steel, config.materials.rotor_steel]) {

@@ -409,7 +409,11 @@ def _solve(args: argparse.Namespace) -> dict[str, Any]:
 def _thermal_values(args: argparse.Namespace) -> dict[str, Any]:
     """Thermal inputs from --thermal-inputs, then --thermal NAME=VALUE over them."""
 
+    from backend.client._thermal import COEFFICIENTS
+
     values: dict[str, Any] = {}
+
+    file_values: dict[str, Any] = {}
     if args.thermal_inputs:
         try:
             loaded = json.loads(Path(args.thermal_inputs).read_text(encoding="utf-8"))
@@ -421,7 +425,10 @@ def _thermal_values(args: argparse.Namespace) -> dict[str, Any]:
         if not isinstance(loaded, Mapping):
             raise InputError(f"{args.thermal_inputs}: expected a JSON object of thermal input names and values", field="thermal_inputs")
         # A file saved by this command or by ThermalEstimate.save carries its inputs under "inputs" or "thermal_inputs".
-        values.update(loaded.get("thermal_inputs") or loaded.get("inputs") or loaded)
+        inputs = loaded.get("thermal_inputs", loaded.get("inputs", loaded))
+        if not isinstance(inputs, Mapping):
+            raise InputError(f"{args.thermal_inputs}: expected an object of thermal input names and values", field="thermal_inputs")
+        file_values.update(inputs)
     for pair in args.thermal_values:
         name, separator, text = pair.partition("=")
         name = name.strip()
@@ -431,7 +438,12 @@ def _thermal_values(args: argparse.Namespace) -> dict[str, Any]:
             values[name] = json.loads(text)
         except json.JSONDecodeError:
             values[name] = text
-    return values
+    mode = args.cooling or values.get("cooling")
+    if mode is not None and "cooling" in file_values and mode != file_values["cooling"]:
+        for key in (*COEFFICIENTS, "coefficient_source"):
+            file_values.pop(key, None)
+        file_values["cooling"] = mode
+    return file_values | values
 
 
 def _is_result_file(path: str) -> bool:
@@ -449,8 +461,8 @@ def _is_result_file(path: str) -> bool:
 def _thermal(args: argparse.Namespace) -> dict[str, Any]:
     from backend.client._inputs import ANALYSES
     from backend.client._results import Result
-    from backend.client._solve import prepare, solve
-    from backend.client._thermal import thermal
+    from backend.client._solve import prepare, prepared_config, solve
+    from backend.client._thermal import inputs_for_design, thermal
 
     _check_out(args.out)
     values = _thermal_values(args)
@@ -470,6 +482,8 @@ def _thermal(args: argparse.Namespace) -> dict[str, Any]:
         selected = [name for name, flag in ANALYSES.items() if flags.get(flag)]
         options["analyses"] = list(dict.fromkeys([*selected, "torque", "losses"]))
         prepared = prepare(motor, **options)
+        inputs_for_design(prepared_config(prepared.request), cooling=args.cooling, ambient_C=args.ambient,
+                          insulation_class=args.insulation, inputs=values)
         _notes(args, prepared.setup)
         mode = args.progress
         if mode == "auto":

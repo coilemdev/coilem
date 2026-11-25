@@ -288,7 +288,7 @@ test('a torque curve stays beside the estimate and says why speeds are missing',
     limiting_constraint: point ? 'current: drive continuous' : reason, point, user_magnet_case: null,
   });
   const curve = {
-    id: 'f'.repeat(32), kind: 'rating', design_name: 'Motor',
+    id: 'f'.repeat(32), kind: 'rating', design_name: 'Motor', curve_options: { lowC: 20, highC: 80, userMagnetC: null },
     inputs: recordedInputs,
     result: {
       kind: 'thermally_limited_rating', status: 'experimental', status_reason: 'Experimental.', inputs: recordedInputs,
@@ -320,6 +320,12 @@ test('a torque curve stays beside the estimate and says why speeds are missing',
   await expect(monitor(page)).toContainText('Hottest part');
   await expect(monitor(page)).not.toContainText('previous inputs');
 
+  const hotMap = section.getByLabel('Hot map temperature', { exact: true });
+  await hotMap.fill('90');
+  await expect(monitor(page)).toContainText('Torque curve · 2 of 8 speeds · from the previous inputs');
+  await hotMap.fill('80');
+  await expect(monitor(page)).not.toContainText('previous inputs');
+
   // New cooling: the estimate and the curve are both from the previous inputs until they run again.
   const cooling = await openThermalSection(page, 'cooling');
   const housing = cooling.getByLabel('Housing heat transfer (W/m²K)', { exact: true });
@@ -338,6 +344,7 @@ test('a torque curve stays beside the estimate and says why speeds are missing',
   const summary = card.locator('.thermal-rating-summary');
   await expect(summary).toContainText('2 of 8 speeds have a result.');
   await expect(summary).toContainText('No result from 1,500 rpm: A direct solve at this point puts the magnets past the temperature limit');
+  await expect(card.getByRole('img', { name: 'Thermally limited torque compared with peak' }).locator('circle')).toHaveCount(2);
   const rows = card.locator('.thermal-rating-table tbody tr');
   await expect(rows).toHaveCount(8);
   await expect(rows.nth(1)).toContainText('current: drive continuous');
@@ -352,7 +359,7 @@ test('a torque curve stays beside the estimate and says why speeds are missing',
   await expect(rows.nth(4)).not.toContainText('8.25');
   await expect(card.locator('.thermal-notes').first()).toContainText('1,700 rpm: A direct solve at this point could not run (Magneto2D stopped), so the value read from the maps is not reported.');
   // A missing speed shows dashes and a short reason, not a row of "Unavailable".
-  await expect(rows.nth(5)).toContainText('Magnets hotter than the hot map');
+  await expect(rows.nth(5)).toContainText('Magnets outside the solved maps');
   await expect(rows.nth(5)).not.toContainText('Unavailable');
   await expect(rows.nth(7)).toContainText('Too hot with this cooling');
 });
@@ -400,6 +407,9 @@ test('an edit to the thermal inputs marks the saved estimate as from the previou
   await page.getByRole('navigation', { name: 'Motor workflow', exact: true }).getByRole('button', { name: /Solve$/ }).click();
   await showThermalSetup(page);
   const again = (await openThermalSection(page, 'cooling')).getByLabel('Ambient / coolant temperature (°C)', { exact: true });
+  await again.fill('500');
+  await expect(monitor(page)).toContainText('From the previous inputs');
+  await expect(page.getByRole('button', { name: '▶ Run thermal estimate again', exact: true })).toBeDisabled();
   await again.fill('25');
   await expect(runStatus(page)).toHaveText(ready!);
   await again.fill('40');

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { cancelPublicSolve, computeThermalPoint, getThermalAnalysis } from './api';
+import { cancelPublicSolve, computeThermalPoint, getLatestThermalAnalysis, getThermalAnalysis } from './api';
 import { validationErrorMessage } from './apiErrors';
 import type { MotorConfig, SolveResult } from './model';
 import type { DriveControl, DriveLimits, TorqueSpeedEnvelope } from './performance';
 import { currentUnits, defaultDriveLimits } from './performanceView';
 import { asPublicConfig } from './publicRequest';
-import { isHeldSpeed, recordedThermalInputs, rotorLayoutOf, sameThermalInputs, thermalFieldMeta, thermalInputs, thermalKey, unavailableEstimateReason, type RotorLayout, type ThermalAnalysis } from './thermal';
+import { isHeldSpeed, legacyThermalKey, recordedThermalInputs, rotorLayoutOf, sameThermalInputs, thermalFieldMeta, thermalInputs, thermalKey, unavailableEstimateReason, type RotorLayout, type ThermalAnalysis } from './thermal';
 import { currentThermalJob, rememberThermal, startThermalJob, subscribeThermalJob, thermalSlot } from './thermalJob';
 import { TemperatureInput } from './TemperatureInput';
 import { useThermalSetup } from './ThermalSetup';
@@ -25,24 +25,43 @@ function errorText(error: unknown, layout: RotorLayout = 'inner'): string {
 /** The thermal estimate, or the torque curve, last computed for this run, if any. */
 export function useThermalRecord(config: MotorConfig, result: SolveResult | null, kind: ThermalAnalysis['kind'] = 'point') {
   const key = result ? thermalKey(config, result) : null;
-  const [record, setRecord] = useState<ThermalAnalysis | null>(null);
+  const project = result?.saved_run?.project_slug;
+  const runId = result?.saved_run?.run_id;
+  const legacy = result && runId ? legacyThermalKey(config, result) : null;
+  const slot = key && thermalSlot(key, kind);
+  const [loaded, setLoaded] = useState<{slot: string | null; record: ThermalAnalysis | null} | null>(null);
   useEffect(() => {
     let active = true;
-    // An older build kept one result per run, so the estimate's place can hold a torque curve.
-    const keep = (value: ThermalAnalysis | null) => { if (active) setRecord(value?.kind === kind ? value : null); };
-    const load = () => {
-      if (!key) { setRecord(null); return; }
-      const running = currentThermalJob();
-      if (kind === 'rating' && running?.key === key && running.analysis) { keep(running.analysis); return; }
-      let id: string | null = null;
-      try { id = localStorage.getItem(thermalSlot(key, kind)); } catch { /* Optional browser persistence. */ }
-      if (!id) { setRecord(null); return; }
-      void getThermalAnalysis(id).then(keep).catch(() => keep(null));
+    let sequence = 0;
+    const load = async () => {
+      const request = ++sequence;
+      let value: ThermalAnalysis | null = null;
+      if (key) {
+        try {
+          if (project && runId) value = await getLatestThermalAnalysis(project, runId, kind).catch(() => null);
+          if (!value) {
+            const job = currentThermalJob();
+            if (kind === 'rating' && job?.key === key && job.analysis) value = job.analysis;
+            else {
+              let id = localStorage.getItem(thermalSlot(key, kind));
+              if (!id && legacy) {
+                id = localStorage.getItem(thermalSlot(legacy, kind));
+                // Older versions hashed the editable configuration alongside the solve timestamp.
+                const suffix = thermalSlot(legacy.slice(legacy.lastIndexOf('.')), kind);
+                const matches = Object.keys(localStorage).filter((k) => k.startsWith('coilem.thermal.run.') && k.endsWith(suffix));
+                if (!id && matches.length === 1) id = localStorage.getItem(matches[0]);
+              }
+              if (id) value = await getThermalAnalysis(id);
+            }
+          }
+        } catch { /* The associated record may have been removed. */ }
+      }
+      if (active && request === sequence) setLoaded({slot, record: value?.kind === kind ? value : null});
     };
-    load(); window.addEventListener('coilem-thermal-updated', load);
+    void load(); window.addEventListener('coilem-thermal-updated', load);
     return () => { active = false; window.removeEventListener('coilem-thermal-updated', load); };
-  }, [key, kind]);
-  return record;
+  }, [key, kind, project, runId, legacy, slot]);
+  return !slot ? null : loaded?.slot === slot ? loaded.record : undefined;
 }
 
 /**
@@ -75,9 +94,11 @@ const SHORTEST_RUN_SHOWN_MS = 600;
  */
 export function useThermalRun(config: MotorConfig, result: SolveResult | null, designName: string | null) {
   const key = result ? thermalKey(config, result) : null;
-  const analysis = useThermalRecord(config, result);
-  const rating = useThermalRecord(config, result, 'rating');
+  const savedPoint = useThermalRecord(config, result);
+  const analysis = savedPoint ?? null;
+  const rating = useThermalRecord(config, result, 'rating') ?? null;
   const [values] = useThermalSetup(config);
+  const savedRef = result?.saved_run ? {project_slug: result.saved_run.project_slug, run_id: result.saved_run.run_id} : null;
   const [unit] = useTemperatureUnit();
   const [job, setJob] = useState(currentThermalJob);
   const [busy, setBusy] = useState(false);
@@ -97,7 +118,7 @@ export function useThermalRun(config: MotorConfig, result: SolveResult | null, d
   const ready = blocked === null && inputs !== null && !busy && !running;
   // A saved result is looked up by its electromagnetic run, so it outlives an edit to the cooling.
   // It belongs to the thermal inputs it recorded: once they differ from the setup, it is from the previous inputs.
-  const changedSince = (record: ThermalAnalysis | null) => !!record && inputs !== null && !sameThermalInputs(inputs, recordedThermalInputs(record));
+  const changedSince = (record: ThermalAnalysis | null) => !!record && (!inputs || !sameThermalInputs(inputs, recordedThermalInputs(record)));
   const name = designName ?? 'Motor';
 
   const runPoint = async () => {
@@ -106,7 +127,7 @@ export function useThermalRun(config: MotorConfig, result: SolveResult | null, d
     const started = performance.now();
     const shown = () => new Promise((resolve) => { window.setTimeout(resolve, Math.max(0, SHORTEST_RUN_SHOWN_MS - (performance.now() - started))); });
     try {
-      const analysis = await computeThermalPoint({ request: { config: asPublicConfig(config) }, source: { summary: result.summary, solve_metadata: result.solve_metadata }, inputs, design_name: name });
+      const analysis = await computeThermalPoint({ saved_run: savedRef, request: { config: asPublicConfig(config) }, source: { summary: result.summary, solve_metadata: result.solve_metadata }, inputs, design_name: name });
       await shown();
       rememberThermal(key, analysis); setFinishedAt(new Date());
     } catch (error) { await shown(); setMessage(errorText(error, layout)); } finally { setBusy(false); }
@@ -115,14 +136,21 @@ export function useThermalRun(config: MotorConfig, result: SolveResult | null, d
     if (!result || !key || !inputs) return;
     setMessage(null);
     const { limits, control } = thermalDriveSettings(config, result);
-    const started = startThermalJob(key, { request: { config: asPublicConfig(config) }, inputs, limits, control,
+    const started = startThermalJob(key, { saved_run: savedRef, request: { config: asPublicConfig(config) }, inputs, limits, control,
       low_C: options.lowC, high_C: options.highC, preset: 'preview', design_name: name, user_magnet_C: options.userMagnetC });
     if (!started) setMessage('A thermal job is already running.');
   };
   const stale = changedSince(analysis);
-  return { analysis, rating, values, mechanicalW, layout, validation, blocked, busy, running, ready, message, finishedAt,
+  const previous = rating?.curve_options;
+  const low = previous?.lowC ?? rating?.bracket?.low.magnet_temperature_C;
+  const high = previous?.highC ?? rating?.bracket?.high.magnet_temperature_C;
+  const differs = (draft: string, saved: number | undefined) => saved != null && (!draft.trim() || Number(draft) !== saved);
+  const curveInputsChanged = differs(values.curve_low_C ?? '20', low)
+    || differs(values.curve_high_C ?? '80', high)
+    || (!!previous && (values.curve_user_C?.trim() ? Number(values.curve_user_C) : null) !== previous.userMagnetC);
+  return { analysis, rating, loadingPoint: savedPoint === undefined, values, mechanicalW, layout, validation, blocked, busy, running, ready, message, finishedAt,
     // The saved estimate, or the torque curve, was computed with other thermal inputs than the setup now holds.
-    stale, curveStale: changedSince(rating),
+    stale, curveStale: changedSince(rating) || curveInputsChanged,
     // An estimate that came back without temperatures, and why. Not shown once the inputs have changed.
     unavailable: stale ? null : unavailableEstimateReason(analysis),
     job: job && job.key === key ? job : null, runPoint, runRating, cancel: () => { void cancelPublicSolve(); } };
@@ -256,9 +284,9 @@ export function ThermalRunMonitor({ run, solving = false, onOpenReport }: { run:
 /** Optional: the torque the motor can hold at each speed without exceeding its temperature limits. */
 export function ThermalRatingControls({ config, result, designName }: { config: MotorConfig; result: SolveResult | null; designName: string | null }) {
   const run = useThermalRun(config, result, designName);
-  const [low, setLow] = useState('20');
-  const [high, setHigh] = useState('80');
-  const [userMagnet, setUserMagnet] = useState('');
+  const [values, setValues] = useThermalSetup(config);
+  const {curve_low_C: low = '20', curve_high_C: high = '80', curve_user_C: userMagnet = ''} = values;
+  const change = (key: string) => (value: string) => setValues({...values, [key]: value});
   const numbersOk = [low, high].every((text) => text.trim() !== '' && Number.isFinite(Number(text))) && Number(low) < Number(high);
   const [unit] = useTemperatureUnit();
   // The three temperatures are kept in °C, as the request takes them, and typed in the chosen unit.
@@ -268,9 +296,9 @@ export function ThermalRatingControls({ config, result, designName }: { config: 
   </label>;
   return <div className="thermal-fields">
     <p className="thermal-setup-hint" role="note">Finds the torque the motor can hold at each speed without passing a temperature limit. It solves two torque–speed maps, one cold and one hot (58 solves when not cached), so it takes minutes.</p>
-    {field('Cold map magnets', low, setLow, 'Cold map temperature')}
-    {field('Hot map magnets', high, setHigh, 'Hot map temperature')}
-    {field('Also try magnets at', userMagnet, setUserMagnet, 'User magnet sensitivity')}
+    {field('Cold map magnets', low, change('curve_low_C'), 'Cold map temperature')}
+    {field('Hot map magnets', high, change('curve_high_C'), 'Hot map temperature')}
+    {field('Also try magnets at', userMagnet, change('curve_user_C'), 'User magnet sensitivity')}
     <div className="thermal-rating-actions">
       {run.running
         ? <button type="button" className="thermal-starter-button" onClick={run.cancel}>Cancel torque curve</button>

@@ -280,9 +280,11 @@ def test_the_source_identity_follows_the_files_as_they_are(tmp_path, monkeypatch
     assert g.source_identity()["sha256"] != before["sha256"]
 
 
-def test_the_run_command_says_why_it_refuses_a_work_folder(tmp_path, build, capsys):
+def test_the_run_command_says_why_it_refuses_a_work_folder(tmp_path, build, capsys, monkeypatch):
     from tools.run_phase_g import main
 
+    # Give this stand-in build a grading reference so the CLI reaches the work-folder check.
+    monkeypatch.setattr(g, "reference", lambda row: {"iron_loss_W": 1.0})
     work = tmp_path / "work"
     g.run(only="outer_spm", work=work, log=quiet)
     build["binary"].write_bytes(b"solver 2")

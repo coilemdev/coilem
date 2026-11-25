@@ -27,16 +27,23 @@ from backend.public_policy import PublicConfigError
 from backend.public_routes import solve as solve_routes
 from backend.public_routes.performance import _map_store
 from backend.resources import data_file
-from backend.solve_workspace import user_data_root
+from backend.solve_workspace import SolveWorkspace, SolveWorkspaceError, _atomic_write_json, user_data_root
 from backend.solver_contract import SolveCancelledError
 from backend.temperature_maps import solve_temperature_bracket
 from backend.thermal_network import thermal_estimate
 from backend.thermal_rating import CouplingSettings, thermal_rating
+from backend.thermal_reporting import rotor_loss_scope_note
 
 router = APIRouter(tags=["thermal"])
 
 
+class ThermalRunRef(ThermalModel):
+    project_slug: str
+    run_id: str
+
+
 class ThermalPointRequest(ThermalModel):
+    saved_run: ThermalRunRef | None = None
     request: dict[str, Any]
     source: dict[str, Any]
     inputs: ThermalInputs
@@ -44,6 +51,7 @@ class ThermalPointRequest(ThermalModel):
 
 
 class ThermalRatingRequest(ThermalModel):
+    saved_run: ThermalRunRef | None = None
     request: dict[str, Any]
     inputs: ThermalInputs
     limits: DriveLimits
@@ -67,7 +75,23 @@ def _config(request):
     return config
 
 
-def _freeze(kind, config, inputs, result, **extra):
+def _latest_path(ref, kind):
+    digest = hashlib.sha256(json.dumps([ref.project_slug, ref.run_id, kind]).encode()).hexdigest()
+    return user_data_root() / "thermal_analyses" / "by_run" / (digest + ".json")
+
+
+def _saved_report(ref):
+    workspace = SolveWorkspace()
+    try:
+        saved = workspace.load_run(ref.project_slug, ref.run_id, include_material=True)
+    except (FileNotFoundError, SolveWorkspaceError, ValueError) as exc:
+        raise HTTPException(404, "The originating saved run could not be opened.") from exc
+    if not saved["integrity"]["valid"]:
+        raise HTTPException(409, "The originating saved run failed its integrity checks.")
+    return {field: saved[field] for field in ("project", "request", "result", "material", "manifest")}
+
+
+def _freeze(kind, config, inputs, result, *, saved_run=None, **extra):
     identity = uuid.uuid4().hex
     record = dict(id=identity, kind=kind, config=config.model_dump(mode="json"), inputs=inputs.model_dump(mode="json"),
                   result=result.model_dump(mode="json"), computation_identity=map_computation_identity(config), **extra)
@@ -85,8 +109,13 @@ def _freeze(kind, config, inputs, result, **extra):
     root.mkdir(parents=True, exist_ok=True)
     path = root / (identity + ".json")
     temporary = path.with_suffix(".tmp")
+    if saved_run is not None:
+        record["saved_run"] = saved_run.model_dump()
     temporary.write_text(json.dumps(record, allow_nan=False), encoding="utf-8")
     temporary.replace(path)
+    if saved_run is not None:
+        pointer = _latest_path(saved_run, kind)
+        _atomic_write_json(pointer, identity)
     return record
 
 
@@ -126,12 +155,13 @@ def _acceptance(bracket):
 @router.post("/performance/thermal/point")
 async def thermal_point(body: ThermalPointRequest):
     try:
-        config = _config(body.request)
+        saved = await asyncio.to_thread(_saved_report, body.saved_run) if body.saved_run else None
+        config = _config({"config": saved["request"]["resolved_config"]} if saved else body.request)
         # Preflight computation identity also gives a clear error before saving.
         _map_store(config, "preview")
         # Same local supplied-result trust boundary as run-report export. The
         # frozen config/summary is reproducible, not server-attested solve evidence.
-        source = body.source
+        source = saved["result"] if saved else body.source
         summary = source.get("summary")
         if not isinstance(summary, dict) or not summary.get("iron_loss"):
             raise ValueError("Thermal estimates use this run's losses. Turn on Losses & efficiency under "
@@ -145,10 +175,13 @@ async def thermal_point(body: ThermalPointRequest):
         if winding is None or losses is None:
             raise ValueError("Solve this operating point with winding and iron-loss outputs first")
         result = await asyncio.to_thread(thermal_estimate, config, body.inputs, winding, losses, iron, with_copper_feedback=True)
-        result.notes.append("Uses the supplied run summary; its match to this design has not been independently verified.")
+        result.notes.append("Uses the original saved electromagnetic run." if saved else
+                            "Uses the supplied run summary; its match to this design has not been independently verified.")
+        if note := rotor_loss_scope_note(summary):
+            result.notes.append(note)
         # Store only the numerical source and provenance, never large field media.
         source = {key: source[key] for key in ("summary", "solve_metadata") if key in source}
-        return _freeze("point", config, body.inputs, result, source=source, design_name=body.design_name)
+        return _freeze("point", config, body.inputs, result, source=source, design_name=body.design_name, saved_run=body.saved_run)
     except (ValueError, KeyError) as exc:
         raise HTTPException(422, str(exc)) from exc
 
@@ -158,7 +191,8 @@ async def thermal_stream(body: ThermalRatingRequest):
     from backend.magnet_temperature import magnet_temperature_unavailable_reason
 
     try:
-        config = _config(body.request)
+        saved = await asyncio.to_thread(_saved_report, body.saved_run) if body.saved_run else None
+        config = _config({"config": saved["request"]["resolved_config"]} if saved else body.request)
         if body.low_C >= body.high_C:
             raise ValueError("Temperature brackets must be strictly increasing")
         for temperature in (body.low_C, body.high_C):
@@ -202,7 +236,8 @@ async def thermal_stream(body: ThermalRatingRequest):
             if stream_closed.is_set():
                 # Nobody receives a record for a job the client walked away from.
                 raise SolveCancelledError("The thermal stream closed before the rating finished.")
-            return _freeze("rating", config, body.inputs, rating, bracket=bracket.model_dump(mode="json"), design_name=body.design_name)
+            return _freeze("rating", config, body.inputs, rating, bracket=bracket.model_dump(mode="json"), design_name=body.design_name,
+                           saved_run=body.saved_run, curve_options=dict(lowC=body.low_C, highC=body.high_C, userMagnetC=body.user_magnet_C))
 
         try:
             yield solve_routes._sse_event("progress", dict(stage="Starting", done=0, total=0))
@@ -230,13 +265,23 @@ async def thermal_stream(body: ThermalRatingRequest):
     return solve_routes._SolveLaneStream(events(), abandon=lambda: solve_routes._release_solve(solver))
 
 
+@router.get("/performance/thermal/latest/{project_slug}/{run_id}/{kind}")
+def latest_thermal(project_slug: str, run_id: str, kind: Literal["point", "rating"]):
+    ref = ThermalRunRef(project_slug=project_slug, run_id=run_id)
+    try:
+        identity = json.loads(_latest_path(ref, kind).read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return None
+    return _record(identity)
+
+
 @router.get("/performance/thermal/record/{identity}")
 async def thermal_record(identity: str):
     return _record(identity)
 
 
 @router.get("/performance/thermal/report/{identity}/{kind}")
-async def thermal_report(identity: str, kind: Literal["pdf", "csv"]):
+async def thermal_report(identity: str, kind: Literal["pdf", "csv"], project_slug: str | None = None, run_id: str | None = None):
     from backend.thermal_reporting import thermal_csv_rows, thermal_story
 
     record = _record(identity)
@@ -244,9 +289,22 @@ async def thermal_report(identity: str, kind: Literal["pdf", "csv"]):
     if record["kind"] == "point":
         from backend.public_report import build_public_run_csv, build_public_run_pdf
         source = record.get("source") or {}
-        source = {**source, "summary": {**source.get("summary", {}), "thermal": result}}
-        arguments = dict(project=record["config"], request={"resolved_config": record["config"]}, result=source,
-                         material={}, manifest={"run_id": identity, "project_name": record.get("design_name", "Motor")})
+        ref = record.get("saved_run")
+        if ref or (project_slug and run_id):
+            origin = ThermalRunRef.model_validate(ref) if ref else ThermalRunRef(project_slug=project_slug, run_id=run_id)
+            arguments = await asyncio.to_thread(_saved_report, origin)
+            original = arguments["result"]
+            if not ref:
+                # Before saved-run references, a point kept its exact source summary and solve timestamp.
+                timestamp = (source.get("solve_metadata") or {}).get("timestamp")
+                if (not timestamp or timestamp != original.get("solve_metadata", {}).get("timestamp")
+                        or source.get("summary") != original.get("summary")):
+                    raise HTTPException(409, "This thermal estimate could not be matched to the selected saved run.")
+            source = original
+        else:
+            arguments = dict(project=record["config"], request={"resolved_config": record["config"]}, material={},
+                             manifest={"project_name": record.get("design_name", "Motor")})
+        arguments["result"] = {**source, "summary": {**source.get("summary", {}), "thermal": result}}
         content = build_public_run_csv(**arguments) if kind == "csv" else build_public_run_pdf(**arguments)
         media = "text/csv" if kind == "csv" else "application/pdf"
     elif kind == "csv":

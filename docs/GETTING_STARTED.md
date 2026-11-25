@@ -6,7 +6,7 @@ report export. If you installed coilEM with `uv tool install coilem`, run
 `coilem` and start at [6. Load the example motor](#6-load-the-example-motor);
 sections 1 to 5 build it from source.
 
-This guide follows the coilEM 0.5.9 development branch with Magneto2D 0.6.0.
+This guide follows the coilEM 0.5.10 development branch with Magneto2D 0.6.0.
 Run `coilem version` to identify your installed build.
 coilEM requires Python 3.11 to 3.15, Node.js 24 with npm, a Rust
 toolchain with Cargo (the locked `faer` dependency requires Rust 1.84+), and Git. The platform-specific commands below are setup

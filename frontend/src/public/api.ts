@@ -444,14 +444,18 @@ function streamPublicRequest(
 export function computeThermalPoint(body: Record<string, unknown>): Promise<import('./thermal').ThermalAnalysis> {
   return requestJson('/performance/thermal/point', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }) as unknown as Promise<import('./thermal').ThermalAnalysis>;
 }
+export function getLatestThermalAnalysis(project: string, run: string, kind: 'point' | 'rating') {
+  return requestJson(`/performance/thermal/latest/${encodeURIComponent(project)}/${encodeURIComponent(run)}/${kind}`) as unknown as Promise<import('./thermal').ThermalAnalysis | null>;
+}
 export function getThermalAnalysis(id: string): Promise<import('./thermal').ThermalAnalysis> {
   return requestJson(`/performance/thermal/record/${encodeURIComponent(id)}`) as unknown as Promise<import('./thermal').ThermalAnalysis>;
 }
 export function streamThermalRating(body: Record<string, unknown>, handlers: PublicSolveStreamHandlers): AbortController {
   return streamPublicRequest('/performance/thermal/stream', 'The thermal stream is unavailable.', body, handlers);
 }
-export async function downloadThermalAnalysis(id: string, kind: 'pdf' | 'csv'): Promise<void> {
-  const response = await fetch(`${PUBLIC_API_BASE}/performance/thermal/report/${encodeURIComponent(id)}/${kind}`);
+export async function downloadThermalAnalysis(id: string, kind: 'pdf' | 'csv', origin?: {project_slug: string; run_id: string} | null): Promise<void> {
+  const query = origin ? '?' + new URLSearchParams({project_slug: origin.project_slug, run_id: origin.run_id}) : '';
+  const response = await fetch(`${PUBLIC_API_BASE}/performance/thermal/report/${encodeURIComponent(id)}/${kind}${query}`);
   if (!response.ok) throw await parseApiError(response);
   await saveDownload(response, `coilem-thermal.${kind}`);
 }

@@ -426,7 +426,7 @@ function ExportMenu({ disabled, downloading, onReport, onMapCsv }: {
 /** Read the immutable map and drive curves saved with this analysis. */
 export function PerformancePanel({ config, result, designName }: { config: MotorConfig; result: SolveResult; designName: string | null }) {
   const headingId = useId();
-  const thermal = useThermalRecord(config, result, 'rating');
+  const thermal = useThermalRecord(config, result, 'rating') ?? null;
   const [downloading, setDownloading] = useState<PerformanceReportKind | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const analysis = result.torque_speed_analysis;

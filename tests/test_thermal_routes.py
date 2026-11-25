@@ -86,6 +86,43 @@ def test_point_freezes_all_statuses_and_exports_same_numbers(client):
     assert client.get("/performance/thermal/record/not-an-analysis").status_code == 404
 
 
+def test_saved_run_restores_thermal_and_exports_original_report_rows(client):
+    from backend.solve_workspace import SolveWorkspace
+    from tests.test_solve_workspace import _result
+
+    body = point_body()
+    config = body["request"]["config"]
+    result = _result()
+    result["solve_metadata"]["timestamp"] = "2026-11-24T17:30:00.123456Z"
+    result["summary"].update(body["source"]["summary"])
+    writer = SolveWorkspace().begin_run(project_name="Saved motor", config=config, submitted_request=body["request"])
+    run = writer.complete(result)
+    body["saved_run"] = {"project_slug": run.project_slug, "run_id": run.run_id}
+    body["source"] = {}  # The saved result is authoritative.
+    response = client.post("/performance/thermal/point", json=body)
+    assert response.status_code == 200, response.text
+    record = response.json()
+    latest = f"/performance/thermal/latest/{run.project_slug}/{run.run_id}"
+    assert client.get(latest + "/point").json()["id"] == record["id"]
+    assert client.get(latest + "/rating").json() is None
+    csv_url = f"/performance/thermal/report/{record['id']}/csv"
+    rows = list(csv.reader(io.StringIO(client.get(csv_url).text)))
+    assert any(row[:2] == ["identity", "run_id"] and row[3] == run.run_id for row in rows)
+    assert any(row[:2] == ["identity", "completed_at"] and row[3] == run.completed_at for row in rows)
+    assert sum(row[:2] == ["torque_waveform", "torque_Nm"] for row in rows) == 2
+    assert any(row[:2] == ["thermal", "nodes.winding.temperature_C"] for row in rows)
+
+    # A historical point has the exact original summary and timestamp, but no saved_run link.
+    ref = body.pop("saved_run")
+    body["source"] = {"summary": result["summary"], "solve_metadata": result["solve_metadata"]}
+    old = client.post("/performance/thermal/point", json=body).json()
+    export = client.get(f"/performance/thermal/report/{old['id']}/csv", params=ref)
+    assert export.status_code == 200 and run.run_id in export.text
+    body["source"]["solve_metadata"]["timestamp"] = "another solve"
+    other = client.post("/performance/thermal/point", json=body).json()
+    assert client.get(f"/performance/thermal/report/{other['id']}/csv", params=ref).status_code == 409
+
+
 def test_a_refused_input_is_named_in_the_response_and_the_server_log(client, caplog):
     body = point_body()
     body["inputs"]["extra_rotor_heat_to_magnets_fraction"] = 31337

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 from xml.sax.saxutils import escape
 
 from reportlab.lib import colors
@@ -24,6 +25,15 @@ NOT_REPORTED = "Not reported: this speed has no result; its status_reason says w
 DIRECT_COMPARISON = "Direct limiting-point comparison"
 READ_AS_UNAVAILABLE = ("Read as unavailable: an earlier coilEM build saved this speed as a result "
                        "although its direct solve could not run. Saved value: ")
+
+
+def rotor_loss_scope_note(summary: dict) -> str | None:
+    """Explain the heat balance when the electromagnetic run reports rotor iron loss."""
+    rotor = summary.get("rotor_iron_loss")
+    watts = rotor.get("rotor_iron_loss_W") if isinstance(rotor, dict) else None
+    if type(watts) in (int, float) and math.isfinite(watts):
+        return f"The electromagnetic run reports {watts:g} W of rotor iron loss. The thermal heat balance excludes this component."
+    return None
 
 
 def direct_solve_failed(point) -> bool:

@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 7644,
-      "sha256": "62917699c5ee152a5196b97a8cdb7229da84fe8858abaa7cad6abe7c1348872e"
+      "bytes": 7848,
+      "sha256": "55dbff3468799abb50d6f148e659f9bc2f91d57bb68939f2afc30ebda0476ec1"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -540,8 +540,8 @@
     },
     {
       "path": "backend/public_main.py",
-      "bytes": 11631,
-      "sha256": "7f63444d4ba98d5fa737781bb6b5c1e5300801c3ec055fc102e441921e068821"
+      "bytes": 11701,
+      "sha256": "142ea060e2c962a9bdc0278bd79140a26b8f4bf5f692ee7926fc85e2e5cfefd1"
     },
     {
       "path": "backend/public_material_catalog.py",
@@ -640,8 +640,8 @@
     },
     {
       "path": "backend/solve_workspace.py",
-      "bytes": 72387,
-      "sha256": "df3e45ae4c773bc32efe0c27b3f97a56e80f1a68205c520b24e60b09524e939b"
+      "bytes": 72490,
+      "sha256": "4e59dacbe1fee880fff381854362e7f4733131579d65bcacb87e2f1b9c999f6d"
     },
     {
       "path": "backend/solver/__init__.py",
@@ -5960,8 +5960,8 @@
     },
     {
       "path": "docs/GETTING_STARTED.md",
-      "bytes": 18362,
-      "sha256": "90feead7c5081b119117d7beb0b80d964441805747481bd6a6689cf8f7c88c4e"
+      "bytes": 18363,
+      "sha256": "201652e87395fbae9b471fcad6c393ec2da0f812436c7987393fa6d336e00315"
     },
     {
       "path": "docs/HALBACH_ARRAY.md",
@@ -6030,8 +6030,8 @@
     },
     {
       "path": "docs/PUBLIC_BOUNDARY.md",
-      "bytes": 15119,
-      "sha256": "84f8fc55f0402a82fc6737a12f4f06804d94bc63b468838976565f7730f4b3ea"
+      "bytes": 15186,
+      "sha256": "15e8aba1b2b3e4d1440627cd6bb75ef7387f3b391c0c72985738bd370a64be70"
     },
     {
       "path": "docs/RELEASE_0_4_0.md",
@@ -6480,8 +6480,8 @@
     },
     {
       "path": "frontend/scripts/test-design-file-defaults.mjs",
-      "bytes": 10799,
-      "sha256": "1753b8c9966fdec6fa8130b54f969222d86f89f0031eebbfa5f4b719ae529dcc"
+      "bytes": 11012,
+      "sha256": "fe3cf994ac5aa9cf547ebace75877fc9ede999b3dc0476a533e96670f1fe938b"
     },
     {
       "path": "frontend/scripts/test-dq-view.mjs",
@@ -7080,8 +7080,8 @@
     },
     {
       "path": "frontend/src/public/PerformancePanel.tsx",
-      "bytes": 31598,
-      "sha256": "50620fc093ec0c899070abf6908b825a8ba1a7b850ee9d2b46d6b42fd69c46ba"
+      "bytes": 31606,
+      "sha256": "2f4a70df4c63417332b1260e58f5e31a96e17b64b19bd3b1d9b28cb8713362ee"
     },
     {
       "path": "frontend/src/public/Popover.tsx",
@@ -7155,8 +7155,8 @@
     },
     {
       "path": "frontend/src/public/api.ts",
-      "bytes": 17569,
-      "sha256": "3f6c9d7a88af484667b775d4927c76e11e82ed6f1fcf9a23bb1c037c604a4954"
+      "bytes": 18036,
+      "sha256": "d1da63b4513585ff3cfabaa7f76848557f35773cbc006851ef611e246457621f"
     },
     {
       "path": "frontend/src/public/backendMonitor.ts",
@@ -7210,8 +7210,8 @@
     },
     {
       "path": "frontend/src/public/designFile.ts",
-      "bytes": 17889,
-      "sha256": "4b6b932b2efa93c40359f131cb28371ea4375e3d8a9f18d5f1f1869a983623a5"
+      "bytes": 17937,
+      "sha256": "a80396694f8a32fcb14f3aa6789b8a0cc0789b587e3f0df1ccd8162d9289a2ed"
     },
     {
       "path": "frontend/src/public/designViewMemory.ts",
@@ -18850,8 +18850,8 @@
     },
     {
       "path": "backend/client/_cli.py",
-      "bytes": 29449,
-      "sha256": "b1a2988bf68da3af4f8e0a9e65626766c6c32b4f090ec9d431ca9419b60b2630"
+      "bytes": 30248,
+      "sha256": "e5e737c49a48f8b9fb81431d30b7f37bc2602088f2bba3f87902f6b00ee2b1fb"
     },
     {
       "path": "backend/client/_setups.py",
@@ -20510,13 +20510,13 @@
     },
     {
       "path": "backend/public_routes/thermal.py",
-      "bytes": 13587,
-      "sha256": "779a9a168191f76d33a6841d15e70599dd2f5753ea195fbcb32a6548f053e4ec"
+      "bytes": 16872,
+      "sha256": "069293ac726550620fa1635e8d1c8f0a18e377e67469b6d6e1c27888ac3840cc"
     },
     {
       "path": "backend/temperature_maps.py",
-      "bytes": 8259,
-      "sha256": "6519508454a1a92ed8fcb04054843030f96d552507d0076f0529c011de38754e"
+      "bytes": 8419,
+      "sha256": "76630b69f8bc71a566cf4df2bf2693e869713b3a21f0bcca639e8ceeda66c523"
     },
     {
       "path": "backend/thermal_network.py",
@@ -20530,8 +20530,8 @@
     },
     {
       "path": "backend/thermal_reporting.py",
-      "bytes": 11789,
-      "sha256": "52abfe7aa59db5aa865bd5eb7999627a794cd630c63fd5e53aae89a6d0959642"
+      "bytes": 12280,
+      "sha256": "6775e614e5199df91e18c3f08bf9f80c7cc659c38350a80f3d4dc21ecce14b97"
     },
     {
       "path": "benchmarks/thermal-v0.6/ANALYTICAL_PROTOCOL.md",
@@ -20605,8 +20605,8 @@
     },
     {
       "path": "frontend/src/public/ThermalPanel.tsx",
-      "bytes": 23831,
-      "sha256": "646622b1de25262a8ccbd921525239d8caa8a4cf256f044b1d5689a4df9cfe24"
+      "bytes": 24490,
+      "sha256": "9d1340a2e04c3272513cf960b14edca3b9fee75d46b3777c352239eadf5c20f9"
     },
     {
       "path": "frontend/src/public/ThermalResultsTab.tsx",
@@ -20620,8 +20620,8 @@
     },
     {
       "path": "frontend/src/public/thermal.ts",
-      "bytes": 30469,
-      "sha256": "92d627043a922f77276df816d46437eb11f6b2f506449ea588985711d1db7c82"
+      "bytes": 30856,
+      "sha256": "d4a6b465e9b0ce7b7aa0293dee368952c030fc62845e5f89e7ce808198a25e26"
     },
     {
       "path": "frontend/src/public/thermalCrossSection.ts",
@@ -20640,8 +20640,8 @@
     },
     {
       "path": "tests/test_temperature_maps.py",
-      "bytes": 13183,
-      "sha256": "fcb332bf570b6c2fd69fd118449db266a925a9c065afe3f58d58ce7a861e85f3"
+      "bytes": 13332,
+      "sha256": "4814ecc0dca995c656632dfc105b041ff021a8e651453af9b4a839645525cd6b"
     },
     {
       "path": "tests/test_thermal_analytical.py",
@@ -20680,8 +20680,8 @@
     },
     {
       "path": "tests/test_thermal_routes.py",
-      "bytes": 28308,
-      "sha256": "fff63697f64ffa23825cbfab0f43966468246e64528cb50adc4c9fb3ba345ead"
+      "bytes": 30539,
+      "sha256": "bc832bd66e4c1357e6190aa04efaefb8087ad31cb9973efdf87b3ea83093ea6b"
     },
     {
       "path": "tests/test_thermal_slab.py",
@@ -20730,8 +20730,8 @@
     },
     {
       "path": "frontend/src/public/ThermalRun.tsx",
-      "bytes": 20784,
-      "sha256": "cf1dce0d564ae4d0a99281814e04dd67ac40f5498a396bc49ceab30e7ac8fcbe"
+      "bytes": 22789,
+      "sha256": "112d685ecb4d9e9163542a97e46e6ee6b438fbd4d67eb6e8bf712a5835eda206"
     },
     {
       "path": "frontend/src/public/apiErrors.ts",
@@ -20785,8 +20785,8 @@
     },
     {
       "path": "frontend/tests/thermal.spec.ts",
-      "bytes": 32785,
-      "sha256": "5ace253a64d0cd36f39a849dddd678d464535048a701b3d383f2f21efbb99f08"
+      "bytes": 33493,
+      "sha256": "ea7106e9b57ededc8f55edb14ff9e9177db23c93f09a72e5edf01a7d09f247a4"
     },
     {
       "path": "backend/benchmark_suite/thermal_phase_h.py",
@@ -20860,13 +20860,13 @@
     },
     {
       "path": "backend/client/_thermal.py",
-      "bytes": 15278,
-      "sha256": "85eaa0766bbb09729bf82fb026dae897a2e143197443a8c3891df2af0a233d05"
+      "bytes": 15995,
+      "sha256": "206df33f93302dc199cce1379bdebe6154d2610eb29558a20663f409e0936a99"
     },
     {
       "path": "tests/test_client_thermal.py",
-      "bytes": 14125,
-      "sha256": "60d9dbe3095809323e64c339c2a7c00df3dfbb8317c93d3bd5329400e42173fc"
+      "bytes": 15233,
+      "sha256": "00168df3392de1f5e293202ed31faddc81e57b72d2a634f8b50d61667a255b2c"
     },
     {
       "path": "frontend/src/public/TemperatureInput.tsx",
@@ -20885,8 +20885,8 @@
     },
     {
       "path": "backend/benchmark_suite/loss_phase_g.py",
-      "bytes": 28761,
-      "sha256": "fb2e7196c525e0b7718d5b08c28f27a84e27d9c3b0ad61c3e55befa61cadb5e7"
+      "bytes": 29036,
+      "sha256": "e148de04e8165cd524b9b8a12dba1c855be8768617572feeb9eb3e8d7818d660"
     },
     {
       "path": "benchmarks/g-v2.0/README.md",
@@ -20980,8 +20980,8 @@
     },
     {
       "path": "tests/test_loss_phase_g.py",
-      "bytes": 17058,
-      "sha256": "50a397902d7d05a106d28d15d17957d1fdce1d5820e54c869cdf8e91f48cb16b"
+      "bytes": 17238,
+      "sha256": "a9fcceec947894edb58a68e2471a8bbd1dbc40686bba73946b0c3ec6b64a1032"
     },
     {
       "path": "tools/make_phase_g.py",
@@ -20990,8 +20990,8 @@
     },
     {
       "path": "tools/run_phase_g.py",
-      "bytes": 18742,
-      "sha256": "7623694bba7b9f1912bf19d2d3c0a691d02cb18892914505f71f3f5d9dbf327e"
+      "bytes": 19207,
+      "sha256": "a9dde296889880d1e9a1730784eb3655e58a5b7be60586e61dcd611e61670a13"
     },
     {
       "path": "frontend/scripts/test-run-records.mjs",
@@ -21135,8 +21135,8 @@
     },
     {
       "path": "tools/release/public_tree.py",
-      "bytes": 10791,
-      "sha256": "f0aa166feab195481117805b090efd6ad78e40f502356be1a9e8103740830488"
+      "bytes": 10939,
+      "sha256": "c1cc699010af171c31856bb37033e0f2d38c5a5bc9e33a895b10a1048413a7f6"
     },
     {
       "path": "tests/test_release_disclosures.py",
@@ -21155,8 +21155,8 @@
     },
     {
       "path": "tests/test_phase_g_runner.py",
-      "bytes": 17685,
-      "sha256": "c938120e190a074700d29e8a844fcb57a1c32c0b20b91a1b547981dc8da10a99"
+      "bytes": 18267,
+      "sha256": "2f77f7e1b1124d42ca4d73a4c3d1ce2af969d4f3a31c1f5ab84d423336c90021"
     },
     {
       "path": "tests/test_thermal_reporting_legacy.py",
@@ -46088,6 +46088,162 @@
       "path": "tests/test_rotor_motion_mesh.py",
       "source_sha256": "a76567cb1b6cf700051959a9b73a722161eafcfd7f3f4c5a4b863558beb777ab",
       "reason": "coilEM 0.5.10 public export of private commit 45c0db4450e38408564ae535ffe466c3453e0ff6; generated benchmark evidence is kept in the private repository."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "README.md",
+      "source_sha256": "62917699c5ee152a5196b97a8cdb7229da84fe8858abaa7cad6abe7c1348872e",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "backend/solve_workspace.py",
+      "source_sha256": "df3e45ae4c773bc32efe0c27b3f97a56e80f1a68205c520b24e60b09524e939b",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "docs/GETTING_STARTED.md",
+      "source_sha256": "90feead7c5081b119117d7beb0b80d964441805747481bd6a6689cf8f7c88c4e",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "frontend/scripts/test-design-file-defaults.mjs",
+      "source_sha256": "1753b8c9966fdec6fa8130b54f969222d86f89f0031eebbfa5f4b719ae529dcc",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "frontend/src/public/PerformancePanel.tsx",
+      "source_sha256": "50620fc093ec0c899070abf6908b825a8ba1a7b850ee9d2b46d6b42fd69c46ba",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "frontend/src/public/api.ts",
+      "source_sha256": "3f6c9d7a88af484667b775d4927c76e11e82ed6f1fcf9a23bb1c037c604a4954",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "frontend/src/public/designFile.ts",
+      "source_sha256": "4b6b932b2efa93c40359f131cb28371ea4375e3d8a9f18d5f1f1869a983623a5",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "backend/client/_cli.py",
+      "source_sha256": "b1a2988bf68da3af4f8e0a9e65626766c6c32b4f090ec9d431ca9419b60b2630",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "backend/public_routes/thermal.py",
+      "source_sha256": "779a9a168191f76d33a6841d15e70599dd2f5753ea195fbcb32a6548f053e4ec",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "backend/temperature_maps.py",
+      "source_sha256": "6519508454a1a92ed8fcb04054843030f96d552507d0076f0529c011de38754e",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "backend/thermal_reporting.py",
+      "source_sha256": "52abfe7aa59db5aa865bd5eb7999627a794cd630c63fd5e53aae89a6d0959642",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "frontend/src/public/ThermalPanel.tsx",
+      "source_sha256": "646622b1de25262a8ccbd921525239d8caa8a4cf256f044b1d5689a4df9cfe24",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "frontend/src/public/thermal.ts",
+      "source_sha256": "92d627043a922f77276df816d46437eb11f6b2f506449ea588985711d1db7c82",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "tests/test_temperature_maps.py",
+      "source_sha256": "fcb332bf570b6c2fd69fd118449db266a925a9c065afe3f58d58ce7a861e85f3",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "tests/test_thermal_routes.py",
+      "source_sha256": "fff63697f64ffa23825cbfab0f43966468246e64528cb50adc4c9fb3ba345ead",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "frontend/src/public/ThermalRun.tsx",
+      "source_sha256": "cf1dce0d564ae4d0a99281814e04dd67ac40f5498a396bc49ceab30e7ac8fcbe",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "frontend/tests/thermal.spec.ts",
+      "source_sha256": "5ace253a64d0cd36f39a849dddd678d464535048a701b3d383f2f21efbb99f08",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "backend/client/_thermal.py",
+      "source_sha256": "85eaa0766bbb09729bf82fb026dae897a2e143197443a8c3891df2af0a233d05",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "tests/test_client_thermal.py",
+      "source_sha256": "60d9dbe3095809323e64c339c2a7c00df3dfbb8317c93d3bd5329400e42173fc",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "backend/benchmark_suite/loss_phase_g.py",
+      "source_sha256": "fb2e7196c525e0b7718d5b08c28f27a84e27d9c3b0ad61c3e55befa61cadb5e7",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "tools/run_phase_g.py",
+      "source_sha256": "7623694bba7b9f1912bf19d2d3c0a691d02cb18892914505f71f3f5d9dbf327e",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "tools/release/public_tree.py",
+      "source_sha256": "f0aa166feab195481117805b090efd6ad78e40f502356be1a9e8103740830488",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "tests/test_phase_g_runner.py",
+      "source_sha256": "c938120e190a074700d29e8a844fcb57a1c32c0b20b91a1b547981dc8da10a99",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "backend/public_main.py",
+      "source_sha256": "7f63444d4ba98d5fa737781bb6b5c1e5300801c3ec055fc102e441921e068821",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "docs/PUBLIC_BOUNDARY.md",
+      "source_sha256": "84f8fc55f0402a82fc6737a12f4f06804d94bc63b468838976565f7730f4b3ea",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
+    },
+    {
+      "base_commit": "be6543ca2dc6f20bc21cf3cc9951e53500d301aa",
+      "path": "tests/test_loss_phase_g.py",
+      "source_sha256": "50a397902d7d05a106d28d15d17957d1fdce1d5820e54c869cdf8e91f48cb16b",
+      "reason": "Correct saved run and thermal behavior, preflight analysis inputs and preserve Windows export bytes after PR 354 QA."
     }
   ]
 }

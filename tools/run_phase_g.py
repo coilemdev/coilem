@@ -41,6 +41,7 @@ from backend.benchmark_suite.loss_phase_g import (
     ROTOR_KEYS,
     STATOR_KEYS,
     WorkFolderError,
+    check_grading_inputs,
     compare,
     run,
     spec,
@@ -316,6 +317,19 @@ def main(argv=None) -> int:
         print(f"Phase G: the stored record ({RESULTS}) is kept in the private repository and is not in this checkout, "
               f"so there is nothing to {'check' if args.check else 'regrade'}.")
         return 0 if args.check else 1
+    if not (args.check or args.regrade):
+        if args.work is None:
+            parser.error("--work is needed to solve")
+        if args.skip_rotor and not args.only:
+            parser.error("--skip-rotor is for a partial run with --only; the stored record holds every rotor history")
+    try:
+        check_grading_inputs(None if args.check or args.regrade else args.only)
+    except FileNotFoundError as exc:
+        print(f"Phase G grading needs the registered references kept in the private repository. Missing: {exc.filename}")
+        return 1
+    except ValueError as exc:
+        print(f"Phase G grading inputs could not be verified: {exc}")
+        return 1
     if args.check:
         problems = check()
         for problem in problems:
@@ -333,10 +347,6 @@ def main(argv=None) -> int:
         print(json.dumps({key: graded[key] for key in ("stator_copper_vs_femm", "rotor_own_checks", "rotor_vs_femm")}))
         print(f"regraded {RESULTS} and {PAGE}")
         return 0
-    if args.work is None:
-        parser.error("--work is needed to solve")
-    if args.skip_rotor and not args.only:
-        parser.error("--skip-rotor is for a partial run with --only; the stored record holds every rotor history")
     try:
         solved = run(only=args.only, rotor=not args.skip_rotor, workers=args.workers, work=args.work.expanduser(),
                      discard=args.discard_work)

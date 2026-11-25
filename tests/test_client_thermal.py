@@ -135,6 +135,27 @@ def test_a_thermal_input_that_is_not_accepted_is_named_and_exits_3(capsys, resul
     assert err.strip()
 
 
+@pytest.mark.parametrize(("wrapper", "extra", "field"), [
+    ({"thermal_inputs": []}, [], "thermal_inputs"),
+    ({"inputs": dict(STILL_AIR_STARTER)}, ["--cooling", "liquid_jacket"], "thermal.housing_h_W_m2K"),
+    ({"inputs": {"ambient_C": 500}}, [], "thermal.ambient_C"),
+])
+def test_invalid_thermal_setup_stops_before_solving(capsys, design, fake_solve, tmp_path, wrapper, extra, field):
+    saved = tmp_path / "thermal-inputs.json"
+    saved.write_text(json.dumps(wrapper), encoding="utf-8")
+    code, document, _ = run(capsys, "thermal", str(design), "--thermal-inputs", str(saved), *extra, *SPLIT_OPTION)
+    assert code == 3 and document["error"]["field"] == field
+    assert not fake_solve
+
+
+def test_point_explains_reported_rotor_loss_scope():
+    data = _solved()
+    data["summary"]["rotor_iron_loss"] = {"rotor_iron_loss_W": 2.5}
+    result = coilem.Result(data, request=PARITY["designs"]["high_speed_saved"])
+    estimate = coilem.thermal(result, inputs={"mechanical_split": SPLIT})
+    assert any("2.5 W of rotor iron loss" in note and "excludes" in note for note in estimate.data["notes"])
+
+
 def test_a_result_without_losses_says_how_to_get_them(capsys, tmp_path) -> None:
     path = tmp_path / "result.json"
     coilem.Result(_solved(iron_W=None), request=PARITY["designs"]["high_speed_saved"]).save(path)

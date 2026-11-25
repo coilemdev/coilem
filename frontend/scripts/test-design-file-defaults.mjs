@@ -118,6 +118,10 @@ wired.solve_params.winding_temperature_C = 120;
 const reloadedWire = parseDesignFile(serializeDesignFile(wired, 'Wired')).config;
 assert.deepEqual(reloadedWire.winding.wire, { wire_bare_diameter_mm: 0.9, strands_in_hand: 4, end_turn_extension_mm: 12 });
 assert.equal(reloadedWire.solve_params.winding_temperature_C, 120);
+const ordinary = cloneDefaultConfig();
+ordinary.solve_params.motor_input_dc_bus_V = 120;
+assert.equal(parseDesignFile(serializeDesignFile(ordinary, '120 V motor')).config.solve_params.motor_input_dc_bus_V, 120);
+
 const badWire = cloneDefaultConfig();
 badWire.winding.wire = { wire_bare_diameter_mm: -1 };
 assert.equal(parseDesignFile(serializeDesignFile(badWire, 'Bad wire')).config.winding.wire, undefined, 'an unusable wire is dropped');

@@ -268,6 +268,18 @@ def test_failed_page_replacement_restores_outputs_and_allows_retry(repo, build, 
     assert run_phase_g.check() == []
 
 
+def test_missing_grading_inputs_stop_before_any_solve(tmp_path, monkeypatch, capsys):
+    def missing(case):
+        raise FileNotFoundError(2, "missing reference", "registered-reference.json")
+
+    monkeypatch.setattr(g, "reference", missing)
+    monkeypatch.setattr(run_phase_g, "run", lambda **kwargs: pytest.fail("started a solve with missing references"))
+    work = tmp_path / "work"
+    assert run_phase_g.main(["--only", "inner_spm", "--skip-rotor", "--work", str(work)]) == 1
+    assert "registered-reference.json" in capsys.readouterr().out
+    assert not work.exists()
+
+
 def test_a_full_run_writes_the_record_and_page_that_check_accepts(tmp_path, build, repo, capsys):
     assert run_phase_g.main(["--work", str(tmp_path / "work")]) == 0
     assert f"wrote {run_phase_g.RESULTS} and {run_phase_g.PAGE}" in capsys.readouterr().out

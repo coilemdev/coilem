@@ -145,7 +145,9 @@ function PointResult({ result, plot }: { result: ThermalEstimate; plot?: PublicF
 function missingSpeedLabel(reason: string): string {
   const first = reason.split('; ')[0];
   if (/^A direct solve at this point/.test(first)) return 'Not confirmed by the direct solve';
-  if (/outside the two solved maps/.test(first)) return 'Magnets hotter than the hot map';
+  if (/below the cold map/.test(first)) return 'Magnets colder than the cold map';
+  if (/above the hot map/.test(first)) return 'Magnets hotter than the hot map';
+  if (/outside the two solved maps/.test(first)) return 'Magnets outside the solved maps';
   if (/outside -50 to 250/.test(first)) return 'Too hot with this cooling';
   if (/No stable thermal equilibrium/.test(first)) return 'No stable temperature';
   if (/^temperature: /.test(first)) return 'Past a temperature limit at any current';
@@ -168,7 +170,8 @@ function RatingResult({ rating, envelope }: { rating: ThermalRating; envelope?: 
     <p className={`thermal-rating-summary${firstMissing ? ' needs-attention' : ''}`} role="status">
       <strong>{held.length} of {points.length} speeds have a result.</strong>
       {firstMissing && ` No result from ${shown(firstMissing.speed_rpm)} rpm: ${firstMissing.status_reason.split('; ')[0]}`}
-      {firstMissing && /outside the two solved maps/.test(firstMissing.status_reason) && ' Raise “Hot map magnets” under Solve → Thermal → Torque curve if the magnet grade allows it, or improve the cooling.'}
+      {firstMissing && /above the hot map/.test(firstMissing.status_reason) && ' Raise “Hot map magnets” under Solve → Thermal → Torque curve if the magnet grade allows it, or improve the cooling.'}
+      {firstMissing && /below the cold map/.test(firstMissing.status_reason) && ' Lower “Cold map magnets” under Solve → Thermal → Torque curve if the magnet grade allows it.'}
     </p>
     <ThermalCurve rating={rating} envelope={envelope} />
     <div className="thermal-table-scroll"><table className="thermal-rating-table">
@@ -189,13 +192,13 @@ function RatingResult({ rating, envelope }: { rating: ThermalRating; envelope?: 
 }
 
 /** The thermal result for a run: key numbers, the coloured cross-section and a table of parts. */
-export function ThermalCard({ analysis, plot, envelope, label = 'Thermal results' }: {
-  analysis: ThermalAnalysis | null; plot?: PublicFieldLinePlot | null; envelope?: TorqueSpeedEnvelope | null; label?: string;
+export function ThermalCard({ analysis, plot, envelope, origin, label = 'Thermal results' }: {
+  origin?: SolveResult['saved_run']; analysis: ThermalAnalysis | null; plot?: PublicFieldLinePlot | null; envelope?: TorqueSpeedEnvelope | null; label?: string;
 }) {
   const [message, setMessage] = useState<string | null>(null);
   if (!analysis) return null;
   const result = analysis.result;
-  const download = async (kind: 'pdf' | 'csv') => { try { await downloadThermalAnalysis(analysis.id, kind); } catch (error) { setMessage(errorText(error)); } };
+  const download = async (kind: 'pdf' | 'csv') => { try { await downloadThermalAnalysis(analysis.id, kind, origin); } catch (error) { setMessage(errorText(error)); } };
   return <section className="thermal-card" aria-label={label}>
     {result.kind === 'steady_state_thermal' ? <PointResult key={analysis.id} result={result} plot={plot} /> : <RatingResult rating={result} envelope={envelope} />}
     <details className="thermal-notes"><summary>Recorded inputs</summary><dl className="thermal-recorded-inputs">{Object.entries(result.inputs).map(([key, value]) => <div key={key}><dt>{key.replace(/_/g, ' ')}</dt><dd>{typeof value === 'object' ? JSON.stringify(value) : String(value)}</dd></div>)}</dl></details>
@@ -210,7 +213,7 @@ export function ThermalCard({ analysis, plot, envelope, label = 'Thermal results
 function ThermalCurve({ rating, envelope }: {rating: ThermalRating; envelope?: TorqueSpeedEnvelope | null}) {
   const peak = envelope?.curves.find((curve) => curve.limit === 'peak');
   const maxSpeed = Math.max(...rating.points.map((p) => p.speed_rpm), 1);
-  const maxTorque = Math.max(...rating.points.map((p) => p.point?.torque_Nm ?? 0), ...(peak?.torque_Nm ?? [])) || 1;
+  const maxTorque = Math.max(...rating.points.filter(isHeldSpeed).map((p) => p.point!.torque_Nm!), ...(peak?.torque_Nm ?? [])) || 1;
   const x = (value: number) => 55 + value / maxSpeed * 650;
   const y = (value: number) => 205 - value / maxTorque * 180;
   return <figure className="performance-chart"><figcaption>Peak and thermally limited torque — experimental</figcaption>
@@ -219,6 +222,7 @@ function ThermalCurve({ rating, envelope }: {rating: ThermalRating; envelope?: T
       <line x1="55" y1="205" x2="705" y2="205" stroke="currentColor" /><line x1="55" y1="25" x2="55" y2="205" stroke="currentColor" />
       {peak && <path d={peak.speed_rpm.map((rpm, i) => `${i ? 'L' : 'M'}${x(rpm)},${y(peak.torque_Nm[i])}`).join(' ')} stroke="#3987e5" fill="none" strokeWidth="2" />}
       <path d={thermalCurvePath(rating, x, y)} stroke="#3dbb92" strokeDasharray="7 4" fill="none" strokeWidth="3" />
+      {rating.points.filter(isHeldSpeed).map((row) => <circle key={row.speed_rpm} cx={x(row.speed_rpm)} cy={y(row.point!.torque_Nm!)} r="3" fill="#3dbb92" />)}
       {[0, maxSpeed / 2, maxSpeed].map((rpm) => <text key={rpm} x={x(rpm)} y="224" textAnchor="middle" fill="currentColor" fontSize="12">{shown(rpm)}</text>)}
       <text x="380" y="245" textAnchor="middle" fill="currentColor">Speed (rpm)</text><text x="5" y="20" fill="currentColor">N·m</text><text x="50" y="35" textAnchor="end" fill="currentColor" fontSize="12">{shown(maxTorque)}</text>
     </svg></figure>;
@@ -247,15 +251,15 @@ export function ThermalPanel({ config, result, designName }: { config: MotorConf
         <div className="results-card-heading"><h3>Thermal estimate</h3><StatusBadge status="experimental" title="Uncalibrated estimate under the entered cooling assumptions. No bench qualification." /></div>
         <p>{thermalSetupSummary(values, unit).replace(' · Experimental', '')} · steady state at the solved operating point</p>
       </div>
-      {(!run.analysis || run.busy) && <button type="button" className="thermal-compute-button" disabled={!run.ready} onClick={() => void run.runPoint()}>{run.busy ? 'Computing…' : 'Compute thermal estimate'}</button>}
+      {!run.loadingPoint && (!run.analysis || run.busy) && <button type="button" className="thermal-compute-button" disabled={!run.ready} onClick={() => void run.runPoint()}>{run.busy ? 'Computing…' : 'Compute thermal estimate'}</button>}
     </header>
     {run.validation && <p className="thermal-run-status needs-attention" role="status">{run.validation} Change it under Solve → Thermal.</p>}
-    {!run.validation && previousInputs && <p className="thermal-run-status needs-attention" role="status">{previousInputs}</p>}
+    {previousInputs && <p className="thermal-run-status needs-attention" role="status">{previousInputs}</p>}
     {run.message && <p className="thermal-run-status needs-attention" role="alert">{run.message}</p>}
     {run.job && <p className="thermal-run-status" role="status">{run.job.stage}{run.job.error ? `: ${run.job.error}` : ''}</p>}
     {run.analysis
-      ? <ThermalCard analysis={run.analysis} plot={result.field_line_plot} envelope={envelope} />
-      : <p className="thermal-empty">No thermal estimate for this run yet. It takes a moment and uses the setup from Solve → Thermal.</p>}
+      ? <ThermalCard analysis={run.analysis} origin={result.saved_run} plot={result.field_line_plot} envelope={envelope} />
+      : <p className="thermal-empty">{run.loadingPoint ? 'Loading the saved thermal estimate…' : 'No thermal estimate for this run yet. It takes a moment and uses the setup from Solve → Thermal.'}</p>}
     {run.rating && <>
       <h4 className="thermal-group-title">Thermally limited torque curve</h4>
       <ThermalCard analysis={run.rating} envelope={envelope} label="Thermally limited torque curve" />
