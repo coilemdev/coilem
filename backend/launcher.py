@@ -345,6 +345,52 @@ def _launcher_server_class() -> type:
     return LauncherServer
 
 
+# Set by the app's "Upgrade and restart": the plan to carry out once the server
+# has stopped, and the port to come back on (backend/self_upgrade.py).
+_UPGRADE: tuple[Any, int] | None = None
+
+
+def _accept_upgrade(server: Any, port: int) -> Any:
+    """Return the app's hook that stops the server so the launcher can upgrade."""
+
+    def request(steps: Any) -> None:
+        global _UPGRADE
+        _UPGRADE = (steps, port)
+        # After the response that reports the restart has been sent.
+        threading.Timer(0.5, lambda: setattr(server, "should_exit", True)).start()
+
+    return request
+
+
+# Whether this launch found no earlier coilEM on this computer (see launch()).
+_FIRST_RUN = False
+
+
+def first_run(root: Path) -> bool:
+    """Whether ``root`` shows no sign of an earlier coilEM: missing or empty.
+
+    Every launcher since 0.4.0 leaves its lock file there, so an upgrade, or
+    an older version started before, is not a first run.
+    """
+
+    try:
+        return not root.exists() or not any(root.iterdir())
+    except OSError:
+        return False
+
+
+def _start_update_check() -> None:
+    """Allow the daily update check and say so the first time it runs."""
+
+    from backend import update_check
+
+    update_check.arm(first_run=_FIRST_RUN)
+    line = update_check.notice()
+    if line is not None:
+        print(line, flush=True)
+    update_check.check_if_due()
+
+
 def _announce_when_ready(server: Any, port: int, root_id: str, *, open_browser: bool) -> None:
     url = bound_url(port)
     deadline = time.monotonic() + READY_TIMEOUT_S
@@ -354,6 +400,7 @@ def _announce_when_ready(server: Any, port: int, root_id: str, *, open_browser: 
             print(f"coilEM {__version__} is running at {url} (Ctrl+C to stop)", flush=True)
             if open_browser:
                 webbrowser.open(url)
+            _start_update_check()
             return
         if time.monotonic() >= deadline:
             print(f"coilem: the server did not answer at {url} within {READY_TIMEOUT_S:g} s.", file=sys.stderr, flush=True)
@@ -410,6 +457,7 @@ def serve(sock: socket.socket, port: int, ui_bundle: Path, root_id: str, *, open
         timeout_graceful_shutdown=GRACEFUL_SHUTDOWN_S,
     )
     server = _launcher_server_class()(config)
+    app.state.request_upgrade = _accept_upgrade(server, port)
     threading.Thread(
         target=_announce_when_ready,
         args=(server, port, root_id),
@@ -427,6 +475,9 @@ def serve(sock: socket.socket, port: int, ui_bundle: Path, root_id: str, *, open
     except KeyboardInterrupt:
         pass
     if server.first_interrupt_at is not None:
+        # Ctrl+C wins over an upgrade asked for at the same moment.
+        global _UPGRADE
+        _UPGRADE = None
         # At exit Python resets its own handlers to the default, under which a
         # late duplicate would kill the launcher. The shutdown deadline that
         # Ctrl+C started still bounds the rest of cleanup.
@@ -453,6 +504,9 @@ def launch(args: argparse.Namespace) -> int:
     root_id = user_data_root_id()
     open_browser = not args.no_browser
 
+    # Looked at before the lock file below is created in it.
+    global _FIRST_RUN
+    _FIRST_RUN = first_run(root)
     lock = acquire_root_lock(root)
     if lock is None:
         found = _wait_for_locked_instance(root, root_id)
@@ -518,7 +572,19 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--version", action="version", version=f"coilEM {__version__}")
     args = parser.parse_args(argv)
     try:
-        return launch(args)
+        code = launch(args)
+        if _UPGRADE is not None and code == 0:
+            # The port, the record and the data-folder lock are released by now.
+            from backend import self_upgrade
+
+            steps, port = _UPGRADE
+            _shutdown_native_work()
+            restart = ["--port", str(port), "--no-browser"]
+            if steps.helper_python is None:
+                self_upgrade.upgrade_and_restart(steps, restart)
+            # Windows: a helper upgrades once this process is gone.
+            return 0 if self_upgrade.hand_over(steps, restart) else 1
+        return code
     except LaunchError as exc:
         print(f"coilem: {exc}", file=sys.stderr)
         return 1

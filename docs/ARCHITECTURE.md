@@ -243,6 +243,24 @@ hashes. Downloads are served from this stored run and do not start a solver.
 - The launch configuration policy accepts Magneto2D with native Gmsh meshes.
   Elmer discovery and selection require `COILEM_ENABLE_ELMER=1` and a qualified
   user-installed runtime; this development opt-in does not expand the release claim.
+- The `coilem` launcher asks coilem.com once a day whether a newer version is
+  released (`backend/update_check.py`). The request carries the coilEM version,
+  the operating system and whether it is the first check this week or month
+  or the first run on this computer (no earlier coilEM data folder), with no
+  identifier; the answer is one version number. It
+  is off under `COILEM_UPDATE_CHECK=0`, under CI, for unreleased builds and for
+  the development API, and the app works the same without it.
+- **Upgrade and restart** (`backend/self_upgrade.py`, `POST /updates/upgrade`)
+  is done by the launcher, not the server: the route only asks the launcher to
+  stop serving. The launcher then runs one fixed upgrade command for the
+  detected install (`uv tool upgrade coilem`, `uvx coilem@latest` or pip),
+  checks the version it produced and replaces its own process with the upgraded
+  `coilem` on the same port. A failed upgrade starts the same copy again. Not
+  available in a source checkout or while a solve runs. On Windows a running
+  program cannot replace its own files, so the launcher hands the same steps
+  to `backend/upgrade_steps.py`, run as a script by the base interpreter after
+  coilEM has exited; that path is off unless `COILEM_EXPERIMENTAL_UPGRADE=1`
+  until it has been tested on Windows.
 - Cloud services, identity, billing, telemetry, FEMM, internal diagnostics,
   and thermal requests are outside the public launch runtime. Winding and
   magnet temperatures are inputs, not solved. FEMM is used only to produce the

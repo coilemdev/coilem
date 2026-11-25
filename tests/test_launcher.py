@@ -344,3 +344,17 @@ def test_ctrl_c_outside_uvicorn_is_ignored_only_once_ctrl_c_stopped_the_server(m
         handle(signal.SIGINT, None)  # stopping on request: Ctrl+C still interrupts cleanup
     server.handle_exit(signal.SIGINT, None)
     handle(signal.SIGINT, None)  # uvicorn's re-raise, or the late duplicate under uvx
+
+
+def test_a_first_run_is_a_missing_or_empty_data_folder(tmp_path: Path) -> None:
+    root = tmp_path / "coilEM"
+    assert launcher.first_run(root)
+    root.mkdir()
+    assert launcher.first_run(root)
+
+    held = launcher.acquire_root_lock(root)
+    assert held is not None
+    held.close()
+
+    # The lock file stays behind, so the next start, or an upgrade, is not a first run.
+    assert not launcher.first_run(root)

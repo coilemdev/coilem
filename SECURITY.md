@@ -27,7 +27,11 @@ Non-sensitive defects belong in
 questions in [GitHub Discussions](https://github.com/coilemdev/coilem/discussions).
 See [SUPPORT.md](SUPPORT.md) for the information that makes a report actionable.
 
-The public runtime is designed to bind only to loopback and make no default
-outbound requests. Reports about unexpected network access, path traversal,
+The public runtime is designed to bind only to loopback. It makes one outbound
+request of its own: the daily [update check](README.md#update-check), which
+sends coilem.com the coilEM version, the operating system and whether it is
+the first check that week or month or the first run on that computer, with no
+identifier, and is turned off with
+`COILEM_UPDATE_CHECK=0`. Reports about any other network access, path traversal,
 unsafe artifact handling, dependency compromise, or exposure of local run data
 should be treated as security reports.
