@@ -252,7 +252,7 @@ export function ThermalPanel({ config, result, designName }: { config: MotorConf
   return <section className="thermal-panel" aria-label="Thermal estimate">
     <header className="thermal-panel-head">
       <div>
-        <div className="results-card-heading"><h3>Thermal estimate</h3><StatusBadge status="experimental" title="Uncalibrated estimate under the entered cooling assumptions. No bench qualification." /></div>
+        <div className="results-card-heading"><h3>Thermal estimate</h3><StatusBadge status="experimental" title="Experimental estimate under the entered cooling assumptions." /></div>
         <p>{thermalSetupSummary(values, unit).replace(' · Experimental', '')} · steady state at the solved operating point</p>
       </div>
       {!run.loadingPoint && (!run.analysis || run.busy) && <button type="button" className="thermal-compute-button" disabled={!run.ready} onClick={() => void run.runPoint()}>{run.busy ? 'Computing…' : 'Compute thermal estimate'}</button>}
