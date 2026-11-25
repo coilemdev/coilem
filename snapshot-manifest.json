@@ -65,8 +65,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 8930,
-      "sha256": "6a978cb982826d99ea5a24b936d03f30442a43592856d459d0e563e754385104"
+      "bytes": 8931,
+      "sha256": "3a6088f99445fa9bce38334bbbbe128ebe6224c0f693674d9be1fd5f162c2b4a"
     },
     {
       "path": "RELEASE_NOTES.md",
@@ -46585,6 +46585,12 @@
       "path": "tests/test_update_check.py",
       "source_sha256": "c1c70573f5ced3b9c4533927bf51dfba929a2f6f713fe797bf9fb6aeaa37e662",
       "reason": "Update check says when coilEM runs on a computer for the first time"
+    },
+    {
+      "base_commit": "8c97415f487fc3dfaff7ad8daa6e5774616d63aa",
+      "path": "README.md",
+      "source_sha256": "6a978cb982826d99ea5a24b936d03f30442a43592856d459d0e563e754385104",
+      "reason": "README update-check wording"
     }
   ]
 }
