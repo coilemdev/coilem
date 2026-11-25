@@ -555,8 +555,8 @@
     },
     {
       "path": "backend/public_report.py",
-      "bytes": 108239,
-      "sha256": "ae66bcb86c9b909a1cc2810d92b3538a47bbc3b5175f1ef608d66b20015b77c5"
+      "bytes": 108422,
+      "sha256": "fa72a1b54969af5c763a5c840c82cd50f43c33fafab05bf37fcbf2873236c1a9"
     },
     {
       "path": "backend/public_routes/__init__.py",
@@ -20530,8 +20530,8 @@
     },
     {
       "path": "backend/thermal_reporting.py",
-      "bytes": 13459,
-      "sha256": "a4fb2904fd63c964eeceb43b494de89a16e5b516dfb16df65ed9f2bbaa02d48e"
+      "bytes": 18238,
+      "sha256": "8c0da6a76f7bf83b6573680667122604db6e6898d1f1cbc922d9d6827162c680"
     },
     {
       "path": "benchmarks/thermal-v0.6/ANALYTICAL_PROTOCOL.md",
@@ -20680,8 +20680,8 @@
     },
     {
       "path": "tests/test_thermal_routes.py",
-      "bytes": 30646,
-      "sha256": "6f28d31edcc7a333874e8fbdbcad6e29bdb175f9d87cd8159e2379f185430991"
+      "bytes": 30916,
+      "sha256": "560f2d6158fb24b46daecc98e5cc5332b775eae972f65a42879c001a9b7d7407"
     },
     {
       "path": "tests/test_thermal_slab.py",
@@ -46316,6 +46316,24 @@
       "path": "tests/test_thermal_routes.py",
       "source_sha256": "bc832bd66e4c1357e6190aa04efaefb8087ad31cb9973efdf87b3ea83093ea6b",
       "reason": "The Results PDF and CSV include a run's thermal estimate and torque curve, with a part heat map; the report is named after its design and uses accent colours."
+    },
+    {
+      "base_commit": "91be85794a1b54667ecf51ff18cd54a870735c36",
+      "path": "backend/public_report.py",
+      "source_sha256": "ae66bcb86c9b909a1cc2810d92b3538a47bbc3b5175f1ef608d66b20015b77c5",
+      "reason": "The torque-curve pages of a report end at the first speed with no result and group repeated reasons; thermal inputs are printed once."
+    },
+    {
+      "base_commit": "91be85794a1b54667ecf51ff18cd54a870735c36",
+      "path": "backend/thermal_reporting.py",
+      "source_sha256": "a4fb2904fd63c964eeceb43b494de89a16e5b516dfb16df65ed9f2bbaa02d48e",
+      "reason": "The torque-curve pages of a report end at the first speed with no result and group repeated reasons; thermal inputs are printed once."
+    },
+    {
+      "base_commit": "91be85794a1b54667ecf51ff18cd54a870735c36",
+      "path": "tests/test_thermal_routes.py",
+      "source_sha256": "6f28d31edcc7a333874e8fbdbcad6e29bdb175f9d87cd8159e2379f185430991",
+      "reason": "The torque-curve pages of a report end at the first speed with no result and group repeated reasons; thermal inputs are printed once."
     }
   ]
 }

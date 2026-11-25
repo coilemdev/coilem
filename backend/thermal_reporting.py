@@ -115,12 +115,70 @@ def thermal_csv_rows(record, prefix="thermal"):
     yield from walk(record, "")
 
 
-def thermal_story(record, *, rating=False, figure=None, heading=None):
+DRIVE_LIMIT_ROWS = (("dc_bus_V", "DC bus", "V"), ("modulation_index_max", "Highest modulation index", ""),
+                    ("peak_current_A", "Peak current limit", "A peak"), ("continuous_current_A", "Continuous current limit", "A peak"),
+                    ("max_speed_rpm", "Highest speed", "rpm"))
+
+
+def number(value):
+    """A recorded number for a reader: four significant figures, whole above 10,000, no exponent."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return "Unavailable" if value is None else str(value)
+    return f"{value:.0f}" if 1e4 <= abs(value) < 1e15 else f"{value:.4g}"
+
+
+def speed(value):
+    return f"{value:.0f}" if isinstance(value, (int, float)) and not isinstance(value, bool) else str(value)
+
+
+def missing_speed_label(reason: str) -> str:
+    """Why a speed has no torque, in a few words: the app's table uses the same (ThermalPanel.tsx missingSpeedLabel)."""
+    first = reason.split("; ")[0]
+    for pattern, label in (("A direct solve at this point", "Not confirmed by the direct solve"),
+                           ("below the cold map", "Magnets colder than the cold map"),
+                           ("above the hot map", "Magnets hotter than the hot map"),
+                           ("outside the two solved maps", "Magnets outside the solved maps"),
+                           ("outside -50 to 250", "Too hot with this cooling"),
+                           ("No stable thermal equilibrium", "No stable temperature"),
+                           ("temperature: ", "Past a temperature limit at any current"),
+                           ("voltage", "Past the voltage limit at any current"),
+                           ("cancel", "Cancelled")):
+        if pattern.lower() in first.lower():
+            return label
+    return "No result"
+
+
+def limit_label(constraint) -> str:
+    """'current: drive continuous' as 'Current (drive continuous)', 'temperature: end_winding' as 'Temperature (end winding)'."""
+    kind, _, detail = str(constraint or "").partition(": ")
+    return f"{kind.capitalize()} ({detail.replace('_', ' ')})" if detail else kind.capitalize() or "-"
+
+
+def check_label(status) -> str:
+    return {"PASS": "Agrees", "FAIL": "Differs", "NOT_COMPARED": "Not compared"}.get(status, str(status))
+
+
+def coupling_rows(record):
+    """The temperature iteration in two rows: its settings, and how many steps the held speeds took."""
+    coupling = record.get("coupling") or {}
+    rows = []
+    if coupling:
+        rows.append(["Temperature iteration", f"to {number(coupling.get('tolerance_K'))} K, at most {number(coupling.get('max_iterations'))} "
+                                              f"steps, relaxation {number(coupling.get('relaxation'))}"])
+    steps = [(row.get("point") or {}).get("iterations") for row in record.get("points", []) if rating_row_held(row)]
+    steps = [value for value in steps if isinstance(value, int) and not isinstance(value, bool)]
+    if steps:
+        rows.append(["Steps taken by the held speeds", str(steps[0]) if min(steps) == max(steps) else f"{min(steps)} to {max(steps)}"])
+    return rows
+
+
+def thermal_story(record, *, rating=False, figure=None, heading=None, show_inputs=True):
     """The thermal pages of a report.
 
     ``figure`` is drawn under the status line (the run report's part heat map).
     ``heading`` builds a section heading from its title, so the pages take the
-    headings of the report they are part of.
+    headings of the report they are part of. ``show_inputs=False`` leaves the
+    inputs table out, for a second thermal section that used the same inputs.
     """
     styles = getSampleStyleSheet()
     body = styles["BodyText"]
@@ -160,24 +218,44 @@ def thermal_story(record, *, rating=False, figure=None, heading=None):
     # The heading stays with what it introduces.
     story = [Spacer(1, 4 * mm), KeepTogether(opening)]
     if rating:
-        rows = []
         # Read each speed as this version records it, so an older record says what a new one would.
         points = [read_rating_row(row) for row in record.get("points", [])]
-        for row in points:
+        held = [rating_row_held(row) for row in points]
+        # The curve ends at the first speed with no result: that speed is shown with its reason, and the
+        # speeds above it are counted, not listed. The CSV has every speed.
+        last_held = max((index for index, value in enumerate(held) if value), default=-1)
+        shown, beyond = points[:last_held + 2], points[last_held + 2:]
+        rows = []
+        for row, is_held in zip(shown, held):
             point = row.get("point") or {}
-            # A rejected speed does not show the numbers it was rejected for; its reason follows the table.
-            held = [point.get(name) for name in WITHHELD_POINT_VALUES] if rating_row_held(row) else ["-"] * 3
-            rows.append([row["speed_rpm"], *held, row.get("limiting_constraint"), row.get("status"),
-                         point.get("verification_status", "NOT_COMPARED")])
-        story.append(table(["rpm", "N m", "Winding C", "Magnet C", "Limit", "Status", "Direct check"], rows,
-                           [15*mm, 17*mm, 22*mm, 22*mm, 40*mm, 24*mm, 33*mm]))
-        for row in points:
+            # A rejected speed does not show the numbers it was rejected for.
+            values = [point.get(name) for name in WITHHELD_POINT_VALUES] if is_held else ["-"] * 3
+            rows.append([speed(row["speed_rpm"]), *values,
+                         limit_label(row.get("limiting_constraint")) if is_held else missing_speed_label(str(row.get("status_reason") or "")),
+                         check_label(point.get("verification_status", "NOT_COMPARED")) if is_held else "-"])
+        story.append(table(["Speed (rpm)", "Torque (N m)", "Winding (C)", "Magnets (C)", "Limited by", "Direct solve"], rows,
+                           [22*mm, 24*mm, 24*mm, 24*mm, 52*mm, 27*mm]))
+        if beyond:
+            story.append(text(f"The {len(beyond)} speeds above it, {speed(beyond[0]['speed_rpm'])} to {speed(beyond[-1]['speed_rpm'])} rpm, "
+                              "have no result either. The CSV lists every speed with its reason."))
+        # One paragraph per run of speeds that say the same thing, not one per speed.
+        groups = []
+        for row in shown:
             point = row.get("point") or {}
-            story.append(text(f"{row['speed_rpm']:g} rpm: {row.get('status_reason', '')} {point.get('verification_reason', '')}"))
+            message = " ".join(part for part in (str(row.get("status_reason") or "").strip(),
+                                                 str(point.get("verification_reason") or "").strip()) if part)
+            if groups and groups[-1][2] == message:
+                groups[-1][1] = row["speed_rpm"]
+            else:
+                groups.append([row["speed_rpm"], row["speed_rpm"], message])
+        for first, last, message in groups:
+            span = f"{speed(first)} rpm" if first == last else f"{speed(first)} to {speed(last)} rpm"
+            story.append(text(f"{span}: {message}"))
+        for row in shown:
             if row.get("user_magnet_case"):
                 case = row["user_magnet_case"]
-                story.append(text(f"User magnet sensitivity: {case.get('magnet_temperature_C')} C, "
-                                  f"{case.get('torque_Nm')} N m; {case.get('status')}: {case.get('status_reason')}"))
+                story.append(text(f"{speed(row['speed_rpm'])} rpm with magnets at {number(case.get('magnet_temperature_C'))} C: "
+                                  f"{number(case.get('torque_Nm'))} N m; {case.get('status')}: {case.get('status_reason')}"))
     else:
         rotor = record.get("rotor_heating")
         if rotor:
@@ -213,13 +291,17 @@ def thermal_story(record, *, rating=False, figure=None, heading=None):
         story.append(text("Hottest material node: " + str(record.get("hottest_node"))))
         story.append(text("Zero-extra-rotor-heat sensitivity: " + json.dumps(record.get("baseline_without_extra_rotor_C"))))
     if rating:
-        story.append(text("Recorded drive limits: " + json.dumps(record.get("limits", {}))))
-        story.append(text("Control: " + str(record.get("control", "Unavailable"))))
-        for row in record.get("points", []):
-            point = row.get("point") or {}
-            story.append(text(f"{row['speed_rpm']:g} rpm: {point.get('iterations', 0)} iterations; "
-                              f"temperature residual {point.get('temperature_residual_K')} K; "
-                              f"relaxation settings {record.get('coupling', {})}"))
+        limits = record.get("limits") or {}
+        story.append(Paragraph("Drive limits and search", styles["Heading3"]))
+        story.append(table(["Setting", "Recorded value"], [
+            *[[label, f"{number(limits[key])} {unit}".strip()] for key, label, unit in DRIVE_LIMIT_ROWS if limits.get(key) is not None],
+            ["Control", {"mtpa": "Maximum torque per ampere", "least_loss": "Least loss"}.get(record.get("control"), record.get("control"))],
+            *coupling_rows(record),
+        ], [68*mm, 105*mm]))
+    if not show_inputs:
+        for note in record.get("notes", []):
+            story.append(text(note))
+        return story
     story.append(Paragraph("Cooling, limits and calibration inputs", styles["Heading3"]))
     story.append(table(["Input", "Recorded value"], [[key, (f"{value}. {CALIBRATION_WARNING}" if key == "calibration_multiplier"
         else json.dumps(value) if isinstance(value, (dict, list)) else value)]

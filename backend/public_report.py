@@ -2134,7 +2134,9 @@ def build_public_run_pdf(
             heading=lambda title: _section(title, styles)))
     thermal_curve = _mapping(result.get("thermal_torque_curve"))
     if thermal_curve:
-        story.extend(thermal_story(thermal_curve, rating=True, heading=lambda title: _section(title, styles)))
+        # The inputs are printed once when the estimate above used the same ones.
+        story.extend(thermal_story(thermal_curve, rating=True, heading=lambda title: _section(title, styles),
+                                   show_inputs=thermal_curve.get("inputs") != thermal.get("inputs")))
     if torque_plot is not None or back_emf_plot is not None:
         story.append(_section("Stored result plots", styles))
         if torque_plot is not None:

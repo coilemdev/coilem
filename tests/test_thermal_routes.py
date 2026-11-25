@@ -468,7 +468,10 @@ def test_exports_leave_out_the_torque_of_every_speed_without_a_result():
     assert "5.25" in extracted and "61.5" in extracted
     for value in ("7.777", "63.33", "45.55", "6.543", "64.44", "46.66"):
         assert value not in extracted, value
-    assert rejected in extracted and "forced test failure" in extracted
+    # The curve ends at the first speed with no result: it is shown with its reason and the speeds
+    # above it are counted, not listed. The CSV below still has every speed.
+    assert rejected in extracted and "forced test failure" not in extracted
+    assert "The 2 speeds above it, 1000 to 1500 rpm, have no result either." in extracted
     # The performance report flattens the rating itself; the frozen record nests it under "result".
     for record, root in ((rating, "points"), ({"result": rating}, "result.points")):
         cells = {row[1]: row for row in thermal_csv_rows(record)}
