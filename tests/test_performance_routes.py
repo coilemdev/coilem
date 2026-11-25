@@ -153,3 +153,38 @@ def test_identity_failure_is_actionable_and_does_not_claim_solve(client, monkeyp
     complete = _events(client.post("/performance/map/stream", json=_body()).text)[-1]
     assert complete[0] == "complete"
     assert not solve_routes._ACTIVE_SOLVE["running"]
+
+
+@pytest.mark.parametrize("leave", ["response-headers", "response-disconnect"])
+def test_a_client_leaving_as_the_map_stream_starts_frees_the_lane(monkeypatch, tmp_path, leave):
+    """The map stream claims the lane before its body runs; a client that leaves before the body starts must not keep it."""
+    import asyncio
+
+    from fastapi import HTTPException
+
+    from backend.public_routes import performance
+    from tests.test_public_cancellation import _serve_to_a_client_that_leaves
+
+    monkeypatch.setenv("COILEM_USER_DATA_ROOT", str(tmp_path))
+    monkeypatch.setattr(solve_routes, "_ACTIVE_SOLVE", {"running": False, "cancelled": False, "solver": None, "run_writer": None})
+    solver = FakePublicSolver()
+    monkeypatch.setattr(solve_routes, "_create_public_solver", lambda *args, **kwargs: solver)
+
+    def no_worker(function, *args, **kwargs):
+        raise AssertionError("No worker may start for a client that left")
+
+    monkeypatch.setattr(solve_routes, "_run_solver_thread", no_worker)
+
+    async def scenario():
+        response = await performance.stream_map(_body())
+        assert solve_routes._ACTIVE_SOLVE["solver"] is solver
+        with pytest.raises(HTTPException) as conflict:
+            solve_routes._claim_solve(FakePublicSolver())
+        assert conflict.value.status_code == 409
+        await _serve_to_a_client_that_leaves(response, leave)
+
+    asyncio.run(scenario())
+    assert not solve_routes._ACTIVE_SOLVE["running"] and solve_routes._ACTIVE_SOLVE["solver"] is None
+    replacement = FakePublicSolver()
+    solve_routes._claim_solve(replacement)
+    solve_routes._release_solve(replacement)

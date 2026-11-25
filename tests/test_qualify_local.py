@@ -1,5 +1,6 @@
 """A local platform collection runs the workflow's stages and never passes off partial work."""
 import json
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -17,14 +18,16 @@ def checkout(tmp_path):
     (root / qualify_local.WORKFLOW).write_text(
         'cargo +1.94.0 build --release --locked --manifest-path solvers/magneto2d/Cargo.toml\n')
 
+    executable = shutil.which('git') or 'git'
+
     def git(*args):
-        subprocess.run(['git', '-C', str(root), '-c', 'user.name=t', '-c', 'user.email=t@example.invalid', *args],
+        subprocess.run([executable, '-C', str(root), '-c', 'user.name=t', '-c', 'user.email=t@example.invalid', *args],
                        check=True, capture_output=True)
 
     git('init', '-q')
     git('add', '.')
     git('commit', '-q', '-m', 'candidate')
-    head = subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD'], text=True).strip()
+    head = subprocess.check_output([executable, '-C', str(root), 'rev-parse', 'HEAD'], text=True).strip()
     return root, head
 
 

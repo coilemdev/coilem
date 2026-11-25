@@ -27,4 +27,17 @@ for (const id of ids) {
 }
 assert.ok([...declared.values()].includes('outer') && [...declared.values()].includes('inner'), 'both layouts have examples');
 
-console.log(`example layouts: ok (${ids.length} examples)`);
+// #274: each example the bus table names exists, and its file has no bus of its own for the table to override.
+const busStart = source.indexOf('export const EXAMPLE_DC_BUS_V');
+const buses = [...source.slice(busStart, source.indexOf('};', busStart)).matchAll(/'([^']+)': (\d+),/g)].map((match) => [match[1], Number(match[2])]);
+assert.ok(buses.length >= 5, 'the examples that need more than 48 V carry their own bus');
+for (const [id, bus] of buses) {
+  assert.ok(ids.includes(id), `${id} in the bus table is an example`);
+  assert.ok(bus > 48, `${id}: a bus at or below the 48 V default needs no entry`);
+  const file = fileById.get(id);
+  if (!file) continue;
+  const design = JSON.parse(await readFile(new URL(`../src/public/examples/${file}`, import.meta.url), 'utf8'));
+  assert.equal(design.solve_params?.motor_input_dc_bus_V, undefined, `${id}: ${file} names no bus of its own`);
+}
+
+console.log(`example layouts: ok (${ids.length} examples, ${buses.length} with their own DC bus)`);

@@ -210,10 +210,12 @@ export function SolverConvergenceCard({ report, rotorHistoryPositions }: {
 }
 
 /** The end of Results: checks on how the numbers were computed. */
-export function ResultDiagnostics({ report, timeBreakdown, rotorHistoryPositions }: {
+export function ResultDiagnostics({ report, timeBreakdown, rotorHistoryPositions, mapSeconds = null }: {
   report?: SolverConvergenceReport | null;
   timeBreakdown?: SolveTimeBreakdown | null;
   rotorHistoryPositions?: number | null;
+  /** The torque–speed map's own time, when the run computed one. */
+  mapSeconds?: number | null;
 }) {
   const headingId = useId();
   return (
@@ -221,7 +223,7 @@ export function ResultDiagnostics({ report, timeBreakdown, rotorHistoryPositions
       <h2 id={headingId}>Diagnostics</h2>
       <p className="public-diagnostics-intro">How far to trust the results above, and where the solve spent its time.</p>
       <SolverConvergenceCard report={report} rotorHistoryPositions={rotorHistoryPositions} />
-      <SolveTimeCard breakdown={timeBreakdown} />
+      <SolveTimeCard breakdown={timeBreakdown} mapSeconds={mapSeconds} />
     </section>
   );
 }

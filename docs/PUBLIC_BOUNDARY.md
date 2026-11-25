@@ -51,6 +51,11 @@ The coilEM launch service is local-only and exposes exactly these paths:
 - `GET /materials`
 - `POST /materials/import`
 - `GET /openapi.json`
+- `POST /performance/thermal/point`
+- `POST /performance/thermal/stream`
+- `GET /performance/thermal/latest/{project_slug}/{run_id}/{kind}`
+- `GET /performance/thermal/record/{identity}`
+- `GET /performance/thermal/report/{identity}/{kind}`
 - `POST /performance/drive`
 - `POST /performance/map/status`
 - `POST /performance/map/stream`
@@ -160,7 +165,9 @@ startup enables development/testing discovery of a separately installed Elmer
 solve experimental rotor families (HoleM50, for the ORNL 2004 Prius); the UI
 labels them experimental and they carry no qualification claim. The policy never
 substitutes solvers automatically. It rejects FEMM selection, non-native mesh
-sources, thermal requests, and internal debug diagnostics. The service binds to
+sources, thermal flags on the electromagnetic solve request, and internal debug diagnostics.
+Explicit `/performance/thermal/*` requests support the experimental M1/M3 thermal
+estimates under entered cooling assumptions; they do not enable another field solver. The service binds to
 `127.0.0.1`; the TypeScript client accepts only loopback API hosts. Completed
 solves describe their solved positions in
 a generic `coilem.field_playback.v2` layered-raster manifest while retaining one
@@ -232,3 +239,28 @@ only a user-installed runtime through local subprocesses and files.
 Internal plans, sprint records, stories, roadmaps, and backlogs are not part of
 the public source snapshot. Published material assumptions and limitations are
 documented in `MATERIALS.md`.
+
+
+### Thermal analysis records (0.6.0 M4)
+
+Thermal settings live outside the guarded electromagnetic config. The point
+route uses a source solve's numerical summary; the streamed route owns the
+same single solve lane while building/resuming two temperature maps, searching
+the thermally limited curve and directly checking final points. Identity and
+temperature validation run before the lane is claimed; cancellation releases
+only this job after its worker exits.
+
+Completed analyses are frozen in `thermal_analyses` under the local user-data
+root. The browser remembers the analysis ID and per-design input preferences.
+Run supplements and thermal performance PDF/CSV exports read that record,
+including every node status/reason, calibration source, constraints and
+convergence evidence. They do not overwrite an original electromagnetic run.
+Original run/performance report builders can also include the same thermal
+sections when supplied their recorded thermal context.
+
+No cooling coefficient, hotspot allowance or mechanical split is silently
+selected. The series slot-conductivity lower bound is labelled as such; a
+sourced user value can replace it. Gap coefficients are per surface. Native
+interpolation acceptance is matched to the bracket's computation identity
+and grids, and never grants thermal qualification. Windows conduction and
+physical bench evidence remain separate tracks.

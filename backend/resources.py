@@ -35,8 +35,16 @@ SOURCE_UI_DIR = "frontend/dist-public-boundary"
 
 # Repository files outside ``backend/`` that the runtime reads. The build copies
 # each one into ``backend/_data/<same relative path>`` after checking its bytes
-# against ``snapshot-manifest.json``.
+# against ``snapshot-manifest.json``. Thermal gates and fixtures only: measured
+# thermal records and native comparison bundles are private evidence
+# (tools/release/private_evidence.py) and never go into a wheel, so an installed
+# thermal rating reports its native interpolation check as NOT_COMPARED.
 PACKAGED_DATA_FILES = (
+    "benchmarks/thermal-v0.6/map-interpolation-gates.json",
+    "benchmarks/thermal-v0.6/conduction-gates.json",
+    "benchmarks/thermal-v0.6/bench-gate.json",
+    "benchmarks/thermal-v0.6/analytical-fixtures.json",
+    "benchmarks/thermal-v0.6/path-audit-fixtures.json",
     "materials/electrical-steel/M350-50A.csv",
     "schemas/v1/field_solution_report.schema.json",
     "schemas/v1/halbach_array_config.schema.json",

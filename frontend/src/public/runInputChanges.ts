@@ -1,3 +1,4 @@
+import { meshDensityLabel } from './meshLabels';
 import { OPERATING_KEYS, canonical as stable, record } from './solveProfiles';
 
 /** Stored inputs only: never merge these records with the open design or defaults. */
@@ -89,6 +90,7 @@ function format(value: unknown, path: string, unit: string): string {
   if (typeof value === 'string') {
     if (path === 'config.solve_params.solve_quality') return ({ quick: 'Preview', standard: 'Standard', fine: 'High accuracy', custom: 'Custom' })[value] ?? value;
     if (path === 'config.solve_params.symmetry') return ({ full: 'Full motor', auto: 'One sector' })[value] ?? value;
+    if (path === 'config.solve_params.mesh_density') return meshDensityLabel(value) ?? value;
     return value || 'Empty';
   }
   return JSON.stringify(value);

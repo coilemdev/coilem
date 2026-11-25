@@ -1,7 +1,78 @@
-# coilEM 0.5.9 Developer Preview — release candidate
+# coilEM 0.5.10 Developer Preview — release candidate
 
-This candidate bundles Magneto2D 0.6.0. Platform wheel acceptance, the private
-release review and publication are pending; see [release status](PUBLICATION_STATUS.md).
+This candidate bundles Magneto2D 0.6.0, as 0.5.9 did. Platform wheel acceptance,
+the private release review and publication are pending; see
+[release status](PUBLICATION_STATUS.md).
+
+- **Experimental thermal estimate.** **Solve → Thermal** estimates the
+  steady-state temperature of the winding, end winding, teeth, yoke, housing or
+  mount, magnets and rotor from a run's torque and losses, with the winding's
+  margin to its insulation limit. Outer-rotor motors have their own heat paths.
+  A refused estimate says why and names the input. Temperatures use one unit
+  throughout, Celsius by default. Optional inputs show their defaults. The same
+  estimate is `coilem thermal` on the [command line](docs/COMMAND_LINE.md) and
+  `coilem.thermal()` in the [Python client](docs/PYTHON_CLIENT.md).
+- **Experimental thermally limited torque curve.** For each speed, the curve
+  finds the torque the motor can hold within its current, voltage and
+  temperature limits, then checks that point with a direct solve. A speed whose
+  direct solve rejects the point, or cannot run, has no result, and the curve,
+  PDF and CSV give the reason. The run reports its progress, and cancelling it
+  or closing the page stops the solver. See
+  [thermal coupling](docs/THERMAL_RATING.md).
+- **Thermal results.** Results has a Thermal card and tab. The loss map has its
+  own **Losses** tab next to the Field map. Saved thermal results say when the
+  thermal inputs have changed since they were computed, in Solve, the Thermal
+  tab and the summary card.
+- **Rotor iron loss for outer rotors.** The experimental rotor iron loss now
+  covers outer-rotor SPM motors. The rotor ring is treated as laminated steel;
+  eddy currents in a solid steel shell are not included, and the result says so.
+- **Rotor iron loss reads lower where it read high.** The rotor iron loss turn
+  now meshes the air gap, slot mouths and magnet corners more finely, and solves
+  every position to a tight Newton tolerance whatever the solve quality. Earlier
+  builds could read rotor iron loss high, most for saturated IPM rotors at no
+  load at the Standard and Quick qualities. Rotor iron loss runs take longer.
+- **Motor constants and operating point.** The Motor constants card shows an
+  estimated Kv ([#353](https://github.com/coilemdev/coilem/pull/353)). **DC bus
+  voltage** is set in the Operating point, and the torque–speed map uses the same
+  value; each example motor carries its own bus
+  ([#274](https://github.com/coilemdev/coilem/issues/274)).
+- **Results and runs.** The headline cards share the columns of the cards below.
+  **Previous runs** is a list of saved runs with a loading state, and Compare
+  lives in Results. The stator-only field view has its own fixed color scale.
+  The 0.5.9 display and report follow-ups are done
+  ([#348](https://github.com/coilemdev/coilem/issues/348)).
+- **Loss and thermal benchmarks.** Phase G (stator, copper and rotor iron loss)
+  and Phase H (thermal) are included as standalone benchmark definitions with
+  their fixtures and runners. They are separate from the registered A–F suite.
+  Their stored results are not part of this release.
+- **Windows and stopping runs.** After Gmsh starts, coilEM's tools still find
+  Git and Node ([#316](https://github.com/coilemdev/coilem/issues/316)). Solver
+  worker processes no longer break when Ctrl+C or Ctrl+Break reaches the
+  console. A client that leaves a solve, map, thermal or lesson stream at any
+  point frees the solver for the next run.
+
+## Known limitations
+
+The thermal estimate and torque curve are experimental. They are uncalibrated
+model estimates, not bench-qualified, and the curve's interpolation between the
+cold and hot maps is reported as not compared for this build. Rotor iron loss
+remains experimental and is unavailable on a sector solve
+([#319](https://github.com/coilemdev/coilem/issues/319)).
+
+This build has no published benchmark qualification; the published A–F record
+remains protocol 1.10.0, measured at `5e6fab283d165dc9e2ccec7e1a477c7080a993c4`.
+See [Validation](docs/VALIDATION.md#qualification-status).
+
+Mesh convergence remains open for V-shape cogging, flat-IPM corners and
+outer-rotor hub cogging ([#321](https://github.com/coilemdev/coilem/issues/321)).
+The intermittent Windows solve cancellation failure
+([#234](https://github.com/coilemdev/coilem/issues/234)) remains open: one cause
+is fixed in this release. Hardware accuracy, 3D end effects and Experimental
+outputs remain outside any software parity claim.
+
+# coilEM 0.5.9 Developer Preview
+
+Published November 23, 2026 (UTC). This release bundles Magneto2D 0.6.0.
 
 - **Experimental rotor iron loss.** In **Solve → Analysis → Losses & efficiency**,
   opt in to estimate rotor hysteresis and classical lamination eddy loss. The

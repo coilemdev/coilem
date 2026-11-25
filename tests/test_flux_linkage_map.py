@@ -227,6 +227,17 @@ def test_installed_solver_stamp_has_the_same_map_identity_as_checkout(monkeypatc
     assert map_scope_key(_config()) == original
 
 
+def test_fully_cached_map_retains_rotor_position_count(tmp_path):
+    config = _config()
+    solver = FakeSolver()
+    store = MapStore(tmp_path, map_scope_key(config))
+    first = run_flux_linkage_map(config, solve=solver, peak_current_A=20, store=store)
+    count = len(solver.calls)
+    resumed = run_flux_linkage_map(config, solve=solver, peak_current_A=20, store=store)
+    assert resumed.rotor_positions == first.rotor_positions == 12
+    assert len(solver.calls) == count
+
+
 def test_imported_steel_is_embedded_in_scope_and_has_no_external_loss_coefficients():
     from pydantic import ValidationError
 

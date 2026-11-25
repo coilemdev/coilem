@@ -2,9 +2,11 @@ import { MeshViewer } from '../src/components/tutorials/MeshViewer';
 import type { MeshPreviewData } from '../src/components/tutorials/lessonSolveTypes';
 import { FieldResultPlot } from '../src/public/FieldResultPlot';
 import { statorSteelSaturationTicks } from '../src/public/fluxColorScale';
-import { LossesCard } from '../src/public/LossesCard';
+import { LossMapPanel, LossesCard } from '../src/public/LossesCard';
+import { PublicRunComparison } from '../src/public/PublicRunComparison';
+import { PublicRunHistory } from '../src/public/PublicRunHistory';
 import { savedResultPlayback } from '../src/public/savedRunPlayback';
-import type { LossBreakdown } from '../src/public/performance';
+import type { IronLoss, IronLossDensity, LossBreakdown } from '../src/public/performance';
 /** Browser-only fixtures for canvas interaction; never imported by the production entry point. */
 import { createRoot } from 'react-dom/client';
 import { useState, type CSSProperties } from 'react';
@@ -136,7 +138,14 @@ function WindingHarness() {
 
 Object.assign(window, { viewportTest: { renderMesh, state, phaseDriveFrame } });
 const mode = new URLSearchParams(location.search).get('view');
-if (mode === 'tutorial-scale') {
+if (mode === 'run-comparison' || mode === 'run-comparison-with-history') {
+  // Compare lives in Results. Here it stands alone, so its tests need no solved run; the run list sits
+  // beside it only to check that deleting a run there reaches an open comparison.
+  root.render(<div style={{ padding: 20 }}>
+    <PublicRunComparison />
+    {mode === 'run-comparison-with-history' && <PublicRunHistory />}
+  </div>);
+} else if (mode === 'tutorial-scale') {
   const tutorialMesh = { ...mesh, config_summary: { topology: 'SPM', slots: 12, poles: 8,
     stator_od_mm: 20, rotor_od_mm: 10, magnet_thickness_mm: 1, stack_length_mm: 10 },
     mesh_info: { num_nodes: mesh.nodes_mm.length, num_triangles: mesh.triangles.length,
@@ -157,6 +166,25 @@ if (mode === 'tutorial-scale') {
     mechanical_loss_W: 0, total_loss_W: 15, shaft_power_W: 314, input_power_W: 329,
     efficiency_pct: null, efficiency_status: 'unavailable', efficiency_status_reason: 'Efficiency needs the iron loss.' } as LossBreakdown;
   root.render(<div style={{ width: 850, padding: 24 }}><LossesCard loss={loss} /></div>);
+} else if (mode === 'losses-split') {
+  // Results keeps the loss numbers on a card and shows the map as a plot tab: the two halves of one card, apart.
+  const loss = { speed_rpm: 3000, phase_current_rms_A: 10, electromagnetic_torque_Nm: 1, shaft_torque_Nm: 1,
+    electromagnetic_power_W: 314, phase_resistance_ohm: 0.05, winding_temperature_C: 20, copper_loss_W: 15,
+    copper_active_loss_W: 10, copper_end_winding_loss_W: 5, iron_loss_W: 20,
+    iron_hysteresis_loss_W: 12, iron_eddy_loss_W: 8, iron_loss_status: 'experimental',
+    iron_loss_status_reason: 'Experimental.', mechanical_loss_W: 0, total_loss_W: 35, shaft_power_W: 314, input_power_W: 349,
+    efficiency_pct: 89.97, efficiency_status: 'experimental', efficiency_status_reason: 'Experimental.' } as LossBreakdown;
+  const iron = { status: 'experimental', model: 'grade_limit_harmonic_steinmetz', steel: 'M350-50A', electrical_frequency_Hz: 200,
+    iron_loss_W: 20, iron_hysteresis_loss_W: 12, iron_eddy_loss_W: 8, stator_iron_mass_kg: 1,
+    validated_max_frequency_Hz: 1000, validated_max_flux_density_T: 1.5 } as IronLoss;
+  const density = { mesh: 'field_line_plot', element_w_per_kg: plot.triangles.map((_, index) => 3 + 6 * index),
+    element_hysteresis_w_per_kg: plot.triangles.map((_, index) => 2 + 3 * index),
+    element_eddy_w_per_kg: plot.triangles.map((_, index) => 1 + 3 * index), max_w_per_kg: 9 } as IronLossDensity;
+  // As on the Results page: the card sits in the card grid, the panel below it at full width.
+  root.render(<div style={{ width: 1100, padding: 24 }}>
+    <div className="public-result-detail"><LossesCard loss={loss} iron={iron} density={density} plot={plot} variant="report" map={false} /></div>
+    <LossMapPanel loss={loss} iron={iron} density={density} plot={plot} />
+  </div>);
 } else if (mode === 'tooth-poles' || mode === 'field-axes') {
   const geometry: GeometryPreview = {
     ...phaseGeometry,

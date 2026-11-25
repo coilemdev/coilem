@@ -51,7 +51,7 @@ PLAYBACK_DIRECTION_CUE_LIMIT = 48
 # The contour statistics and direction cues describe every second contour level.
 PLAYBACK_CONTOUR_LEVEL_STRIDE = 2
 # v4 drew small B arrows in the lines layer in place of flux lines; v5 thins them.
-PLAYBACK_RENDERER_REVISION = "medium-b-arrows-mesh-fixed-flux-scale-v5"
+PLAYBACK_RENDERER_REVISION = "medium-b-arrows-mesh-fixed-flux-scale-stator-0p5t-v7"
 # Field arrows: the viewer draws the same ones from an exact frame
 # (frontend/src/public/fieldArrows.ts); tests hold these constants equal. The
 # images carry the Medium spacing; a paused frame draws Low or High itself.
@@ -101,6 +101,10 @@ FLUX_COLOR_SCALE = {
     "max": FLUX_SCALE_MAX_T,
     "over_range_color": "#f43cf5",
 }
+# The stator-only field is a few tenths of a tesla, nearly all the lowest colour on 0-2 T (#348). Its
+# view has a fixed scale of its own; the browser uses the same (fluxColorScale.ts STATOR_FIELD_SCALE_MAX_T).
+STATOR_FIELD_SCALE_MAX_T = 0.5
+STATOR_FLUX_COLOR_SCALE = {**FLUX_COLOR_SCALE, "max": STATOR_FIELD_SCALE_MAX_T}
 
 PlaybackMode = Literal["resultant_pm", "armature"]
 
@@ -457,10 +461,10 @@ def _render_mesh(
     return image
 
 
-def _flux_color(value: float) -> tuple[int, int, int, int]:
-    if value > FLUX_SCALE_MAX_T:
+def _flux_color(value: float, scale_max_t: float = FLUX_SCALE_MAX_T) -> tuple[int, int, int, int]:
+    if value > scale_max_t:
         return _FLUX_OVER_RANGE_COLOR
-    bucket = int((max(0.0, value) / FLUX_SCALE_MAX_T) * len(_HEAT_COLORS))
+    bucket = int((max(0.0, value) / scale_max_t) * len(_HEAT_COLORS))
     return _HEAT_COLORS[min(len(_HEAT_COLORS) - 1, bucket)]
 
 
@@ -495,6 +499,7 @@ def _render_heat(
     point: Any,
     *,
     size_px: int = PLAYBACK_SIZE_PX,
+    scale_max_t: float = FLUX_SCALE_MAX_T,
 ) -> tuple[Any, float, float]:
     values = plot.get("element_b_mag_t") or []
     min_b, max_b = _heat_range(plot)
@@ -512,7 +517,7 @@ def _render_heat(
             continue
         draw.polygon(
             [point(x, y) for x, y in triangle],
-            fill=_flux_color(value),
+            fill=_flux_color(value, scale_max_t),
         )
     return image, min_b, max_b
 
@@ -772,6 +777,16 @@ def _render_arrows(
     return image.resize((size_px, size_px), image_module.Resampling.BOX)
 
 
+def field_arrow_layer(plot: dict[str, Any], view_box: tuple[float, float, float, float], size_px: int) -> Any:
+    """The app's B arrows for one stored plot, as an RGBA layer over a square view (x, -y, width, height in mm).
+
+    The PDF draws its field page with these, so a report shows what the app shows (#348).
+    """
+    from PIL import Image, ImageDraw
+
+    return _render_arrows(Image, ImageDraw, plot, view_box, ring_offset=FIELD_ARROW_RING_OFFSET["primary"], size_px=size_px)
+
+
 def _render_composition(
     image_module: Any,
     image_draw_module: Any,
@@ -802,6 +817,7 @@ def _render_composition(
     # The PM field's arrows sit between the others' rings, so the Stator + PM
     # view's two sets interleave.
     ring_offset = FIELD_ARROW_RING_OFFSET["pm" if composition == "pm" else "primary"]
+    color_scale = STATOR_FLUX_COLOR_SCALE if composition == "armature" else FLUX_COLOR_SCALE
     if draw:
         heat, min_b, max_b = _render_heat(
             image_module,
@@ -809,6 +825,7 @@ def _render_composition(
             plot,
             triangles,
             point,
+            scale_max_t=color_scale["max"],
         )
         lines = _render_arrows(
             image_module,
@@ -843,7 +860,7 @@ def _render_composition(
             "unit": "T",
             "min": min_b,
             "max": max_b,
-            "color_scale": dict(FLUX_COLOR_SCALE),
+            "color_scale": dict(color_scale),
         },
         "statistics": {
             "triangle_count": len(triangles),
@@ -1074,9 +1091,12 @@ def _playback_executor(frame_count: int) -> Executor:
     from backend.solver import _playback_process_pool_enabled
 
     if frame_count >= _PLAYBACK_PROCESS_MIN_FRAMES and _playback_process_pool_enabled():
+        from backend.solver._process_pool import initialize_pool_worker
+
         return ProcessPoolExecutor(
             max_workers=max(1, min(_PLAYBACK_MAX_PROCESSES, os.cpu_count() or 1, frame_count)),
             mp_context=get_context("spawn" if os.name == "nt" else None),
+            initializer=initialize_pool_worker,
         )
     return ThreadPoolExecutor(
         max_workers=max(1, min(4, frame_count)),

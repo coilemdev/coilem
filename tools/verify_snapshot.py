@@ -33,6 +33,31 @@ def _load_local_paths():
 
 
 ABSOLUTE_USER_PATH_PATTERNS = _load_local_paths().ABSOLUTE_USER_PATH_PATTERNS
+
+
+def _load_private_evidence():
+    # The declared private benchmark evidence; standard library, loaded by path like local_paths.
+    path = Path(__file__).resolve().parents[1] / "tools" / "release" / "private_evidence.py"
+    spec = importlib.util.spec_from_file_location("_coilem_private_evidence", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+PRIVATE_EVIDENCE = _load_private_evidence()
+
+
+def _load_disclosures():
+    # Fingerprints of measured claims kept in the private repository; standard library, loaded by path.
+    path = Path(__file__).resolve().parents[1] / "tools" / "release" / "disclosures.py"
+    spec = importlib.util.spec_from_file_location("_coilem_disclosures", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+DISCLOSURES = _load_disclosures()
+KNOWN_CLAIMS = DISCLOSURES.Fingerprints.load()
 # A published PDF may link to the web, to its own pages or to a file beside it.
 # file: URIs, absolute paths and file-opening actions name the machine that built it.
 PDF_LINK_SCHEMES = {"http", "https", "mailto"}
@@ -78,6 +103,16 @@ ALLOWED_DATA_FILES = {
     "benchmarks/performance-112/native-20261016/benchmark_results.csv",
     "benchmarks/windows-native-20261018-f390b25/benchmark_results.csv",
     "benchmarks/macos-native-20261022-5b7cad8/benchmark_results.csv",
+}
+# Reviewed private benchmark evidence (tools/release/private_evidence.py). The
+# private repository carries it, so these are allowed there; a public tree
+# (--public-tree) may not hold any private evidence at all.
+PRIVATE_EVIDENCE_DATA_FILES = {
+    "benchmarks/thermal-v0.6/analytical-metrics.csv",
+    "benchmarks/thermal-v0.6/analytical-surface-mean-metrics.csv",
+}
+PRIVATE_EVIDENCE_BINARY_SIGNATURES = {
+    "benchmarks/thermal-v0.6/screenshots/thermal-results.png": b"\x89PNG\r\n\x1a\n",
 }
 # Single-digit sector/surface symbols (S1-S9) are engineering data. Story IDs
 # have multiple digits or a task suffix; explicit sprint/path references also fail.
@@ -257,9 +292,33 @@ def indexed_report_csvs(root: Path) -> set[str]:
     return allowed
 
 
+def public_tree_failures(paths, manifest: dict) -> list[str]:
+    """A public tree holds no private benchmark evidence, nor names it in its patch record."""
+
+    failures = [f"private benchmark evidence in a public tree: {relative}" for relative in PRIVATE_EVIDENCE.private_paths(paths)]
+    named = PRIVATE_EVIDENCE.private_paths({entry["path"] for entry in manifest.get("public_patches", [])})
+    failures.extend(f"private benchmark evidence named in public_patches: {relative}" for relative in named)
+    return failures
+
+
+def claim_failures(relative: str, text: str, known=None) -> list[str]:
+    """A public file never quotes a measured claim that is kept in the private repository.
+
+    The claims are declared as fingerprints in tools/release/disclosure_fingerprints.json
+    (tools/release/disclosures.py). Private evidence may hold them; --public-tree refuses
+    such a file by its path.
+    """
+
+    if PRIVATE_EVIDENCE.is_private(relative):
+        return []
+    return (known or KNOWN_CLAIMS).failures(relative, text)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--publication", action="store_true")
+    parser.add_argument("--public-tree", action="store_true",
+                        help="also refuse private benchmark evidence (tools/release/private_evidence.py): the public export check")
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     manifest = json.loads((root / "snapshot-manifest.json").read_text(encoding="utf-8"))
@@ -305,6 +364,10 @@ def main() -> int:
         and path.name != ".DS_Store"
     }
     failures = []
+    allowed_data_files = ALLOWED_DATA_FILES | registered_csv | (set() if args.public_tree else PRIVATE_EVIDENCE_DATA_FILES)
+    binary_signatures = ALLOWED_BINARY_SIGNATURES | ({} if args.public_tree else PRIVATE_EVIDENCE_BINARY_SIGNATURES)
+    if args.public_tree:
+        failures.extend(public_tree_failures({*actual, *expected}, manifest))
     reference_sources, reference_failures = preserved_reference_sources(root)
     failures.extend(reference_failures)
     if set(actual) != set(expected):
@@ -330,9 +393,9 @@ def main() -> int:
             "tools/femm_reference/_vendor/e/materials/electrical-steel/M350-50A.csv",
             "tools/femm_reference/_vendor/f/backend/_data/materials/electrical-steel/M350-50A.csv",
         })
-        if path.suffix.lower() == ".csv" and relative not in ALLOWED_DATA_FILES | registered_csv and not replay_curve:
+        if path.suffix.lower() == ".csv" and relative not in allowed_data_files and not replay_curve:
             failures.append(f"unreviewed material or fixture CSV: {relative}")
-        allowed_signature = ALLOWED_BINARY_SIGNATURES.get(relative)
+        allowed_signature = binary_signatures.get(relative)
         if allowed_signature is not None:
             if not path.read_bytes().startswith(allowed_signature):
                 failures.append(f"invalid allowlisted binary signature: {relative}")
@@ -348,6 +411,7 @@ def main() -> int:
         except UnicodeDecodeError:
             failures.append(f"unexpected binary file: {relative}")
             continue
+        failures.extend(claim_failures(relative, text))
         failures.extend(text_hygiene_failures(relative, text, preserved_reference=relative in reference_sources))
         if relative.startswith("backend/") and path.suffix == ".py":
             try:

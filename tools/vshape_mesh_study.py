@@ -127,7 +127,7 @@ def main() -> None:
             if not row.exists():
                 print(f"Starting {case}: {density}", flush=True)
                 subprocess.run([sys.executable, "-m", "tools.vshape_mesh_study", "--case", case,
-                                "--density", density, "--out", str(row)], cwd=ROOT, check=True)
+                                "--density", density, "--out", str(row)], cwd=ROOT, env=os.environ.copy(), check=True)
             fixture = FIXTURES / f"ipm_vshape_8p12s_{case}__native.json"
             report["rows"].append(read_point(row, identity, fixture))
             args.out.write_text(json.dumps(report, indent=2) + "\n")

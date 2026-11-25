@@ -61,7 +61,6 @@ const forbiddenTerms = [
   ['remote-service', /cloud/i],
   ['usage-reporting', /telemetry/i],
   ['private-solver', /femm/i],
-  ['deferred-physics', /thermal/i],
   ['operations', /admin/i],
   ['payments', /billing/i],
   ['resource-limits', /quota/i],

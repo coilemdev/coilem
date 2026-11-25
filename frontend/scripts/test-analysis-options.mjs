@@ -24,7 +24,6 @@ let config = cloneDefaultConfig();
   assert.equal(rotorIronLossUnavailableReason(supported), null);
   assert.equal(rotorIronLossSelected(supported), true);
   const cases = [
-    [(c) => { c.rotor_layout = 'outer'; }, /outer-rotor/],
     [(c) => { c.topology = 'IPM'; c.rotor.ipm_topology = 'v_shape'; }, /V-shape/],
     [(c) => { c.solve_params.excitation_mode = 'ideal_six_step_120'; }, /sinusoidal/],
     [(c) => { c.solve_params.symmetry = 'auto'; }, /full motor/],
@@ -44,6 +43,11 @@ let config = cloneDefaultConfig();
     assert.doesNotMatch(analysisSummary(unsupported), /Rotor iron loss/);
     assert.equal(unsupported.solve_options.rotor_iron_loss, true, 'the choice is kept for when the design supports it again');
   }
+  // An outer-rotor motor is supported like an inner one (its magnets are always surface magnets).
+  const outer = structuredClone(supported);
+  outer.rotor_layout = 'outer'; outer.topology = 'SPM';
+  assert.equal(rotorIronLossUnavailableReason(outer), null);
+  assert.equal(rotorIronLossSelected(outer), true);
   const flat = structuredClone(supported);
   flat.topology = 'IPM'; flat.rotor.ipm_topology = 'flat_buried';
   assert.equal(rotorIronLossUnavailableReason(flat), null);

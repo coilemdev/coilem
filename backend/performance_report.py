@@ -62,6 +62,7 @@ from backend.public_report import (
 )
 from backend.report_numbers import format_report_number
 from backend.resources import application_commit
+from backend.thermal_reporting import thermal_csv_rows, thermal_story
 
 PERFORMANCE_REPORT_SCHEMA = "coilem.performance_report.v1"
 IDIQ_TABLE_SCHEMA = "coilem.idiq_table.v1"
@@ -105,6 +106,7 @@ class StatedStatus(BaseModel):
 class ReportContext(BaseModel):
     """What the tab knows beyond the drive request: names, units, the solved point and the winding's status."""
 
+    thermal_rating: Optional[dict] = None
     design_name: Optional[str] = Field(default=None, max_length=200)
     current_unit: Literal["A rms", "A peak"] = "A rms"
     dc_bus_source: Literal["design", "entered", "estimated"] = "entered"
@@ -501,6 +503,9 @@ def build_performance_csv(data: PerformanceData, context: ReportContext) -> byte
         row("note", "message", note, sample_index=index)
     for index, limitation in enumerate(_LIMITATIONS):
         row("known_limitation", "message", limitation, sample_index=index)
+    if context.thermal_rating:
+        writer = csv.writer(output, lineterminator="\r\n")
+        writer.writerows(thermal_csv_rows(context.thermal_rating, "thermal_rating"))
     return output.getvalue().encode("utf-8")
 
 
@@ -1010,5 +1015,7 @@ def build_performance_pdf(data: PerformanceData, context: ReportContext) -> byte
     story.extend([KeepTogether([_section("Notes", styles), notes[0]]), *notes[1:]])
     limitations = [_safe_paragraph(f"- {limitation}", styles["body"]) for limitation in _LIMITATIONS]
     story.extend([KeepTogether([_section("Known limitations", styles), limitations[0]]), *limitations[1:]])
+    if context.thermal_rating:
+        story.extend(thermal_story(context.thermal_rating, rating=True))
     document.build(story, onFirstPage=page_chrome, onLaterPages=page_chrome, canvasmaker=_InvariantCanvas)
     return buffer.getvalue()

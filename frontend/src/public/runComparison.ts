@@ -102,7 +102,7 @@ export function compareRunTiming(before: ComparisonResult, after: ComparisonResu
     }
   }
   const work = [
-    ['mesh_elements', 'Mesh elements', before.solve_metadata.mesh_element_count, after.solve_metadata.mesh_element_count],
+    ['mesh_elements', 'Mesh elements, first position', before.solve_metadata.mesh_element_count, after.solve_metadata.mesh_element_count],
     ['rotor_positions', 'Loaded sweep positions', before.solve_metadata.rotor_positions, after.solve_metadata.rotor_positions],
     ['rotor_history_positions', 'Rotor iron loss positions (history + closure)', recordedRotorHistoryPositions(before), recordedRotorHistoryPositions(after)],
     ['meshes_built', 'Meshes generated', a?.counts?.meshes_built, b?.counts?.meshes_built],
@@ -118,7 +118,7 @@ export function compareRunTiming(before: ComparisonResult, after: ComparisonResu
 
 export interface ComparisonLossCell {
   value: number | null;
-  missing?: 'Not recorded' | 'Unavailable' | 'Not applicable';
+  missing?: 'Not recorded' | 'Unavailable' | 'Not applicable' | 'Off';
   status?: PerformanceOutputStatus;
   reason?: string;
   partial?: boolean;
@@ -167,6 +167,8 @@ export function compareRunLosses(before: ComparisonResult, after: ComparisonResu
     const partial = finiteNumber(loss.iron_loss_W) === null || loss.iron_loss_status === 'unavailable' || loss.rotor_iron_loss_status === 'unavailable';
     if (row.key === 'total' && partial) return { value: null, missing: 'Unavailable' };
     if (row.key === 'subtotal' && !partial) return { value: null, missing: 'Not applicable' };
+    // A run solved without the rotor option has no rotor loss to record: it was off, as What changed? says (#348).
+    if (row.status === 'rotor' && loss.rotor_iron_loss_status == null && finiteNumber(loss[row.field]) === null) return { value: null, missing: 'Off' };
     const status = outputStatus(row.status === 'efficiency' ? loss.efficiency_status
       : row.status === 'iron' ? loss.iron_loss_status : row.status === 'rotor' ? loss.rotor_iron_loss_status
         : row.status === 'copper' ? run.summary.winding_resistance?.status : undefined);

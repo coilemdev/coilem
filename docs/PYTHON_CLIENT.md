@@ -193,6 +193,46 @@ densities come from it. `result.without_fields()` and `result.save(path)`
 d/q quantities, inductances and cogging are experimental outputs;
 `dq.status`, `dq.inductance_status` and `cogging.status` carry that label.
 
+## Thermal estimate
+
+`coilem.thermal(result)` estimates the steady-state temperature of each part
+from a solved result. It is the app's experimental thermal estimate. The
+result must come from a solve that included the `torque` and `losses`
+analyses.
+
+```python
+result = coilem.solve(motor, analyses=["torque", "back_emf", "losses"])
+estimate = coilem.thermal(result, ambient_C=40)
+
+print(estimate.hottest_part, estimate.hottest_C)   # "end_winding", 164.1
+print(estimate.winding_margin_K)                    # negative means over the limit
+print(estimate.temperatures_C)                      # every part
+```
+
+| Argument | Meaning |
+| --- | --- |
+| `cooling` | `"still_air"` (default), `"forced_air"` or `"liquid_jacket"` |
+| `ambient_C` | Temperature of the air or coolant that carries the heat away |
+| `insulation_class` | `"A"`, `"B"`, `"F"` (default) or `"H"` |
+| `inputs` | Any other thermal input by its name, for example `{"housing_h_W_m2K": 60}` |
+| `copper_feedback` | `True` (default) lets the copper loss rise with the winding temperature; `False` keeps the solved loss |
+
+Without cooling arguments the app's still-air starter values are used
+(`coilem.thermal_inputs()` returns them). They are illustrative, not
+measured, and `estimate.inputs` records every value used. Another kind of
+cooling needs its own three heat-transfer values and their source in
+`inputs`. An outer-rotor motor takes `mount_to_ambient_K_W`, and a design
+with mechanical loss needs `mechanical_split`, the share of that heat in the
+bearings, housing and rotor.
+
+`estimate.status` is `"unavailable"` when no temperatures can be given, for
+example for a motor that would settle far too hot for the entered cooling;
+`estimate.status_reason` says why and `estimate.available` is False.
+`estimate.parts` has each part's temperature, limit, margin and heat,
+`estimate.metrics()` the headline numbers as one flat dict, and
+`estimate.save(path)` writes the estimate with its inputs. The same estimate
+from a terminal is `coilem thermal` ([Command line](COMMAND_LINE.md)).
+
 ## Sweeps
 
 ```python

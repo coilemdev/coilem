@@ -45,6 +45,7 @@ resources = _load("_coilem_build_resources", "backend/resources.py")
 physics = _load("_coilem_build_physics", "backend/benchmark_suite/physics.py")
 rust_licenses = _load("_coilem_build_rust_licenses", "tools/release/rust_licenses.py")
 release_version = _load("_coilem_build_release_version", "tools/release/version.py")
+private_evidence = _load("_coilem_build_private_evidence", "tools/release/private_evidence.py")
 
 
 def _sha256(path: Path) -> str:
@@ -89,6 +90,8 @@ def _check_packaged_sources() -> None:
     manifest = json.loads((ROOT / "snapshot-manifest.json").read_text(encoding="utf-8"))
     recorded = {entry["path"]: entry["sha256"] for entry in manifest["files"]}
     for relative in (*resources.PACKAGED_DATA_FILES, *resources.PACKAGE_DATA_FILES, *resources.benchmark_data_files(ROOT)):
+        if private_evidence.is_private(relative):
+            raise SystemExit(f"coilEM build: {relative} is private benchmark evidence and is never packaged.")
         if _sha256(ROOT / relative) != recorded.get(relative):
             raise SystemExit(f"coilEM build: {relative} differs from its snapshot-manifest.json entry.")
 

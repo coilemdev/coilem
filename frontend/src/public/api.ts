@@ -1,3 +1,4 @@
+import { validationErrorMessage } from './apiErrors';
 import type { RunSetupProvenance, SolveProfileDocument } from './solveProfiles';
 import type { SolveResult } from './model';
 import { normalizeComparisonResult, type ComparisonFields, type ComparisonResult } from './runComparison';
@@ -24,6 +25,8 @@ export type PublicSolveRequest = PublicMotorConfig | {
 export interface PublicApiError {
   error_code: string;
   message: string;
+  /** The rejected fields, when the API refused the request's shape or values. */
+  validation?: unknown;
   field?: string | null;
   suggestion?: string | null;
 }
@@ -65,6 +68,15 @@ export interface PublicRunListRecord {
   /** The design's saved-setup scope, which survives edits; unnamed designs can share a slug. */
   design_scope?: string | null;
   field_playback_removed_at?: string | null;
+  /** Current, speed and drive as the run's request entered them. Completed runs only. */
+  operating_point?: {
+    current_A?: number; current_convention?: string; speed_rpm?: number; current_angle_deg?: number; excitation_mode?: string;
+  } | null;
+  /** The few results that tell one run from another, from the run's report summary. Completed runs only. */
+  headline?: {
+    mean_torque_Nm?: number; back_emf_fundamental_V?: number; cogging_peak_to_peak_Nm?: number; efficiency_pct?: number;
+    solve_time_s?: number;
+  } | null;
 }
 
 export interface PublicRunStoragePolicy {
@@ -124,6 +136,9 @@ async function parseApiError(response: Response): Promise<PublicApiError> {
   try {
     const payload = await response.json() as PublicJson;
     const detail = payload.detail;
+    if (typeof detail === 'string' && detail) return { ...fallback, message: detail };
+    const rejected = validationErrorMessage(detail);
+    if (rejected) return { ...fallback, message: rejected, validation: detail };
     if (detail && typeof detail === 'object') {
       return { ...fallback, ...(detail as PublicApiError) };
     }
@@ -218,14 +233,24 @@ export function openPublicRunFolder(projectSlug: string, runId: string): Promise
   );
 }
 
+/** The saved thermal results of a run, by record id: they go into its PDF and CSV report. */
+export interface RunThermalRecords { estimate?: string | null; curve?: string | null }
+
 export async function downloadPublicRunExport(
   projectSlug: string,
   runId: string,
   exportKind: PublicRunExportKind,
+  thermal: RunThermalRecords = {},
 ): Promise<void> {
   const suffix = exportKind === 'package' ? 'package.zip' : `report.${exportKind}`;
+  // The stored report is written when the run completes; one with the run's thermal results is built on request.
+  const query = new URLSearchParams();
+  if (exportKind !== 'package') {
+    if (thermal.estimate) query.set('thermal', thermal.estimate);
+    if (thermal.curve) query.set('thermal_curve', thermal.curve);
+  }
   const response = await fetch(
-    `${PUBLIC_API_BASE}/runs/${encodeURIComponent(projectSlug)}/${encodeURIComponent(runId)}/${suffix}`,
+    `${PUBLIC_API_BASE}/runs/${encodeURIComponent(projectSlug)}/${encodeURIComponent(runId)}/${suffix}${query.size ? `?${query}` : ''}`,
   );
   if (!response.ok) {
     throw await parseApiError(response);
@@ -424,4 +449,23 @@ function streamPublicRequest(
   });
 
   return controller;
+}
+
+export function computeThermalPoint(body: Record<string, unknown>): Promise<import('./thermal').ThermalAnalysis> {
+  return requestJson('/performance/thermal/point', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }) as unknown as Promise<import('./thermal').ThermalAnalysis>;
+}
+export function getLatestThermalAnalysis(project: string, run: string, kind: 'point' | 'rating') {
+  return requestJson(`/performance/thermal/latest/${encodeURIComponent(project)}/${encodeURIComponent(run)}/${kind}`) as unknown as Promise<import('./thermal').ThermalAnalysis | null>;
+}
+export function getThermalAnalysis(id: string): Promise<import('./thermal').ThermalAnalysis> {
+  return requestJson(`/performance/thermal/record/${encodeURIComponent(id)}`) as unknown as Promise<import('./thermal').ThermalAnalysis>;
+}
+export function streamThermalRating(body: Record<string, unknown>, handlers: PublicSolveStreamHandlers): AbortController {
+  return streamPublicRequest('/performance/thermal/stream', 'The thermal stream is unavailable.', body, handlers);
+}
+export async function downloadThermalAnalysis(id: string, kind: 'pdf' | 'csv', origin?: {project_slug: string; run_id: string} | null): Promise<void> {
+  const query = origin ? '?' + new URLSearchParams({project_slug: origin.project_slug, run_id: origin.run_id}) : '';
+  const response = await fetch(`${PUBLIC_API_BASE}/performance/thermal/report/${encodeURIComponent(id)}/${kind}${query}`);
+  if (!response.ok) throw await parseApiError(response);
+  await saveDownload(response, `coilem-thermal.${kind}`);
 }

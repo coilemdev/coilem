@@ -6,7 +6,7 @@ report export. If you installed coilEM with `uv tool install coilem`, run
 `coilem` and start at [6. Load the example motor](#6-load-the-example-motor);
 sections 1 to 5 build it from source.
 
-This guide follows the coilEM 0.5.9 development branch with Magneto2D 0.6.0.
+This guide follows the coilEM 0.5.10 development branch with Magneto2D 0.6.0.
 Run `coilem version` to identify your installed build.
 coilEM requires Python 3.11 to 3.15, Node.js 24 with npm, a Rust
 toolchain with Cargo (the locked `faer` dependency requires Rust 1.84+), and Git. The platform-specific commands below are setup
@@ -172,8 +172,10 @@ It adds a dedicated 384-position mechanical turn and a closure solve. Review
 the separate hysteresis and lamination eddy terms in Results and exports.
 
 Selecting **Torque–speed map** reveals its peak and continuous phase-current
-limits, DC bus, top speed, drive control and map grid. Enter your supply
-voltage; when the design has none, the initial value is 48 V. **Run analysis**
+limits, DC bus, top speed, drive control and map grid. The DC bus is the
+design's supply voltage, the same value as **DC bus voltage** under Operating
+point; change it in either place. A design that names none uses 48 V, and the
+built-in examples that need more carry their own. **Run analysis**
 computes the selected operating-point outputs and the map in one saved run.
 The map includes its own torque, flux-linkage and loss solves, so it can run
 with all other analyses off. Preview uses 29 solves; Standard uses 61.
@@ -281,15 +283,20 @@ before using a result in a design decision.
 
 ## 10. Compare two saved runs
 
-Select **Manage previous runs** after completing a second Magneto2D solve. Select one run
-as the baseline and another as the candidate to compare their stored design,
-operating-point, mesh, and headline result values. Comparison is descriptive:
-it does not rerun either solver, establish cross-solver parity, or certify a
-design. **Open results** on a stored run brings back its whole result, field
-playback included, without solving again.
+After a second Magneto2D solve, open **Results** and choose **Compare runs**.
+Select one run as the baseline and another as the candidate to compare their
+stored design, operating-point, mesh, and headline result values. Comparison is
+descriptive: it does not rerun either solver, establish cross-solver parity, or
+certify a design.
 
-The same dialog shows workspace usage and each run's size and status. Deleting
-a run requires **Delete run** followed by **Delete permanently** for that exact
+The clock button at the top right opens **Previous runs**: every saved run,
+newest first, with when it ran, how it was driven, and its torque, efficiency
+and back EMF. Click a run, or its **Open results**, to bring back its whole
+result, field playback included, without solving again. The buttons above the
+list show one design's runs.
+
+That dialog also shows workspace usage and each run's size. Deleting
+a run requires **Delete** followed by **Delete permanently** for that exact
 row. Completed runs are never deleted automatically, and a running solve cannot
 be deleted there. Only field playback, most of a run's size, is removed on its
 own: each design keeps it for its newest 5 runs. A full workspace also gives up

@@ -402,12 +402,24 @@ def _gmsh_lc_integration_precision(config: MotorConfig) -> float:
     return GMSH_LC_INTEGRATION_PRECISION[mesh_build]
 
 
+# The rotor iron loss turn meshes the air gap, slot mouths and magnet corners at half
+# the usual smallest size. The slot openings set the ripple the rotor sees, and the
+# usual mesh overstates it, most on a large motor with many slots, so the rotor iron
+# loss reads high. Torque and stator loss do not need it.
+ROTOR_LOSS_FEATURE_SIZE_SCALE = 0.5
+
+
 def run_gmsh_mesh_preview(
     config: MotorConfig,
     *,
     rotor_angle_deg: float | None = None,
+    rotor_loss_mesh: bool = False,
 ) -> dict[str, Any]:
-    """Generate a Gmsh mesh preview and embedded Magneto2D solve-mesh artifact."""
+    """Generate a Gmsh mesh preview and embedded Magneto2D solve-mesh artifact.
+
+    ``rotor_loss_mesh`` builds the mesh of the rotor iron loss turn
+    (``ROTOR_LOSS_FEATURE_SIZE_SCALE``); SPM and IPM only.
+    """
 
     if not GMSH_AVAILABLE:
         raise GmshUnavailableError(
@@ -432,7 +444,10 @@ def run_gmsh_mesh_preview(
                 density=density,
                 rotor_angle_deg=rotor_angle_deg or 0.0,
                 start_time=start,
+                feature_size_scale=ROTOR_LOSS_FEATURE_SIZE_SCALE if rotor_loss_mesh else 1.0,
             )
+    if rotor_loss_mesh:
+        raise ValueError("The rotor iron loss mesh is built for SPM and IPM motors only")
 
     # Mesh preview runs in FastAPI's executor thread. The default Gmsh Python
     # initialization installs a signal handler, which is only legal on the main
@@ -534,6 +549,7 @@ def _run_gmsh_ir_mesh_preview(
     density: str,
     rotor_angle_deg: float,
     start_time: float,
+    feature_size_scale: float = 1.0,
 ) -> dict[str, Any]:
     """Generate an IR-driven Gmsh mesh for SPM/IPM topologies."""
 
@@ -583,6 +599,7 @@ def _run_gmsh_ir_mesh_preview(
                 float(ir.metadata["airgap_rotor_side_radius_mm"]) - float(ir.metadata["airgap_stator_side_radius_mm"])
                 if is_outer_rotor(config) else None
             ),
+            feature_size_scale=feature_size_scale,
         )
         for region in ir.regions:
             surfaces = builder.surfaces_by_region.get(region.region_id, [])
@@ -2076,11 +2093,13 @@ def _apply_gmsh_physics_mesh_fields(
     geom: MotorGeometry,
     config: MotorConfig,
     airgap_width_mm: float | None = None,
+    feature_size_scale: float = 1.0,
 ) -> None:
     """Local size fields at the air gap and physics features.
 
     ``airgap_width_mm`` overrides the inner-rotor gap read from ``geom``; an
-    outer rotor passes its gap from the geometry IR.
+    outer rotor passes its gap from the geometry IR. ``feature_size_scale``
+    scales the smallest size of every feature field (``ROTOR_LOSS_FEATURE_SIZE_SCALE``).
     """
     fields: list[int] = []
     base_lc = builder.base_lc_mm
@@ -2133,6 +2152,7 @@ def _apply_gmsh_physics_mesh_fields(
             )
             fields.append(
                 _add_threshold_field(
+                    size_min_scale=feature_size_scale,
                     curves=airgap_curves,
                     size_min_mm=airgap_size,
                     size_max_mm=far_lc,
@@ -2145,6 +2165,7 @@ def _apply_gmsh_physics_mesh_fields(
         else:
             fields.append(
                 _add_threshold_field(
+                    size_min_scale=feature_size_scale,
                     curves=airgap_curves,
                     size_min_mm=min(
                         _feature_lc_mm(base_lc, "airgap"),
@@ -2170,6 +2191,7 @@ def _apply_gmsh_physics_mesh_fields(
             )
             fields.append(
                 _add_threshold_field(
+                    size_min_scale=feature_size_scale,
                     points=magnet_points,
                     size_min_mm=corner_size,
                     size_max_mm=far_lc,
@@ -2181,6 +2203,7 @@ def _apply_gmsh_physics_mesh_fields(
         else:
             fields.append(
                 _add_threshold_field(
+                    size_min_scale=feature_size_scale,
                     points=magnet_points,
                     size_min_mm=_feature_lc_mm(base_lc, "magnet_corner"),
                     size_max_mm=base_lc,
@@ -2199,6 +2222,7 @@ def _apply_gmsh_physics_mesh_fields(
         patch_size, patch_radius, patch_transition, patch_sampling = _v_shape_corner_patch()
         fields.append(
             _add_threshold_field(
+                size_min_scale=feature_size_scale,
                 points=magnet_points,
                 size_min_mm=patch_size,
                 size_max_mm=far_lc,
@@ -2223,6 +2247,7 @@ def _apply_gmsh_physics_mesh_fields(
             )
             fields.append(
                 _add_threshold_field(
+                    size_min_scale=feature_size_scale,
                     points=slot_points,
                     size_min_mm=slot_size,
                     size_max_mm=far_lc,
@@ -2234,6 +2259,7 @@ def _apply_gmsh_physics_mesh_fields(
         else:
             fields.append(
                 _add_threshold_field(
+                    size_min_scale=feature_size_scale,
                     points=slot_points,
                     size_min_mm=_feature_lc_mm(base_lc, "slot_mouth"),
                     size_max_mm=base_lc,
@@ -2255,6 +2281,7 @@ def _apply_gmsh_physics_mesh_fields(
         )
         fields.append(
             _add_threshold_field(
+                size_min_scale=feature_size_scale,
                 curves=shaft_curves or None,
                 points=shaft_points or None,
                 size_min_mm=shaft_size,
@@ -2303,7 +2330,9 @@ def _add_threshold_field(
     dist_min_mm: float,
     dist_max_mm: float,
     sampling: int,
+    size_min_scale: float = 1.0,
 ) -> int:
+    size_min_mm *= size_min_scale
     distance_field = gmsh.model.mesh.field.add("Distance")
     if points:
         gmsh.model.mesh.field.setNumbers(distance_field, "PointsList", points)

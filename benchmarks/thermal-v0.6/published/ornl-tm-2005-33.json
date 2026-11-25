@@ -1,0 +1,50 @@
+{
+  "schema": "coilem-thermal-published-1",
+  "source": {
+    "title": "Report on Toyota Prius Motor Thermal Management",
+    "number": "ORNL/TM-2005/33",
+    "authors": "J. S. Hsu et al.",
+    "publisher": "Oak Ridge National Laboratory",
+    "date": "2005-02"
+  },
+  "test": "2004 Toyota Prius traction motor in its transaxle at 900 rpm, loaded until the end-turn temperature levelled off just under the 170 C winding limit. Water-glycol jacket at 2.4 gpm, oil splashed on the end turns by the slinger.",
+  "tables": "Losses, casing and oil temperatures: Table 16. Total and mechanical loss: Table 10. Torque and current: Table 7. Measured end-turn temperatures: Table 17. The report's own model range: Table 18. Conductivities: Table 15.",
+  "note": "Table 16 prints the report's predicted values in its measured column for the 105 C row. The measured values here are Table 17's.",
+  "conductivity_W_mK": {
+    "iron_radial": 51.9,
+    "iron_axial": 5.21,
+    "slot_insulation_and_wedge": 0.125,
+    "copper": 400.0,
+    "magnet": 47.3,
+    "slot_mixture": [0.408, 2.71],
+    "gap_mixture": 10.0
+  },
+  "oil_to_end_turn_W_m2K": 25,
+  "points": [
+    {"coolant_C": 35, "total_loss_W": 2202, "mechanical_loss_W": 160, "torque_Nm": 167.3, "current_A_rms": 81.6, "stator_iron_W": 1023, "copper_W": 1019, "rotor_iron_W": 236.5, "magnet_W": 40, "oil_C": 114,
+     "thermocouples": {"W1": {"casing_C": 91, "measured_C": 159, "source_model_C": [157.8, 165.3]},
+                       "W2": {"casing_C": 75.5, "measured_C": 156, "source_model_C": [146.5, 154.8]},
+                       "W3": {"casing_C": 107, "measured_C": 166, "source_model_C": [169.5, 176.2]}}},
+    {"coolant_C": 50, "total_loss_W": 2048, "mechanical_loss_W": 160, "torque_Nm": 159.6, "current_A_rms": 78, "stator_iron_W": 952, "copper_W": 935, "rotor_iron_W": 225.6, "magnet_W": 40, "oil_C": 118.5,
+     "thermocouples": {"W1": {"casing_C": 99.5, "measured_C": 162, "source_model_C": [160.8, 167.6]},
+                       "W2": {"casing_C": 81.5, "measured_C": 158, "source_model_C": [147.6, 155.3]},
+                       "W3": {"casing_C": 111, "measured_C": 167, "source_model_C": [169.1, 175.4]}}},
+    {"coolant_C": 75, "total_loss_W": 1778, "mechanical_loss_W": 160, "torque_Nm": 145.7, "current_A_rms": 72, "stator_iron_W": 817, "copper_W": 801, "rotor_iron_W": 206.0, "magnet_W": 40, "oil_C": 126,
+     "thermocouples": {"W1": {"casing_C": 113, "measured_C": 168.5, "source_model_C": [165.0, 170.7]},
+                       "W2": {"casing_C": 93.5, "measured_C": 163, "source_model_C": [150.8, 157.5]},
+                       "W3": {"casing_C": 118.3, "measured_C": 168, "source_model_C": [168.8, 174.2]}}},
+    {"coolant_C": 105, "total_loss_W": 1278, "mechanical_loss_W": 151, "torque_Nm": 117.8, "current_A_rms": 60.5, "stator_iron_W": 567, "copper_W": 560, "rotor_iron_W": 166.5, "magnet_W": 40, "oil_C": 130.5,
+     "thermocouples": {"W1": {"casing_C": 126, "measured_C": 166.5, "source_model_C": [161.8, 165.7]},
+                       "W2": {"casing_C": 106.8, "measured_C": 157.5, "source_model_C": [147.7, 152.5]},
+                       "W3": {"casing_C": 122.5, "measured_C": 159.5, "source_model_C": [156.1, 160.3]}}}
+  ],
+  "source_model_parts": {
+    "coolant_C": 50,
+    "thermocouple": "W1",
+    "stator_iron_C": [133.7, 157.0],
+    "slot_insulation_C": [142.9, 163.3],
+    "copper_C": [160.8, 167.6],
+    "rotor_iron_C": [154.4, 157.6],
+    "magnets_C": [157.2, 158.1]
+  }
+}

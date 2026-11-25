@@ -581,12 +581,13 @@ one, in equal steps.
 ### Rotor iron loss in 0.5.9
 
 An explicit opt-in adds experimental full-motor rotor hysteresis and classical
-lamination eddy loss for supported inner SPM and flat-IPM sinusoidal requests
-using M350-50A. It defaults off and adds 384 poses plus a fresh closure solve.
+lamination eddy loss for supported inner SPM, flat-IPM and outer-rotor SPM
+sinusoidal requests using M350-50A. It defaults off and adds 384 poses plus a fresh closure solve.
 Requested completed rotor loss is included exactly once in totals and maps;
 an unavailable requested term withholds efficiency instead of implying zero.
 
 Rotor loss and efficiency remain experimental. Sector rotor loss is unavailable. See [Rotor iron loss](ROTOR_IRON_LOSS.md) for supported requests, sampling and material limits.
+[Benchmark Phase G](../benchmarks/g-v2.0/README.md) checks stator iron loss and copper loss against FEMM on four motors, and rotor iron loss on its own convergence checks; rotor iron loss has no second solver behind it yet.
 
 ### Efficiency at the operating point
 

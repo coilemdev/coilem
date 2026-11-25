@@ -66,7 +66,8 @@ jobs:
           cache-dependency-path: pyproject.toml
       - run: python -m pip install 'pypdf>=5,<7' 'pillow>=13,<14' 'ruff>=0.1.0'
       - name: Verify the exported snapshot and publication contents
-        run: python tools/verify_snapshot.py --publication
+        # The public repository may not hold private benchmark evidence (tools/release/private_evidence.py).
+        run: python tools/verify_snapshot.py --publication ${{ github.repository == 'coilemdev/coilem' && '--public-tree' || '' }}
       - name: Lint exported Python
         run: python -m ruff check backend tools tests
 
@@ -189,7 +190,7 @@ jobs:
           - suite: progressive-design-2
             command: npx playwright test --config playwright.public.config.ts tests/progressive-design.spec.ts --shard=2/2 && npx playwright test --config playwright.performance-harness.config.ts
           - suite: solve-profiles
-            command: npx playwright test --config playwright.public.config.ts tests/solve-profiles.spec.ts
+            command: npx playwright test --config playwright.public.config.ts tests/solve-profiles.spec.ts tests/thermal.spec.ts
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
@@ -372,6 +373,7 @@ jobs:
           from pathlib import Path
           import subprocess
           from backend.resources import benchmark_data_files
+          from tools.release.private_evidence import is_public_definition
 
           frozen = "52184f8bbdf7e94aa0901bba5bdb127a430b11a9"
           allowed = set(benchmark_data_files(Path.cwd())) | {
@@ -381,7 +383,9 @@ jobs:
               ["git", "diff", "--name-only", "--no-renames", frozen, "--", "benchmarks", "docs/benchmarks", "docs/qualification"],
               text=True,
           ).splitlines()
-          unexpected = sorted(set(changes) - allowed)
+          # The definitions of the benchmarks added after the public A-F record (specification, fixtures,
+          # requests, gates, protocol documents) are public; their generated records are not, and stay refused.
+          unexpected = sorted(path for path in set(changes) - allowed if not is_public_definition(path))
           if unexpected:
               raise SystemExit("Public benchmark publication is paused. Unexpected files: " + ", ".join(unexpected))
           PY

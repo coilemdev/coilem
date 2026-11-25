@@ -1,5 +1,5 @@
 import { useId } from 'react';
-import { solveTimeView, type SolveTimeBreakdown } from './solveTime';
+import { formatSeconds, solveTimeView, type SolveTimeBreakdown } from './solveTime';
 
 const WORKER_TIME_HELP = 'Adds the measured duration of every occurrence across all workers. Workers run in parallel, so this can exceed the elapsed time above. Average = combined worker time ÷ times run.';
 const PREPARE_SETTINGS_HELP = "Measures the time spent checking the design and mesh, preparing solver inputs and process settings, and choosing sweep positions before launching the solver. If a mesh must be generated here, that time is included. Durations are added across every occurrence and worker; parallel work overlaps, so the combined worker time can exceed elapsed time.";
@@ -10,9 +10,14 @@ const PREPARE_SETTINGS_HELP = "Measures the time spent checking the design and m
  * workers that ran in parallel, so they exceed the elapsed time; the same
  * figures are in the report, so two runs can be compared stage by stage.
  */
-export function SolveTimeCard({ breakdown }: { breakdown?: SolveTimeBreakdown | null }) {
+export function SolveTimeCard({ breakdown, mapSeconds = null }: {
+  breakdown?: SolveTimeBreakdown | null;
+  /** The torque–speed map's own time. The breakdown covers the operating-point solve only (#348). */
+  mapSeconds?: number | null;
+}) {
   const headingId = useId();
   const view = solveTimeView(breakdown);
+  const map = mapSeconds !== null && Number.isFinite(mapSeconds) && mapSeconds >= 0.05 ? formatSeconds(mapSeconds) : null;
   return (
     <section className="public-solve-time" aria-labelledby={headingId}>
       <header>
@@ -20,6 +25,11 @@ export function SolveTimeCard({ breakdown }: { breakdown?: SolveTimeBreakdown | 
         {view && <span className="public-solve-time-total">{view.elapsed} elapsed</span>}
       </header>
       {!view && <p className="public-solve-time-note">This run did not record a time breakdown.</p>}
+      {view && map && (
+        <p className="public-solve-time-note" role="note">
+          This breakdown is the operating-point solve. The torque–speed map took a further {map}; the Solver time at the top of Results includes both.
+        </p>
+      )}
       {view && view.segments.length > 0 && (
         <>
           <div className="public-solve-time-bar" role="img" aria-label={view.segments.map(segment => `${segment.label} ${segment.text}`).join(', ')}>

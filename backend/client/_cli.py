@@ -2,6 +2,7 @@
 
     coilem check  motor.coilem --setup "High Speed"
     coilem solve  motor.coilem --setup "High Speed" --out result.json
+    coilem thermal motor.coilem --ambient 40 --out thermal.json
     coilem setups motor.coilem
     coilem schema --out motor-schema.json
     coilem version
@@ -34,7 +35,7 @@ from typing import Any
 from backend import __version__
 from backend.client._errors import CoilemError, InputError, MainModuleError, SolveError
 
-COMMANDS: tuple[str, ...] = ("check", "solve", "setups", "schema", "version")
+COMMANDS: tuple[str, ...] = ("check", "solve", "thermal", "setups", "schema", "version")
 
 EXIT_OK = 0
 EXIT_INTERNAL = 1
@@ -60,6 +61,7 @@ ERROR_CODES: dict[str, str] = {
     "SETUP_INCOMPATIBLE": "the run setup was saved for another reference model or convention",
     "SETUP_SOLVER_UNAVAILABLE": "the run setup uses a solver scripted solves do not support",
     "OUTPUT_UNWRITABLE": "the --out file cannot be written",
+    "THERMAL_LOSSES_MISSING": "the solved result has no losses or no torque, which the thermal estimate starts from",
     "SOLVER_FAILED": "Magneto2D failed",
     "NONLINEAR_CONVERGENCE_FAILED": "no stable magnetic-field solution within the iteration limit",
     "GMSH_UNAVAILABLE": "Gmsh could not be loaded",
@@ -151,6 +153,41 @@ def _parser() -> argparse.ArgumentParser:
         default="auto",
         help="progress on standard error: text, JSON lines or none (auto: text on a terminal)",
     )
+    thermal = commands.add_parser(
+        "thermal",
+        help="estimate the steady-state temperature of each part, from a design (solved first) or a solved result",
+        description=(
+            "Estimate the steady-state temperature of each part. DESIGN is a .coilem design file, which is solved first with the "
+            "torque and losses analyses added, or a result file written by `coilem solve` with those analyses, which is not "
+            "solved again. Without cooling options the app's still-air starter values are used. The estimate is experimental. "
+            "An estimate that cannot be given (for example a motor that would settle far too hot) still exits 0: "
+            "read thermal.status and thermal.status_reason."
+        ),
+    )
+    request(thermal)
+    thermal.add_argument("--server", metavar="URL", help="solve in a running coilEM app, e.g. http://127.0.0.1:2645")
+    thermal.add_argument("--timeout", type=float, default=3600.0, metavar="SECONDS", help="how long to wait for --server (default 3600)")
+    thermal.add_argument(
+        "--progress",
+        choices=("auto", "text", "json", "none"),
+        default="auto",
+        help="solve progress on standard error: text, JSON lines or none (auto: text on a terminal)",
+    )
+    thermal.add_argument("--cooling", choices=("still_air", "forced_air", "liquid_jacket"),
+                         help="kind of cooling (default still_air); the others need their heat-transfer values with --thermal")
+    thermal.add_argument("--ambient", type=float, metavar="C", help="temperature of the air or coolant that carries the heat away (default 25)")
+    thermal.add_argument("--insulation", choices=("A", "B", "F", "H"), help="winding insulation class (default F)")
+    thermal.add_argument(
+        "--thermal",
+        dest="thermal_values",
+        action="append",
+        default=[],
+        metavar="NAME=VALUE",
+        help="set a thermal input, e.g. --thermal housing_h_W_m2K=60 (names and units: coilem schema)",
+    )
+    thermal.add_argument("--thermal-inputs", metavar="PATH", help="a JSON file of thermal inputs; --thermal values are applied over it")
+    thermal.add_argument("--no-copper-feedback", action="store_true",
+                         help="keep the solved copper loss instead of letting it rise with the winding temperature")
     setups = commands.add_parser("setups", help="list a design's saved run setups and whether each can be used")
     setups.add_argument("design", help="a .coilem design file saved by the app")
     common(setups)
@@ -369,6 +406,104 @@ def _solve(args: argparse.Namespace) -> dict[str, Any]:
     )
 
 
+def _thermal_values(args: argparse.Namespace) -> dict[str, Any]:
+    """Thermal inputs from --thermal-inputs, then --thermal NAME=VALUE over them."""
+
+    from backend.client._thermal import COEFFICIENTS
+
+    values: dict[str, Any] = {}
+
+    file_values: dict[str, Any] = {}
+    if args.thermal_inputs:
+        try:
+            loaded = json.loads(Path(args.thermal_inputs).read_text(encoding="utf-8"))
+        except OSError as exc:
+            raise InputError(f"{args.thermal_inputs}: cannot read the thermal inputs file ({exc.strerror or exc})",
+                             field="thermal_inputs", error_code="DESIGN_FILE_UNREADABLE") from None
+        except json.JSONDecodeError as exc:
+            raise InputError(f"{args.thermal_inputs}: not JSON ({exc.msg})", field="thermal_inputs", error_code="DESIGN_FILE_UNREADABLE") from None
+        if not isinstance(loaded, Mapping):
+            raise InputError(f"{args.thermal_inputs}: expected a JSON object of thermal input names and values", field="thermal_inputs")
+        # A file saved by this command or by ThermalEstimate.save carries its inputs under "inputs" or "thermal_inputs".
+        inputs = loaded.get("thermal_inputs", loaded.get("inputs", loaded))
+        if not isinstance(inputs, Mapping):
+            raise InputError(f"{args.thermal_inputs}: expected an object of thermal input names and values", field="thermal_inputs")
+        file_values.update(inputs)
+    for pair in args.thermal_values:
+        name, separator, text = pair.partition("=")
+        name = name.strip()
+        if not separator or not name:
+            raise _UsageError(f"coilem: error: --thermal expects NAME=VALUE, got {pair!r}")
+        try:
+            values[name] = json.loads(text)
+        except json.JSONDecodeError:
+            values[name] = text
+    mode = args.cooling or values.get("cooling")
+    if mode is not None and "cooling" in file_values and mode != file_values["cooling"]:
+        for key in (*COEFFICIENTS, "coefficient_source"):
+            file_values.pop(key, None)
+        file_values["cooling"] = mode
+    return file_values | values
+
+
+def _is_result_file(path: str) -> bool:
+    from backend.client._results import CLI_SOLVE_SCHEMA, RESULT_FILE_SCHEMA
+
+    try:
+        loaded = json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return False  # The design loader reports an unreadable file in its own words.
+    if not isinstance(loaded, Mapping):
+        return False
+    return loaded.get("schema") in (RESULT_FILE_SCHEMA, CLI_SOLVE_SCHEMA) or isinstance(loaded.get("summary"), Mapping)
+
+
+def _thermal(args: argparse.Namespace) -> dict[str, Any]:
+    from backend.client._inputs import ANALYSES
+    from backend.client._results import Result
+    from backend.client._solve import prepare, prepared_config, solve
+    from backend.client._thermal import inputs_for_design, thermal
+
+    _check_out(args.out)
+    values = _thermal_values(args)
+    content: dict[str, Any] = {}
+    if _is_result_file(args.design):
+        if args.setup or args.analyses or args.quality or args.mesh or args.settings or args.server:
+            raise _UsageError("coilem: error: a solved result is not solved again, so the solve options do not apply to it")
+        result = Result.load(args.design)
+        _message(args, "coilem: using the solved result; nothing is solved")
+        content["source"] = {"kind": "result", "path": str(Path(args.design).resolve())}
+    else:
+        options = _request_options(args)
+        motor = _motor(args.design)
+        prepared = prepare(motor, **options)
+        # The estimate starts from the torque and the losses, so both are solved whatever the design had selected.
+        flags = prepared.request.get("solve_options") or {}
+        selected = [name for name, flag in ANALYSES.items() if flags.get(flag)]
+        options["analyses"] = list(dict.fromkeys([*selected, "torque", "losses"]))
+        prepared = prepare(motor, **options)
+        inputs_for_design(prepared_config(prepared.request), cooling=args.cooling, ambient_C=args.ambient,
+                          insulation_class=args.insulation, inputs=values)
+        _notes(args, prepared.setup)
+        mode = args.progress
+        if mode == "auto":
+            mode = "text" if sys.stderr.isatty() and not args.quiet else "none"
+        progress = _Progress(mode) if mode != "none" and args.server is None else None
+        started = time.monotonic()
+        with _cancel_on_signals():
+            result = solve(motor, server=args.server, timeout_s=args.timeout, on_progress=progress, **options)
+        _message(args, f"coilem: solved in {time.monotonic() - started:.1f} s")
+        content |= {
+            "source": {"kind": "solved"}, "design": _design(args, motor), "setup": result.setup,
+            "effective": prepared.effective_settings(), "warnings": prepared.warnings, "solve_metrics": result.metrics(),
+        }
+    estimate = thermal(result, cooling=args.cooling, ambient_C=args.ambient, insulation_class=args.insulation,
+                       inputs=values or None, copper_feedback=not args.no_copper_feedback)
+    _message(args, f"coilem: thermal estimate (experimental): {estimate.summary_text()}")
+    return _document("thermal", True, **content, metrics=estimate.metrics(), thermal_inputs=estimate.inputs,
+                     thermal=estimate.data, request=result.request)
+
+
 def _setups(args: argparse.Namespace) -> dict[str, Any]:
     from backend.client._setups import _library_notes, setup_statuses
 
@@ -441,7 +576,9 @@ def _schema(args: argparse.Namespace) -> dict[str, Any]:
     from backend.client._inputs import _OPERATING_POINT_FIELDS, ANALYSES
     from backend.client._setups import REFERENCE_SETUPS
     from backend.client._solve import MESH_DENSITIES, QUALITIES
+    from backend.client._thermal import COOLING_MODES, INSULATION_CLASSES, STILL_AIR_STARTER
     from backend.models.config import MotorConfig
+    from backend.models.thermal import ThermalInputs
 
     _check_out(args.out)
     return _document(
@@ -456,6 +593,14 @@ def _schema(args: argparse.Namespace) -> dict[str, Any]:
         qualities=list(QUALITIES),
         mesh_densities=list(MESH_DENSITIES),
         run_setup=_setup_schema(),
+        thermal={
+            "description": "thermal inputs for `coilem thermal --thermal NAME=VALUE` and the Python client's thermal(); "
+                           "an outer-rotor motor also uses mount_to_ambient_K_W",
+            "inputs": _with_units(ThermalInputs.model_json_schema()),
+            "still_air_starter": STILL_AIR_STARTER,
+            "cooling": list(COOLING_MODES),
+            "insulation_classes": list(INSULATION_CLASSES),
+        },
         reference_setups=[setup.to_dict() for setup in REFERENCE_SETUPS],
         documents=DOCUMENT_SCHEMAS,
         exit_codes={str(code): text for code, text in EXIT_CODES.items()},
@@ -478,7 +623,7 @@ def _version(args: argparse.Namespace) -> dict[str, Any]:
     )
 
 
-HANDLERS = {"check": _check, "solve": _solve, "setups": _setups, "schema": _schema, "version": _version}
+HANDLERS = {"check": _check, "solve": _solve, "thermal": _thermal, "setups": _setups, "schema": _schema, "version": _version}
 
 
 def _exit_code(error: CoilemError) -> int:

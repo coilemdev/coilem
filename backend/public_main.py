@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import os
 from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, FastAPI, HTTPException, Request
+from fastapi.exception_handlers import request_validation_exception_handler
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
@@ -31,6 +34,7 @@ from backend.public_routes.performance import router as performance_router
 from backend.public_routes.preview import router as preview_router
 from backend.public_routes.runs import router as runs_router
 from backend.public_routes.solve import router as solve_router
+from backend.public_routes.thermal import router as thermal_router
 from backend.public_routes.tutorials import router as tutorials_router
 from backend.public_security import (
     bound_ui_origin,
@@ -64,6 +68,11 @@ PUBLIC_API_PATHS = frozenset(
         "/materials",
         "/materials/import",
         "/openapi.json",
+        "/performance/thermal/point",
+        "/performance/thermal/stream",
+        "/performance/thermal/latest/{project_slug}/{run_id}/{kind}",
+        "/performance/thermal/record/{identity}",
+        "/performance/thermal/report/{identity}/{kind}",
         "/performance/drive",
         "/performance/map/status",
         "/performance/map/stream",
@@ -215,6 +224,25 @@ async def import_material(body: dict[str, Any]) -> dict[str, Any]:
     ]}
 
 
+_LOGGER = logging.getLogger("coilem.api")
+
+
+async def log_rejected_request(request: Request, exc: RequestValidationError):
+    """Name the fields of a request the API refused, then answer as usual.
+
+    The response already lists them, but a browser shows it to one person.
+    The server log lets whoever is helping see which field was refused. Only
+    field paths and messages are logged, never values: a request can carry a
+    whole design.
+    """
+
+    errors = exc.errors()
+    fields = "; ".join(f"{'.'.join(str(part) for part in error.get('loc', ()))}: {error.get('msg', '')}" for error in errors[:8])
+    more = f"; and {len(errors) - 8} more" if len(errors) > 8 else ""
+    _LOGGER.warning("Rejected %s %s: %s%s", request.method, request.url.path, fields, more)
+    return await request_validation_exception_handler(request, exc)
+
+
 def create_app(*, bound_port: int | None = None, ui_bundle: Path | None = None) -> FastAPI:
     """Build the local API.
 
@@ -244,7 +272,8 @@ def create_app(*, bound_port: int | None = None, ui_bundle: Path | None = None) 
         allow_headers=["Content-Type"],
     )
     application.middleware("http")(guard_public_requests)
-    for router in (preview_router, halbach_router, runs_router, solve_router, performance_router, tutorials_router, system_router):
+    application.add_exception_handler(RequestValidationError, log_rejected_request)
+    for router in (preview_router, halbach_router, runs_router, solve_router, performance_router, thermal_router, tutorials_router, system_router):
         application.include_router(router)
     if ui_bundle is not None:
         install_ui_routes(application, ui_bundle, canonical_origin=canonical_origin)

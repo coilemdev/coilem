@@ -65,7 +65,7 @@ export function AnalysisOptions({ config, solver, busy, coggingPositions, onChan
                 <span id={`${id}-rotor-loss-status`}><StatusBadge status="experimental" /></span>
               </div>
               <p role="note" id={`${id}-rotor-loss-note`}>{rotorLossUnavailable
-                ?? 'Adds 384 positions over a full mechanical turn plus a closure solve. Supports full inner-rotor SPM/flat-IPM models with M350-50A rotor steel and sinusoidal excitation.'}</p>
+                ?? 'Adds 384 positions over a full mechanical turn plus a closure solve. Supports full-motor SPM and flat-IPM models, inner or outer rotor, with M350-50A rotor steel and sinusoidal excitation.'}</p>
             </div>
           )}
           {row.key === 'torque_speed_envelope' && !elmer && options.torque_speed_envelope && (

@@ -24,6 +24,7 @@ const motorConstantsComponentSource = await readFile(path.join(frontendRoot, 'sr
 const bldcChartSource = await readFile(path.join(frontendRoot, 'src/public/BldcTorqueCurrentChart.tsx'), 'utf8');
 const exampleDesignsSource = await readFile(path.join(frontendRoot, 'src/public/exampleDesigns.ts'), 'utf8');
 const runComparisonSource = await readFile(path.join(frontendRoot, 'src/public/PublicRunComparison.tsx'), 'utf8');
+const runHistorySource = await readFile(path.join(frontendRoot, 'src/public/PublicRunHistory.tsx'), 'utf8');
 const comparisonMetricsSource = await readFile(path.join(frontendRoot, 'src/public/comparisonMetrics.ts'), 'utf8');
 const materialWorkspaceSource = await readFile(
   path.join(frontendRoot, 'src/public/MaterialWorkspace.tsx'),
@@ -395,12 +396,26 @@ assert.match(workspaceSource, />Compare runs</);
 assert.match(workspaceSource, /PublicRunComparison/);
 assert.match(workspaceSource, /elmerCapability\.feature_enabled && <ParameterSectionBlock id="solver" label="Solver"/);
 assert.match(workspaceSource, /aria-label="Previous runs"/);
-assert.match(workspaceSource, /Review or compare completed analyses without starting another solve/);
-assert.match(workspaceSource, /<PublicRunComparison\s+manageRuns/);
+// Previous runs is the list of saved runs and nothing else; comparing runs is done in Results.
+assert.match(workspaceSource, /Every analysis saved on this computer, newest first\. Click a run to open its results\./);
+assert.match(workspaceSource, /<PublicRunHistory\s+onOpenRun/);
+assert.doesNotMatch(workspaceSource, /<PublicRunComparison\s+manageRuns/);
+assert.doesNotMatch(runHistorySource, /PublicRunComparison/);
+assert.doesNotMatch(runComparisonSource, /deletePublicRun|manageRuns/);
+// The list is in view at once, not inside a section that has to be opened.
+assert.doesNotMatch(runHistorySource, /<details/);
 // An earlier run's stored result opens from Previous runs, its playback drawn from its frames.
-assert.match(runComparisonSource, /record\.status === 'complete' && !confirming[\s\S]*?Open results/);
+assert.match(runHistorySource, /const canOpen = Boolean\(onOpenRun\) && record\.status === 'complete';/);
+assert.match(runHistorySource, /canOpen && <button [^\n]*>\{isOpening \? 'Loading…' : 'Open results'\}<\/button>/);
+// The dialog stays, saying it is loading, until the stored result can be shown.
+assert.match(workspaceSource, /if \(problem === null\) setRunHistoryOpen\(false\);/);
+assert.match(runHistorySource, /Loading the \{runName\(opening\)\} run of \{runClock\(opening\)\}…/);
+// A run deleted there leaves an open comparison too.
+assert.match(runHistorySource, /window\.dispatchEvent\(new Event\(RUNS_CHANGED_EVENT\)\)/);
+assert.match(runComparisonSource, /window\.addEventListener\(RUNS_CHANGED_EVENT, listAgain\)/);
 assert.match(workspaceSource, /onOpenRunResults=\{props\.onOpenRunResults\}/);
-assert.match(appSource, /onOpenRunResults=\{\(savedRun\) => void restoreSavedRun\(savedRun, 'results'\)\}/);
+// The caller waits on it: the promise says when the stored result is shown, or why it is not.
+assert.match(appSource, /onOpenRunResults=\{\(savedRun\) => restoreSavedRun\(savedRun, 'results'\)\}/);
 // Opening saved results queues setResult(null) and the stored result in one
 // React batch, so the clearing effect never runs: the reset itself must drop
 // the previous run's stator-only field (review on #215).
@@ -408,17 +423,23 @@ assert.match(appSource, /const resetComputedState = useCallback\(\(\) => \{[\s\S
 assert.match(appSource, /const clearArmatureField = useCallback\(\(\) => \{[\s\S]*?armatureFieldController\.current\?\.abort\(\);[\s\S]*?setArmatureField\(null\);/);
 assert.match(workspaceSource, /Manage previous runs/);
 assert.match(workspaceSource, /needsRunStorageRecovery\(props\.error\)/);
-assert.match(runComparisonSource, /aria-label="Local run storage"/);
-assert.match(runComparisonSource, /Saved results stay on this computer and are never removed automatically/);
+assert.match(runHistorySource, /aria-label="Saved runs"/);
+assert.match(runHistorySource, /Saved results stay on this computer and are never removed automatically/);
 // Field playback is the one part older runs give up (#212); the dialog says so and marks them.
-assert.match(runComparisonSource, /is kept for each design's newest \$\{storage\.field_playback_keep_latest_per_project\} runs/);
-assert.match(runComparisonSource, /record\.field_playback_removed_at \? ' · field playback removed' : ''/);
-assert.match(runComparisonSource, /Delete an older saved or incomplete run below/);
-assert.match(runComparisonSource, /Delete permanently/);
-assert.match(runComparisonSource, /record\.status === 'running'/);
+assert.match(runHistorySource, /kept for each design&apos;s newest \{storage\.field_playback_keep_latest_per_project\} runs/);
+assert.match(runHistorySource, /record\.field_playback_removed_at \? <small>playback removed<\/small> : null/);
+assert.match(runHistorySource, /Storage is full\. Delete a run below to make room for the next analysis\./);
+assert.match(runHistorySource, /Delete permanently/);
+assert.match(runHistorySource, /record\.status === 'running'/);
 assert.match(apiSource, /export function deletePublicRun/);
 assert.match(apiSource, /confirm_run_id: runId/);
-assert.match(styleSource, /\.public-run-storage-meter/);
+assert.match(styleSource, /\.run-history-meter/);
+// #348: each mesh count says which mesh it counts, and the Solve time card names the map's own time.
+assert.match(workspaceSource, /label: 'Mesh elements, first position'/);
+assert.match(workspaceSource, /The mesh prepared for the starting rotor position\. Each position is meshed again/);
+assert.match(workspaceSource, /mapSeconds=\{result\.torque_speed_analysis && result\.solve_metadata\.time_breakdown/);
+const solveTimeCardSource = await readFile(path.join(frontendRoot, 'src/public/SolveTimeCard.tsx'), 'utf8');
+assert.match(solveTimeCardSource, /This breakdown is the operating-point solve\. The torque–speed map took a further \{map\}/);
 assert.match(workspaceSource, /aria-label="Example designs"/);
 assert.match(workspaceSource, /examplesByLayout\(publicExampleOptions\(experimentalRotors, 'motor'\)\)\.map/);
 // Each group lists inrunners and outrunners side by side (test-example-layouts checks the declarations).
@@ -1234,9 +1255,15 @@ assert.match(styleSource, /\.public-field-dock-controls \.public-field-layer-con
 assert.match(styleSource, /\.public-field-dock-controls \.public-field-layer-controls button\[aria-pressed="true"\] > i \{[^}]*background: var\(--text-accent\);[^}]*box-shadow: none;/);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-canvas > canvas \{ position: absolute; inset: 0; \}/);
 assert.match(fieldResultSource, /className="is-mid">\{legendLabel\(\(legendScale\.minB \+ legendScale\.maxB\) \/ 2\)\}/);
-// The finished field view carries its colour scale as a strip under the motor,
-// the same one the in-run preview shows, not as a bar down the right-hand side.
-assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result \{ flex-direction: column; \}/);
+assert.match(fieldResultSource, /value\.toFixed\(legendScale\.maxB < 1 \? 2 : 1\)/);
+// The finished field view and the in-run preview carry the colour scale as a
+// narrow vertical strip over the view's right edge, so the motor keeps the place
+// the geometry and mesh views give it. It is not a bar across the bottom.
+assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result \{ flex-direction: row; \}/);
+assert.match(styleSource, /\.public-field-result > \.public-field-result-legend \{ position: absolute; top: 0; right: 0; bottom: 0;[^}]*width: 62px;/);
+assert.doesNotMatch(styleSource, /\.public-field-result > \.public-field-result-legend \{ position: absolute; right: 0; bottom: 0; left: 0;/);
+assert.match(styleSource, /\.public-field-result > \.public-field-result-legend > \.public-field-scale > i \{[^}]*linear-gradient\(0deg,/);
+assert.match(fieldResultSource, /if \(legendRect\.left >= boxRect\.right - 0\.5 \|\| legendRect\.top >= boxRect\.bottom - 0\.5\)/);
 assert.match(styleSource, /\.public-solved-field-canvas \.public-field-result-legend,\s*\.public-viewport-stage-2d > \.public-field-result \.public-field-result-legend \{[^}]*flex: none[^}]*justify-content: center/s);
 assert.doesNotMatch(styleSource, /\.public-solved-field-canvas \.public-field-result-legend \{[^}]*width: 10px/s);
 assert.doesNotMatch(styleSource, /\.public-solved-field-canvas \.public-field-result-legend small \{ display: none; \}/);
@@ -1276,7 +1303,12 @@ assert.match(fieldResultSource, />\s*Fixed\s*<\/button>/);
 // The field legend shows the fixed scale only: the viewer no longer offers Fixed / Fit view.
 assert.doesNotMatch(solvedFieldSource, /^\s*showRangeControl\s*$/m);
 assert.match(fieldResultSource, /fieldRangeForViewport\(prepared\.triangleRecords/);
-assert.match(fieldResultSource, /drawHeat\(context, prepared, visibleRange \? fittedFluxScale\(visibleRange\.minB, visibleRange\.maxB\) : FIXED_FLUX_SCALE\)/);
+assert.match(fieldResultSource, /drawHeat\(context, prepared, visibleRange \? fittedFluxScale\(visibleRange\.minB, visibleRange\.maxB\) : fixedScale\)/);
+// The fixed scale is the view's own: 0–2.0 T, or the stator-only field's (#348).
+assert.match(fieldResultSource, /fixedScale = FIXED_FLUX_SCALE,/);
+assert.match(await readFile(path.join(frontendRoot, 'src/public/SolvedFieldViewer.tsx'), 'utf8'), /fixedScale=\{fixedFluxScaleFor\(drawnFieldSource\)\}/);
+// A placeholder drawn while the stator field is solved keeps its own field's scale.
+assert.match(await readFile(path.join(frontendRoot, 'src/public/SolvedFieldViewer.tsx'), 'utf8'), /const drawnFieldSource = exactVectorPlot \? source : heldVector \? heldVector\.source : armatureReferencePlot \? 'resultant' : source;/);
 assert.match(fieldResultSource, /\|\| \(colorRangeMode === 'viewport' && highResolutionPlot\)/);
 assert.match(fieldResultSource, /: raster\.colorScale \?\? \{ minB, maxB, overAboveT: null, fixed: false \};/);
 assert.match(fieldResultSource, /className="is-over"[\s\S]*?&gt; \{legendScale\.overAboveT\.toFixed\(1\)\} T/);
@@ -2134,7 +2166,7 @@ assert.match(appSource, /<PublicGuidedSetup/);
 assert.match(appSource, /setGuidedActive\(guided\)/);
 // Leaving a blank New Design for the example motor restores the starter's setup library, as Reset and launch do.
 assert.match(appSource, /if \(blankDesign\) \{\n\s+loadStarterMotor\(\);/);
-assert.match(appSource, /restoreActiveProfile\(cloneDefaultConfig\(\), loadProfileDocument\(STARTER_SETUP_SCOPE\), BUILTIN_SOLVE_PROFILES\)/);
+assert.match(appSource, /restoreActiveProfile\(starterDesignConfig\(\), loadProfileDocument\(STARTER_SETUP_SCOPE\), BUILTIN_SOLVE_PROFILES\)/);
 assert.match(appSource, /topology=\{config\.topology\}/);
 assert.match(appSource, /guidedDesignSection=\{guidedDesignSection\}/);
 assert.match(appSource, /onDesignSectionChange=\{revealGuidedDesignSection\}/);

@@ -51,7 +51,7 @@ def command(*args, root=ROOT, env=None):
 def check_candidate(candidate, directory, root=ROOT):
     if not re.fullmatch("[0-9a-f]{40}", candidate):
         raise ValueError("Need the full immutable candidate SHA")
-    git = ["git", "-C", str(root)]
+    git = [shutil.which("git") or "git", "-C", str(root)]
     head = subprocess.check_output([*git, "rev-parse", "HEAD"], text=True).strip()
     if head != candidate:
         raise ValueError(f"Checkout is at {head[:12]}, not the candidate {candidate[:12]}")

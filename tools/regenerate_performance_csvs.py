@@ -22,8 +22,9 @@ def regenerate(source: Path, evidence: Path, output: Path) -> None:
         raise ValueError('Output must be outside the historical evidence directory')
     receipt = json.loads((evidence / 'export-check.json').read_text())
     environment = json.loads((evidence / 'recheck-environment.json').read_text())
-    head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=source, text=True).strip()
-    dirty = subprocess.check_output(['git', 'status', '--porcelain', '--untracked-files=no'], cwd=source, text=True).strip()
+    git = shutil.which('git') or 'git'
+    head = subprocess.check_output([git, 'rev-parse', 'HEAD'], cwd=source, text=True).strip()
+    dirty = subprocess.check_output([git, 'status', '--porcelain', '--untracked-files=no'], cwd=source, text=True).strip()
     if head != environment['source_commit'] or dirty:
         raise ValueError('Source checkout must be clean and match the archived recheck-environment source_commit exactly')
     output.mkdir(parents=True)  # Refuse any existing output, including prior failed attempts.
@@ -76,7 +77,7 @@ const output = process.argv[1];
 const analysis = JSON.parse(fs.readFileSync(output + '/analysis.json', 'utf8'));
 fs.writeFileSync(output + '/map.csv', mapCsv(analysis.map));
 """
-    subprocess.run(['node', '--input-type=module', '-e', script, str(output)], cwd=frontend, check=True)
+    subprocess.run([shutil.which('node') or 'node', '--input-type=module', '-e', script, str(output)], cwd=frontend, check=True)
 
 
 def main() -> None:

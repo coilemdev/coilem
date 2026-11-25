@@ -7,6 +7,9 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 const {
   FIXED_FLUX_SCALE,
   FLUX_OVER_RANGE_INDEX,
+  STATOR_FIELD_SCALE_MAX_T,
+  STATOR_FIXED_FLUX_SCALE,
+  fixedFluxScaleFor,
   fittedFluxScale,
   fluxColorIndex,
   statorSteelSaturationTicks,
@@ -61,5 +64,18 @@ const customTicks = statorSteelSaturationTicks(config, catalog);
 close(customTicks[0].bT, 1.444, 'custom knee');
 assert.equal(customTicks[0].steelName, 'Lab sample');
 assert.equal(customTicks[1].bT, 1.8);
+
+// The stator-only field has its own fixed scale, 0–0.5 T, so its few tenths of a tesla are not all one colour (#348).
+assert.equal(STATOR_FIELD_SCALE_MAX_T, 0.5);
+assert.equal(fixedFluxScaleFor('armature'), STATOR_FIXED_FLUX_SCALE);
+assert.equal(fixedFluxScaleFor('resultant'), FIXED_FLUX_SCALE);
+assert.equal(fixedFluxScaleFor('pm'), FIXED_FLUX_SCALE);
+assert.equal(fluxColorIndex(0.24, FIXED_FLUX_SCALE), 0, 'a quarter tesla is the lowest colour on 0–2 T');
+assert.equal(fluxColorIndex(0.24, STATOR_FIXED_FLUX_SCALE), 3);
+assert.equal(fluxColorIndex(0.5, STATOR_FIXED_FLUX_SCALE), 7);
+assert.equal(fluxColorIndex(0.6, STATOR_FIXED_FLUX_SCALE), FLUX_OVER_RANGE_INDEX, 'above 0.5 T is over range on the stator scale');
+// The server draws the stator-only playback images on the same scale.
+const playbackSource = await readFile(new URL('../../backend/public_field_playback.py', import.meta.url), 'utf8');
+assert.match(playbackSource, new RegExp(`^STATOR_FIELD_SCALE_MAX_T = ${STATOR_FIELD_SCALE_MAX_T.toFixed(1)}$`, 'm'));
 
 console.log('flux colour scale and steel saturation ticks passed');

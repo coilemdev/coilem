@@ -18,10 +18,18 @@ incomplete loss accounting withholds efficiency.
 
 ## Supported requests and limits
 
-- Full-motor models (`symmetry: full`) of inner SPM or flat-buried IPM rotors.
+- Full-motor models (`symmetry: full`) of inner SPM or flat-buried IPM rotors,
+  and of outer-rotor (outrunner) SPM motors.
 - Sinusoidal excitation, positive mechanical speed and M350-50A rotor loss data.
-- Imported reference geometries, V-shape IPM, outer rotors, sector solves,
-  unsupported steels and other excitation modes return an unavailable status.
+- Imported reference geometries, V-shape IPM, sector solves, unsupported
+  steels and other excitation modes return an unavailable status.
+
+For an outer rotor the loss is that of the steel ring behind the magnets,
+treated as laminated M350-50A. Many outrunners use a solid steel shell
+instead. Eddy currents in a solid shell are larger than the lamination term
+and are not calculated, so for those motors the figure is a lower bound on
+the ring's loss. A six-step (BLDC) drive is not supported yet: choose a
+sinusoidal drive to get the number.
 
 **Rotor iron loss is experimental.** The material coefficients cover up to 1 kHz and 1.5 T. Results beyond that range use extrapolation.
 

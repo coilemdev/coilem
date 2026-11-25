@@ -20,7 +20,6 @@ const forbiddenPatterns = [
   /cloud/i,
   /telemetry/i,
   /femm/i,
-  /thermal/i,
   /admin/i,
   /billing/i,
   /quota/i,

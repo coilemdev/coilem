@@ -133,7 +133,7 @@ def convergence_report(result: Mapping[str, Any]) -> dict[str, Any]:
     summary = [
         _row("accuracy_plan", "Accuracy plan", plan),
         _row("mesh_density", "Mesh density", metadata.get("mesh_density")),
-        _row("mesh_elements", "Mesh elements", metadata.get("mesh_element_count")),
+        _row("mesh_elements", "Mesh elements, first position", metadata.get("mesh_element_count")),
         _row("iterations_max_median", "Iterations (max / median)", iteration_text),
         _row("recorded_positions", "Recorded / expected positions", f"{len(recorded)} / {len(positions)}" if positions else None),
         _row("reused_positions", "Reused fields", sum(p["record"]["solution_reused"] for p in recorded)),
@@ -179,6 +179,17 @@ def convergence_report(result: Mapping[str, Any]) -> dict[str, Any]:
         "summary": summary,
         "methods": methods,
         "warnings": warnings,
-        "notes": list(CONVERGENCE_NOTES),
+        "notes": [*CONVERGENCE_NOTES, *_rotor_history_note(result)],
         "positions": positions,
     }
+
+
+def _rotor_history_note(result: Mapping[str, Any]) -> list[str]:
+    """Say that a rotor iron loss history is not part of this record, as the Results card does (#348)."""
+    rotor = _mapping(_mapping(result.get("summary")).get("rotor_iron_loss"))
+    samples = rotor.get("samples_per_mechanical_turn")
+    if rotor.get("status") in (None, "unavailable") or isinstance(samples, bool) or not isinstance(samples, int) or samples <= 0:
+        return []
+    # The history is the turn's positions and one more solve that closes it.
+    return [f"This record covers the loaded and no-load sweeps. The {samples + 1:,} rotor iron loss positions "
+            "are solved separately and are not included."]

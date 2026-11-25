@@ -10,6 +10,7 @@ import { formatResistance } from './windingResistance';
 import {
   CONTEXT_FILL,
   COPPER_FILL,
+  MAGNET_FILL,
   STEEL_RAMP,
   densityColor,
   formatPower,
@@ -55,7 +56,7 @@ function LossBar({ segments, totalW, partial, lit, readout, onHover }: {
   );
 }
 
-type Part = 'iron' | 'copper' | 'unmodelled' | 'air';
+type Part = 'iron' | 'copper' | 'magnet' | 'rotor' | 'air';
 
 interface PreparedMesh {
   triangles: Array<{ points: Array<[number, number]>; part: Exclude<Part, 'air'>; region: string; index: number }>;
@@ -66,7 +67,8 @@ function partOf(region: string): Part {
   if (region.startsWith('stator')) return 'iron';
   if (region === 'slot_winding' || region.includes('winding')) return 'copper';
   if (region === 'airgap' || region.includes('air')) return 'air';
-  return 'unmodelled';
+  if (region === 'magnet') return 'magnet';
+  return 'rotor';
 }
 
 function prepareMesh(plot: PublicFieldLinePlot): PreparedMesh | null {
@@ -108,7 +110,8 @@ const MODE_LABEL: Record<LossMapMode, string> = {
   copper: 'Copper',
 };
 const MODE_SHORT: Record<LossMapMode, string> = { iron: 'Iron', hysteresis: 'Hyst.', eddy: 'Eddy', copper: 'Copper' };
-const PART_LABEL: Record<Exclude<Part, 'air'>, string> = { iron: 'Stator iron', copper: 'Coil side', unmodelled: 'Rotor or magnet' };
+/** What the pointer reads over a part that carries no value on this map. */
+const NO_VALUE_TEXT: Record<'magnet' | 'rotor', string> = { magnet: 'Magnet: loss not calculated', rotor: 'Rotor core: not on this map' };
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 16;
 const MAP_SIZE = 360;
@@ -210,7 +213,8 @@ function LossMap({ plot, density, copperWPerKg, copperStackW, copperEndW, status
     const py = (y: number) => MAP_SIZE / 2 - (y - view.cy) * pixelsPerMm;
     for (const triangle of mesh.triangles) {
       let fill: string | CanvasPattern = CONTEXT_FILL;
-      if (triangle.part === 'unmodelled') fill = hatch;
+      if (triangle.part === 'rotor') fill = hatch;
+      else if (triangle.part === 'magnet') fill = MAGNET_FILL;
       else if (shownMode === 'copper') fill = triangle.part === 'copper' ? COPPER_FILL : CONTEXT_FILL;
       else if (triangle.part === 'iron') {
         const value = values?.[triangle.index];
@@ -252,7 +256,7 @@ function LossMap({ plot, density, copperWPerKg, copperStackW, copperEndW, status
   const describe = (point: [number, number]): string | null => {
     const hit = mesh.triangles.find((triangle) => contains(point, triangle.points));
     if (!hit) return null;
-    if (hit.part === 'unmodelled') return `${PART_LABEL.unmodelled}: loss not modelled`;
+    if (hit.part === 'magnet' || hit.part === 'rotor') return NO_VALUE_TEXT[hit.part];
     if (shownMode === 'copper') {
       return hit.part === 'copper' && copperWPerKg !== null
         ? `Coil side: ${Number(copperWPerKg.toPrecision(3))} W/kg of copper`
@@ -309,7 +313,8 @@ function LossMap({ plot, density, copperWPerKg, copperStackW, copperEndW, status
             </p>
           )}
           <p>
-            <span className="losses-map-swatch is-hatched" aria-hidden="true" /> Not shown on this density map: rotor and magnets.
+            <span className="losses-map-swatch" style={{ background: MAGNET_FILL }} aria-hidden="true" /> Magnets: coilEM does not calculate a magnet loss yet.
+            {' '}<span className="losses-map-swatch is-hatched" aria-hidden="true" /> Rotor core: not on this density map.
             {shownMode !== 'copper' && <> <span className="losses-map-swatch" style={{ background: CONTEXT_FILL }} aria-hidden="true" /> Coil sides: choose Copper.</>}
           </p>
           <p>Scroll, double-click or use + and − to zoom; drag to move.</p>
@@ -354,6 +359,10 @@ function LossMap({ plot, density, copperWPerKg, copperStackW, copperEndW, status
             <span>≥ {legendTop} W/kg</span>
           </span>
         )}
+        <span className="losses-map-parts">
+          <span><span className="losses-map-swatch" style={{ background: MAGNET_FILL }} aria-hidden="true" />Magnets, loss not calculated</span>
+          <span><span className="losses-map-swatch is-hatched" aria-hidden="true" />Rotor core, not on this map</span>
+        </span>
         <span className="losses-map-readout" aria-live="polite">
           {readout ?? (view.zoom > 1 ? `${view.zoom.toFixed(1)}×` : '')}
         </span>
@@ -366,6 +375,37 @@ function LossMap({ plot, density, copperWPerKg, copperStackW, copperEndW, status
  * Losses and efficiency of a completed run (#138). Renders nothing for a run
  * without a loss breakdown.
  */
+interface LossMapSource {
+  loss?: LossBreakdown | null;
+  iron?: IronLoss | null;
+  rotor?: RotorIronLoss | null;
+  density?: IronLossDensity | null;
+  plot?: PublicFieldLinePlot | null;
+  winding?: WindingResistance | null;
+  slotCount?: number;
+}
+
+/** Whether a run has a loss density that can be drawn on its cross-section. */
+export function hasLossMap({ loss, density, plot, winding, slotCount }: LossMapSource): boolean {
+  return Boolean(loss && plot && (density || stackCopperWPerKg(loss, winding, slotCount ?? 0) !== null));
+}
+
+/** The loss map on its own, for the Results plot tabs: where in the cross-section the iron and copper loss is. */
+export function LossMapPanel({ loss, iron, rotor, density, plot, winding, slotCount }: LossMapSource) {
+  const view = lossesView(loss, iron, winding ?? null, rotor ?? null);
+  if (!view || !loss || !plot || !hasLossMap({ loss, density, plot, winding, slotCount })) return null;
+  return <section className="losses-map-panel" aria-label="Loss map">
+    <LossMap
+      plot={plot}
+      density={density}
+      copperWPerKg={stackCopperWPerKg(loss, winding, slotCount ?? 0)}
+      copperStackW={loss.copper_active_loss_W ?? null}
+      copperEndW={loss.copper_end_winding_loss_W ?? null}
+      statuses={view.statuses}
+    />
+  </section>;
+}
+
 export function LossesCard({
   loss,
   iron,
@@ -375,6 +415,7 @@ export function LossesCard({
   winding,
   slotCount,
   variant = 'panel',
+  map = true,
 }: {
   loss?: LossBreakdown | null;
   iron?: IronLoss | null;
@@ -384,6 +425,8 @@ export function LossesCard({
   winding?: WindingResistance | null;
   slotCount?: number;
   variant?: 'panel' | 'report';
+  /** False keeps the card to its numbers; the map is then shown by LossMapPanel elsewhere. */
+  map?: boolean;
 }) {
   const headingId = useId();
   const [hover, setHover] = useState<LossHover>(null);
@@ -407,7 +450,8 @@ export function LossesCard({
   const copperWPerKg = stackCopperWPerKg(loss, winding, slotCount ?? 0);
   const rowStatus = (key: string) => view.statuses.find((item) => item.key === key) ?? null;
   const efficiencyStatus = rowStatus('efficiency');
-  const showMap = Boolean(plot && (density || copperWPerKg !== null));
+  const mapAvailable = Boolean(plot && (density || copperWPerKg !== null));
+  const showMap = map && mapAvailable;
   const isOpen = (row: LossRow) => opened[row.key] ?? row.expanded ?? false;
   const openParents = new Set(view.rows.filter((row) => row.expanded !== undefined && isOpen(row)).map((row) => row.key));
   const shownRows = view.rows.filter((row) => !row.parent || openParents.has(row.parent));
@@ -500,6 +544,7 @@ export function LossesCard({
             readout={readout}
             onHover={(key) => setHover(key ? { kind: 'segment', key } : null)}
           />}
+          {mapAvailable && !showMap && <p className="motor-constants-note">Where the loss is in the motor: the Losses tab below.</p>}
         </div>
         {showMap && plot && (
           <LossMap

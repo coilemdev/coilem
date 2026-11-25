@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "protocol": "dc-thermal-bench-0.6.0-1",
+  "owner_registration": null,
+  "alpha20_per_K": 0.00393,
+  "relative_band": 0.05,
+  "absolute_floor_K": 3,
+  "yellow_relative_band": 0.1,
+  "yellow_floor_K": 5,
+  "max_uncertainty_K": 2,
+  "steady_drift_K_per_min": 0.05,
+  "heat_relative_band": 0.03,
+  "points": [
+    {
+      "id": "dc_10W",
+      "role": "calibration",
+      "target_heat_W": 10
+    },
+    {
+      "id": "dc_15W",
+      "role": "validation",
+      "target_heat_W": 15
+    },
+    {
+      "id": "dc_20W",
+      "role": "validation",
+      "target_heat_W": 20
+    },
+    {
+      "id": "dc_25W",
+      "role": "validation",
+      "target_heat_W": 25
+    }
+  ]
+}

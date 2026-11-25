@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 import platform
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -46,7 +47,7 @@ def main() -> int:
         response.raise_for_status()
         result = response.json()
     try:
-        git = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root, capture_output=True, text=True, check=False)
+        git = subprocess.run([shutil.which("git") or "git", "rev-parse", "HEAD"], cwd=root, capture_output=True, text=True, check=False)
         commit = git.stdout.strip() if git.returncode == 0 else None
     except OSError:
         commit = None

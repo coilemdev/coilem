@@ -4,7 +4,7 @@ import { importTypeScriptModule } from './import-typescript-module.mjs';
 const { cloneDefaultConfig } = await importTypeScriptModule(new URL('../src/public/model.ts', import.meta.url));
 const profiles = await importTypeScriptModule(new URL('../src/public/solveProfiles.ts', import.meta.url));
 const { parseDesignFile, serializeDesignFile } = await importTypeScriptModule(new URL('../src/public/designFile.ts', import.meta.url));
-const { torqueSpeedSettings } = await importTypeScriptModule(new URL('../src/public/torqueSpeedAnalysis.ts', import.meta.url));
+const { torqueSpeedSettings, designDcBusV, DEFAULT_DC_BUS_V } = await importTypeScriptModule(new URL('../src/public/torqueSpeedAnalysis.ts', import.meta.url));
 const { captureProfile, applyProfile, profileMatches, profileCompatible, profileProvenance, builtinProfiles,
   newProfileDocument, saveProfile, parseProfileDocument, restoreActiveProfile, readProfileDocument, mergeProfileDocuments } = profiles;
 const original = cloneDefaultConfig();
@@ -146,6 +146,24 @@ assert.equal(parseProfileDocument(saveProfile(newProfileDocument('n'), defaultNu
 const mapOff = captureProfile(original, 'Map off', false, 'magneto2d', 'map-off');
 assert.equal(mapOff.map, null);
 const limited = structuredClone(original); limited.torque_speed_analysis = torqueSpeedSettings(original);
+// The map's DC bus is the design's supply voltage: one value, wherever it is shown (#274).
+{
+  assert.equal(DEFAULT_DC_BUS_V, 48);
+  assert.equal(designDcBusV(original), 48);
+  assert.equal(torqueSpeedSettings(original).limits.dc_bus_V, 48);
+  const supplied = structuredClone(original); supplied.solve_params.motor_input_dc_bus_V = 96;
+  assert.equal(torqueSpeedSettings(supplied).limits.dc_bus_V, 96);
+  // Map settings stored at another bus follow the design's.
+  const stale = structuredClone(supplied); stale.torque_speed_analysis = torqueSpeedSettings(original);
+  assert.equal(torqueSpeedSettings(stale).limits.dc_bus_V, 96);
+  assert.equal(torqueSpeedSettings(stale).limits.peak_current_A, stale.torque_speed_analysis.limits.peak_current_A);
+  // A design saved before Operating point had the input keeps the bus its map settings named.
+  const older = structuredClone(original);
+  older.torque_speed_analysis = { ...torqueSpeedSettings(original), limits: { ...torqueSpeedSettings(original).limits, dc_bus_V: 200 } };
+  assert.equal(designDcBusV(older), 200);
+  assert.equal(torqueSpeedSettings(older).limits.dc_bus_V, 200);
+  assert.equal(torqueSpeedSettings(older), older.torque_speed_analysis, 'settings already on the design bus are returned as stored');
+}
 assert.deepEqual(applyProfile(limited, mapOff).torque_speed_analysis, limited.torque_speed_analysis);
 assert.ok(profileMatches(mapOff, applyProfile(limited, mapOff), 'magneto2d'));
 // An operating-only setup records the design's analyses whichever solver is selected.

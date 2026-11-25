@@ -6,6 +6,7 @@ import hashlib
 import importlib.util
 import json
 import os
+import shutil
 import subprocess
 import tempfile
 from pathlib import Path
@@ -17,7 +18,7 @@ REGISTRY = 'backend/benchmark_suite/physics.py'
 
 
 def git(root, *args):
-    return subprocess.check_output(['git', '-C', str(root), *args])
+    return subprocess.check_output([shutil.which('git') or 'git', '-C', str(root), *args])
 
 
 def registry(root):
@@ -102,7 +103,7 @@ def reusable_collection(root, key, repository, branch, current_run):
         if str(run['id']) == str(current_run) or run.get('conclusion') in ('cancelled', 'timed_out'):
             continue
         previous = run['head_sha']
-        ancestor = subprocess.run(['git', '-C', str(root), 'merge-base', '--is-ancestor', previous, 'HEAD'],
+        ancestor = subprocess.run([shutil.which('git') or 'git', '-C', str(root), 'merge-base', '--is-ancestor', previous, 'HEAD'],
                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if ancestor.returncode or measurement_key(root, previous) != key:
             continue

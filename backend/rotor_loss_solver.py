@@ -27,7 +27,15 @@ from backend.rotor_motion_mesh import FixedMaterialRotorMesh
 from backend.solver_contract import SolveCancelledError
 
 POSITIONS = 384
+# Newton's tolerance for every position of the turn, whatever the solve quality. The loss weighs a
+# field change between neighbouring positions by its frequency squared, so a solve stopped early
+# shows up as rotor loss. It is worst in a saturated IPM's pocket corners, whose field jitters from
+# one position to the next at the looser tolerance of an ordinary solve. Every position is solved
+# to this tight tolerance; a tighter one does not change the loss.
+NONLINEAR_TOLERANCE = 1e-7
 MATERIAL = RotorLossMaterial("M350-50A", "EN 10106 grade limits + classical lamination eddy term", M350_50A_LOSS)
+# Many outrunners carry their magnets in a solid steel shell. The lamination term does not describe one.
+OUTER_ROTOR_NOTE = " The rotor ring is treated as laminated steel; eddy currents in a solid steel rotor shell are not included."
 
 
 def compute_or_cached(config, *, cache_dir=None, direction=-1, **kwargs):
@@ -73,8 +81,6 @@ def unavailable_reason(config: MotorConfig):
         return "Rotor iron loss needs a positive mechanical speed."
     if params.symmetry != "full":
         return "Rotor iron loss is available for full-motor solves; sector rotor loss is deferred."
-    if config.rotor_layout != "inner":
-        return "Rotor iron loss currently supports inner-rotor full-motor models."
     if config.topology == "IPM" and config.rotor.ipm_topology != "flat_buried":
         return "Rotor iron loss currently supports SPM and flat-IPM full-motor models."
     if config.geometry_reference is not None:
@@ -135,7 +141,8 @@ def record_from_samples(config, plan, samples):
         digest.update(np.asarray(values, dtype="<f8").tobytes())
     return RotorIronLoss(
         status="experimental", status_reason=iron_loss_status_reason(MATERIAL.steel_id)
-        + " Full-turn rotor-material harmonics; DC-bias/minor-loop, rotating-flux and excess-loss corrections are not included.",
+        + " Full-turn rotor-material harmonics; DC-bias/minor-loop, rotating-flux and excess-loss corrections are not included."
+        + (OUTER_ROTOR_NOTE if config.rotor_layout == "outer" else ""),
         steel=MATERIAL.steel_id, coefficient_source=MATERIAL.coefficient_source, coefficients=asdict(MATERIAL.coefficients),
         stacking_factor=MATERIAL.stacking_factor, speed_rpm=plan.speed_rpm, mechanical_frequency_Hz=plan.base_frequency_hz,
         samples_per_mechanical_turn=plan.positions, rotor_iron_loss_W=estimate.total_W,
@@ -146,11 +153,16 @@ def record_from_samples(config, plan, samples):
         endpoint_max_component_difference_T=maximum, endpoint_rms_component_difference_T=rms, history_sha256=digest.hexdigest())
 
 
-def compute_rotor_iron_loss(config, *, direction=-1, workers=4, on_progress=None, check_cancelled=None):
-    """Config is already in native excitation coordinates; never mirror it twice."""
+def rotor_field_samples(config, *, direction=-1, workers=4, on_progress=None, check_cancelled=None):
+    """Solve the full turn and its closure pose: (native config, sampling plan, samples).
+
+    The benchmark reads the samples to check angular refinement; the product
+    reduces them to one record with ``record_from_samples``. Unsupported
+    requests and failed solves raise.
+    """
     reason = unavailable_reason(config)
     if reason:
-        return unavailable(config, reason)
+        raise ValueError(reason)
 
     def check():
         if check_cancelled is not None:
@@ -159,46 +171,61 @@ def compute_rotor_iron_loss(config, *, direction=-1, workers=4, on_progress=None
     check()
     plan = RotorSamplingPlan(config.solve_params.rated_speed_rpm, POSITIONS, direction)
     samples = [None]*(POSITIONS+1)
-    try:
-        with solve_profile.span("rotor: prepare material mesh"):
-            template = run_gmsh_mesh_preview(config, rotor_angle_deg=0)["solve_mesh_artifact"]
-            motion = FixedMaterialRotorMesh(template)
-        solve_profile.mark("mesh group ready")
-        native_config = config.model_copy(deep=True)
-        native_config.solve_params.magneto2d_workers = 1
-        angles = (*plan.mechanical_angles_deg, direction*360.)
+    native_config = config.model_copy(deep=True)
+    native_config.solve_params.magneto2d_workers = 1
+    # The corner profile caps how fine any part of the mesh may be, which undoes the finer air gap and
+    # slot mouths of the rotor loss mesh and leaves the rotor loss reading high.
+    native_config.solve_params.corner_refinement = False
+    with solve_profile.span("rotor: prepare material mesh"):
+        template = run_gmsh_mesh_preview(native_config, rotor_angle_deg=0, rotor_loss_mesh=True)["solve_mesh_artifact"]
+        motion = FixedMaterialRotorMesh(template)
+    solve_profile.mark("mesh group ready")
+    angles = (*plan.mechanical_angles_deg, direction*360.)
 
-        def solve(index):
-            check()
-            angle = angles[index]
-            with solve_profile.span("rotor: connect air gap"):
-                artifact = motion.at_angle(native_config, angle)
-            solve_profile.mark("solve started")
-            with solve_profile.span("solve (rotor): one position, total"):
-                report = run_magneto2d_report(native_config, sweep=False, rotor_angle_deg=angle, solve_mesh_artifact=artifact)
-            with solve_profile.span("rotor: sample material field"):
-                sample = field_sample(report, angle)
-            solve_profile.mark("solve finished")
-            check()
-            return index, sample
-
-        with ThreadPoolExecutor(max_workers=max(1, min(8, int(workers)))) as pool:
-            pending = [pool.submit(solve, index) for index in range(POSITIONS+1)]
-            try:
-                for count, future in enumerate(as_completed(pending), 1):
-                    check()
-                    index, sample = future.result()
-                    samples[index] = sample
-                    if on_progress is not None:
-                        on_progress(count, POSITIONS+1, angles[index])
-            except BaseException:
-                for future in pending:
-                    future.cancel()
-                raise
+    def solve(index):
         check()
+        angle = angles[index]
+        with solve_profile.span("rotor: connect air gap"):
+            artifact = motion.at_angle(native_config, angle)
+        solve_profile.mark("solve started")
+        with solve_profile.span("solve (rotor): one position, total"):
+            report = run_magneto2d_report(native_config, sweep=False, rotor_angle_deg=angle, solve_mesh_artifact=artifact,
+                                          nonlinear_tolerance=NONLINEAR_TOLERANCE)
+        with solve_profile.span("rotor: sample material field"):
+            sample = field_sample(report, angle)
+        solve_profile.mark("solve finished")
+        check()
+        return index, sample
+
+    with ThreadPoolExecutor(max_workers=max(1, min(8, int(workers)))) as pool:
+        pending = [pool.submit(solve, index) for index in range(POSITIONS+1)]
+        try:
+            for count, future in enumerate(as_completed(pending), 1):
+                check()
+                index, sample = future.result()
+                samples[index] = sample
+                if on_progress is not None:
+                    on_progress(count, POSITIONS+1, angles[index])
+        except BaseException:
+            for future in pending:
+                future.cancel()
+            raise
+    check()
+    return native_config, plan, samples
+
+
+def compute_rotor_iron_loss(config, *, direction=-1, workers=4, on_progress=None, check_cancelled=None):
+    """Config is already in native excitation coordinates; never mirror it twice."""
+    reason = unavailable_reason(config)
+    if reason:
+        return unavailable(config, reason)
+    try:
+        native_config, plan, samples = rotor_field_samples(config, direction=direction, workers=workers,
+                                                           on_progress=on_progress, check_cancelled=check_cancelled)
         return record_from_samples(native_config, plan, samples)
     except SolveCancelledError:
         raise
     except (ValueError, KeyError, TypeError, OSError, Magneto2DExecutionError, Magneto2DUnsupportedError) as exc:
-        check()
+        if check_cancelled is not None:
+            check_cancelled()
         return unavailable(config, f"Rotor iron-loss history unavailable: {str(exc)[:300]}")

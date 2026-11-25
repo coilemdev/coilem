@@ -487,7 +487,7 @@ def launch(args: argparse.Namespace) -> int:
 
 
 # `coilem <command>` runs these without starting the app (backend/client/_cli.py).
-HEADLESS_COMMANDS = ("check", "solve", "setups", "schema", "version")
+HEADLESS_COMMANDS = ("check", "solve", "thermal", "setups", "schema", "version")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -504,7 +504,7 @@ def main(argv: list[str] | None = None) -> int:
         prog="coilem",
         description="Start coilEM and open it in your browser.",
         epilog=(
-            "Headless commands: coilem check | solve | setups | schema | version (run `coilem solve --help`). "
+            "Headless commands: coilem check | solve | thermal | setups | schema | version (run `coilem solve --help`). "
             "Run `coilem benchmark --help` to check this installation against the published benchmark."
         ),
     )

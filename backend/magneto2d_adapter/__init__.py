@@ -1140,8 +1140,15 @@ def run_magneto2d_report(
     persist_artifacts_dir: Path | None = None,
     artifact_prefix: str | None = None,
     runner: Any = subprocess.run,
+    nonlinear_tolerance: float | None = None,
 ) -> dict[str, Any]:
-    """Run magneto2d and return its raw JSON report."""
+    """Run magneto2d and return its raw JSON report.
+
+    ``nonlinear_tolerance`` replaces the Newton tolerance that the solve quality
+    picks (the rotor iron loss turn needs a tighter one).
+    """
+    if nonlinear_tolerance is not None and _valid_magneto2d_nonlinear_tol(repr(nonlinear_tolerance)) is None:
+        raise ValueError("nonlinear_tolerance must be between 0 and 1")
     prepare_started = time.perf_counter()
     require_magneto2d_supported(config)
     mesher_choice = getattr(config.solve_params, "mesher", None)
@@ -1188,6 +1195,8 @@ def run_magneto2d_report(
         )
     payload = build_magneto2d_payload(config)
     env_overrides = _magneto2d_env_overrides(config)
+    if nonlinear_tolerance is not None:
+        env_overrides["MAGNETO2D_NONLINEAR_TOL"] = repr(float(nonlinear_tolerance))
     run_env = solver_process_environment(env_overrides)
     if sweep and progress_callback is not None and persist_artifacts_dir is not None:
         run_env.setdefault("COILEM_MAGNETO2D_FIELD_FRAME_STRIDE", "1")

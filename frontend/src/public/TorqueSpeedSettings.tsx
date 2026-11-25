@@ -35,7 +35,7 @@ export function TorqueSpeedSettings({ config, busy, onChange }: {
   const fields: Array<{ key: 'peak_current_A' | 'continuous_current_A' | 'dc_bus_V' | 'max_speed_rpm'; label: string; unit: string; help: string; current?: boolean }> = [
     { key: 'peak_current_A', label: 'Peak current', unit: units.unit, current: true, help: 'Short-term phase-current limit. The map solves currents up to this limit.' },
     { key: 'continuous_current_A', label: 'Continuous current', unit: units.unit, current: true, help: 'The current your cooling can sustain. Leave empty for a peak curve only.' },
-    { key: 'dc_bus_V', label: 'DC bus', unit: 'V', help: 'Enter your supply voltage. The initial value is the design voltage, or 48 V when no supply is specified.' },
+    { key: 'dc_bus_V', label: 'DC bus', unit: 'V', help: 'Your supply voltage: the same value as DC bus voltage under Operating point. Changing it here changes it there.' },
     { key: 'max_speed_rpm', label: 'Top speed', unit: 'rpm', help: 'The highest shaft speed covered by the curves and efficiency map.' },
   ];
   return (

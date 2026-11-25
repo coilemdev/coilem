@@ -217,8 +217,25 @@ def test_pdf_embeds_stored_motor_and_field_with_correct_orientation_and_range():
     field = next(image for image in images if image.getpixel((600, 800)) == (20, 42, 97))
     assert geometry.getpixel((600, 400)) == (229, 62, 62)  # Magnet above center.
     assert field.getpixel((200, 650)) == (220, 61, 61)  # Highest |B| at left.
-    assert field.getpixel((600, 600)) == (241, 194, 50)  # Stored field line.
+    # The app draws arrows along B now, not field lines, and so does the report (#348).
+    assert field.getpixel((600, 600)) != (241, 194, 50)
+    assert "White arrows" not in text  # This plot recorded no B components, so there are none to draw.
     assert field.getpixel((20, 20)) == (255, 255, 255)  # Preserve equal aspect.
+
+
+def test_pdf_field_page_draws_the_apps_arrows_along_b():
+    result = _result_with_motor_field()
+    # B along +x in every element, as strong everywhere: every arrow is drawn at full strength.
+    result["field_line_plot"].update(element_bx_t=[1.0] * 4, element_by_t=[0.0] * 4, element_b_mag_t=[1.0] * 4)
+    pdf = build_public_run_pdf(project=CONFIG, request={"resolved_config": CONFIG}, result=result, material={}, manifest={})
+    figure_page = pypdf.PdfReader(io.BytesIO(pdf)).pages[1]
+    text = figure_page.extract_text()
+    assert "White arrows: direction of B" in text and "Arrows show the direction of B" in text
+    field = [image.image.convert("RGB") for image in figure_page.images][-1]
+    pixels = field.getdata()
+    arrow = sum(1 for pixel in pixels if min(pixel) >= 240 and pixel != (255, 255, 255))
+    assert arrow > 500, "the arrows' light fill is drawn over the heatmap"
+    assert not any(pixel == (241, 194, 50) for pixel in pixels), "no yellow field lines"
 
 
 @pytest.mark.parametrize("bad_values", [[0.0], [0.0, 1.0, float("nan"), 3.0], [0.0, -1.0, 2.0, 3.0]])
@@ -797,3 +814,31 @@ def test_pdf_loss_shares_add_up_like_the_losses_card() -> None:
     assert texts[4:] == ["<1%", "<1%"]
     numbers = [int(text[:-1]) for text in texts if text != "<1%"]
     assert sum(numbers) == 100
+
+
+def test_the_run_report_is_named_after_its_design_and_carries_its_thermal_estimate():
+    """The Results PDF holds the thermal estimate and its part heat map when the run has one."""
+    from backend.public_report import _thermal_heatmap_figure
+
+    result = _result_with_motor_field()
+    nodes = {name: {"temperature_C": value, "heat_W": 1.0, "status": "experimental", "status_reason": "Estimate.", "margin_K": None}
+             for name, value in {"winding": 120.0, "end_winding": 125.0, "teeth": 110.0, "yoke": 100.0, "magnets": 70.0, "rotor": 68.0}.items()}
+    thermal = {"kind": "steady_state_thermal", "status": "experimental", "status_reason": "Uncalibrated estimate.",
+               "inputs": {"ambient_C": 25.0}, "nodes": nodes, "hottest_node": "end_winding", "notes": []}
+    figure = _thermal_heatmap_figure(result["field_line_plot"], CONFIG, thermal)
+    assert figure is not None and figure.field_range == (25.0, 125.0) and figure.legend_title == "Part temperature (C)"
+    # No temperatures, no picture; a run without an estimate has no thermal section at all.
+    assert _thermal_heatmap_figure(result["field_line_plot"], CONFIG, {"nodes": {}}) is None
+
+    arguments = dict(project=CONFIG, request={"resolved_config": CONFIG}, material={}, manifest={"project_name": "Bench motor", "run_id": "r1"})
+    plain = "\n".join(page.extract_text() for page in pypdf.PdfReader(io.BytesIO(build_public_run_pdf(result=result, **arguments))).pages)
+    assert "Bench motor Solve Report" in plain and "Electromagnetic solve report" not in plain
+    assert "Steady-state thermal estimate" not in plain and "temperature prediction is not included" in plain
+
+    result["summary"] = {**result["summary"], "thermal": thermal}
+    reader = pypdf.PdfReader(io.BytesIO(build_public_run_pdf(result=result, **arguments)))
+    text = "\n".join(page.extract_text() for page in reader.pages)
+    assert "Steady-state thermal estimate" in text and "Part temperature (C)" in text
+    assert "temperature prediction is not included" not in text
+    page = next(page for page in reader.pages if "Part temperature (C)" in page.extract_text())
+    assert len(page.images) >= 1

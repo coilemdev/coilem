@@ -33,6 +33,7 @@ from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfgen import canvas
 from reportlab.platypus import (
     Flowable,
+    HRFlowable,
     KeepTogether,
     PageBreak,
     Paragraph,
@@ -57,6 +58,7 @@ from backend.models.performance import (
 )
 from backend.reference_models import reference_model
 from backend.report_numbers import format_report_number
+from backend.thermal_reporting import thermal_csv_rows, thermal_story
 
 PUBLIC_REPORT_SCHEMA = "coilem.single_run_report.v1"
 PUBLIC_REPORT_LIMITATIONS = (
@@ -74,7 +76,10 @@ _BLUE = colors.HexColor("#2563EB")
 _GREEN = colors.HexColor("#059669")
 _RED = colors.HexColor("#DC2626")
 _SLATE = colors.HexColor("#475569")
-_LIGHT = colors.HexColor("#F1F5F9")
+_LIGHT = colors.HexColor("#E2EAF4")
+# The report's two accents: section headings and key values in a deep blue, rules and markers in amber.
+_HEADING = colors.HexColor("#1E40AF")
+_ACCENT = colors.HexColor("#D97706")
 _BORDER = colors.HexColor("#CBD5E1")
 _WHITE = colors.white
 
@@ -390,6 +395,15 @@ def build_public_run_csv(
     resolved_config = _mapping(request.get("resolved_config"))
     for field, value in _flatten(resolved_config):
         row("setting", field, value)
+    # A preset plan sets its own sweep and does not read the stored step and range above.
+    # These rows give the sweep that was solved, from the result's own angles (#348).
+    for name, waveform in (("loaded", "torque_waveform"), ("no_load", "back_emf_waveform")):
+        angles = [angle for angle in _sequence(_mapping(result.get(waveform)).get("electrical_angle_deg"))
+                  if isinstance(angle, (int, float)) and not isinstance(angle, bool)]
+        if len(angles) >= 2:
+            row("solved_sweep", f"{name}.positions", len(angles))
+            row("solved_sweep", f"{name}.step_deg", round(angles[1] - angles[0], 9), "deg electrical")
+            row("solved_sweep", f"{name}.range_deg", round(angles[-1] - angles[0], 9), "deg electrical")
 
     summary = _mapping(result.get("summary"))
     known = set(_SUMMARY_ORDER)
@@ -399,7 +413,14 @@ def build_public_run_csv(
             if field == "Kt_Nm_per_A" and _kt_rms(summary) is not None:
                 row("summary", _KT_RMS_FIELD, _kt_rms(summary), _KT_RMS_UNIT)
     for field, section in _SUMMARY_RECORD_SECTIONS.items():
-        for name, value in _flatten(_mapping(summary.get(field))):
+        record = _mapping(summary.get(field))
+        if field == "dq_flux_linkage":
+            # A 0 deg request has no d-axis current: rounding noise is written as 0, as in the PDF (#348).
+            current = math.hypot(record.get("i_d_A") or 0.0, record.get("i_q_A") or 0.0) if all(
+                isinstance(record.get(key), (int, float)) for key in ("i_d_A", "i_q_A")) else None
+            record = {**record, "i_d_A": _without_noise(record.get("i_d_A"), current),
+                      "current_angle_deg": _without_noise(record.get("current_angle_deg"), 1.0)}
+        for name, value in _flatten(record):
             row(section, name, value, _record_unit(name))
     for key, _output, status, reason in _output_statuses(result):
         row("status", key, status)
@@ -494,7 +515,13 @@ def build_public_run_csv(
 
     for index, warning in enumerate(_warnings(result)):
         row("warning", "message", warning, sample_index=index)
-    for index, limitation in enumerate(PUBLIC_REPORT_LIMITATIONS):
+    thermal = _mapping(summary.get("thermal"))
+    if thermal:
+        writer.writerows(thermal_csv_rows(thermal))
+    thermal_curve = _mapping(result.get("thermal_torque_curve"))
+    if thermal_curve:
+        writer.writerows(thermal_csv_rows(thermal_curve, "thermal_torque_curve"))
+    for index, limitation in enumerate(PUBLIC_REPORT_LIMITATIONS[1:] if thermal else PUBLIC_REPORT_LIMITATIONS):
         row("known_limitation", "message", limitation, sample_index=index)
     limitation_index = len(PUBLIC_REPORT_LIMITATIONS)
     if _mapping(resolved_config.get("solve_params")).get("excitation_mode") == "ideal_six_step_120":
@@ -538,9 +565,9 @@ def _report_styles() -> dict[str, ParagraphStyle]:
             fontName="Helvetica-Bold",
             fontSize=13,
             leading=16,
-            textColor=_NAVY,
-            spaceBefore=5 * mm,
-            spaceAfter=2.5 * mm,
+            textColor=_HEADING,
+            spaceBefore=0,
+            spaceAfter=0,
         ),
         "body": ParagraphStyle(
             "ReportBody",
@@ -572,7 +599,7 @@ def _report_styles() -> dict[str, ParagraphStyle]:
             fontName="Helvetica-Bold",
             fontSize=11,
             leading=14,
-            textColor=_NAVY,
+            textColor=_HEADING,
         ),
         "group": ParagraphStyle(
             "SettingsGroup",
@@ -587,8 +614,94 @@ def _report_styles() -> dict[str, ParagraphStyle]:
     }
 
 
-def _section(title: str, styles: Mapping[str, ParagraphStyle]) -> Paragraph:
-    return Paragraph(escape(title), styles["heading"])
+def _section(title: str, styles: Mapping[str, ParagraphStyle]) -> Table:
+    """A section heading: an amber marker, the title, and a rule under both."""
+    heading = Table([["", Paragraph(escape(title), styles["heading"])]], colWidths=[1.6 * mm, 178.4 * mm], hAlign="LEFT")
+    heading.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (0, 0), _ACCENT),
+        ("LINEBELOW", (0, 0), (-1, 0), 0.6, _HEADING),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LEFTPADDING", (0, 0), (0, 0), 0), ("RIGHTPADDING", (0, 0), (0, 0), 0),
+        ("LEFTPADDING", (1, 0), (1, 0), 2 * mm),
+        ("TOPPADDING", (0, 0), (-1, -1), 0.8 * mm), ("BOTTOMPADDING", (0, 0), (-1, -1), 1.2 * mm),
+    ]))
+    heading.spaceBefore, heading.spaceAfter = 4 * mm, 2 * mm
+    return heading
+
+
+_THERMAL_REGION_NODE = {"winding": "winding", "magnet": "magnets", "rotor": "rotor", "shaft": "rotor"}
+
+
+def _thermal_heatmap_figure(plot: Mapping[str, Any], project: Mapping[str, Any], thermal: Mapping[str, Any]) -> _MotorMeshFigure | None:
+    """The motor's cross-section with each part in the colour of its estimated temperature.
+
+    One colour per part, as the app's Thermal tab draws it: the estimate is a
+    temperature per part, not a field. The stator is split into teeth and yoke
+    at the yoke's radius. Parts outside this section (end winding, housing or
+    mount, bearings) are in the table that follows.
+    """
+    mesh = _saved_motor_mesh(plot)
+    nodes_C = {name: _mapping(node).get("temperature_C") for name, node in _mapping(thermal.get("nodes")).items()}
+    nodes_C = {name: float(value) for name, value in nodes_C.items()
+               if isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)}
+    if mesh is None or not nodes_C:
+        return None
+    nodes, triangles, groups = mesh
+    stator = _mapping(project.get("stator"))
+    try:
+        outer_r, inner_r, yoke = float(stator["OD_mm"]) / 2, float(stator["ID_mm"]) / 2, float(stator["yoke_thickness_mm"])
+    except (KeyError, TypeError, ValueError):
+        return None
+    outer_rotor = project.get("rotor_layout") == "outer"
+    raw_regions = [str(region) for region in _sequence(plot.get("regions"))]
+
+    def part(index: int) -> str | None:
+        group = groups[index]
+        if group == "stator":
+            a, b, c = (nodes[i] for i in triangles[index])
+            radius = math.hypot((a[0] + b[0] + c[0]) / 3, (a[1] + b[1] + c[1]) / 3)
+            in_yoke = radius < inner_r + yoke if outer_rotor else radius > outer_r - yoke
+            return "yoke" if in_yoke else "teeth"
+        if group == "air":
+            return "airgap" if raw_regions[index] == "airgap" else None
+        return _THERMAL_REGION_NODE.get(group)
+
+    parts = [part(index) for index in range(len(triangles))]
+    shown = sorted({nodes_C[name] for name in parts if name in nodes_C})
+    if not shown:
+        return None
+    ambient = _mapping(thermal.get("inputs")).get("ambient_C")
+    low = float(ambient) if isinstance(ambient, (int, float)) and not isinstance(ambient, bool) and ambient < shown[0] else shown[0]
+    high = max(nodes_C.values())
+    used = {index for triangle in triangles for index in triangle}
+    min_x, max_x = min(nodes[i][0] for i in used), max(nodes[i][0] for i in used)
+    min_y, max_y = min(nodes[i][1] for i in used), max(nodes[i][1] for i in used)
+    span = max(max_x - min_x, max_y - min_y)
+    if span <= 0:
+        return None
+    size = 1200
+    scale = size * 0.94 / span
+    center_x, center_y = (min_x + max_x) / 2, (min_y + max_y) / 2
+    pixels = [(size / 2 + (x - center_x) * scale, size / 2 - (y - center_y) * scale) for x, y in nodes]
+    image = PILImage.new("RGB", (size, size), "white")
+    draw = ImageDraw.Draw(image)
+    edges: dict[tuple[int, int], list[str | None]] = {}
+    for triangle, name in zip(triangles, parts):
+        if name in nodes_C:
+            bucket = min(7, int((nodes_C[name] - low) / (high - low) * 8)) if high > low else 7
+            draw.polygon([pixels[i] for i in triangle], fill=_HEAT_COLORS[bucket])
+        for a, b in ((triangle[0], triangle[1]), (triangle[1], triangle[2]), (triangle[2], triangle[0])):
+            edges.setdefault((min(a, b), max(a, b)), []).append(name)
+    for (a, b), adjacent in edges.items():
+        if len(adjacent) == 1 or len(set(adjacent)) > 1:
+            draw.line([pixels[a], pixels[b]], fill="#334155", width=2)
+    buffer = io.BytesIO()
+    image.save(buffer, format="PNG")
+    return _MotorMeshFigure(
+        buffer.getvalue(), field_range=(low, high), legend_title="Part temperature (C)",
+        legend_note="One colour per part,\nnot a temperature field",
+        value_format=lambda value: format_report_number(value, decimal_places=1),
+    )
 
 
 def _build_rows(build: Mapping[str, Any]) -> list[tuple[str, Any]]:
@@ -770,6 +883,8 @@ def _setting_entry(name: str, value: Any) -> tuple[str, str]:
     else:
         display_names = {
             "solve_quality": {"quick": "Preview", "standard": "Standard", "fine": "High accuracy", "custom": "Custom"},
+            # The names Solve gives the mesh densities.
+            "mesh_density": {"coarse": "Coarse", "normal": "Medium", "fine": "Fine", "very_fine": "Very fine"},
             "torque_method": {"weighted_stress": "Weighted stress"},
             "rotor_rotation_model": {"remesh_per_step": "Remesh each position", "fixed_mesh": "Fixed mesh"},
             "ipm_topology": {"flat_buried": "Flat buried", "v_shape": "V-shape"},
@@ -1143,7 +1258,7 @@ class _MotorMeshFigure(Flowable):
         self, png: bytes, *, groups: Sequence[str] = (),
         field_range: tuple[float, float] | None = None,
         legend_title: str = "Flux density |B| (T)",
-        legend_note: str | None = "Yellow: stored field lines",
+        legend_note: str | None = None,
         value_format: Callable[[float], str] = format_report_number,
         legend_colors: Sequence[str] = _HEAT_COLORS,
     ) -> None:
@@ -1174,8 +1289,10 @@ class _MotorMeshFigure(Flowable):
                          fill=1, stroke=0)
             pdf.setFillColor(_SLATE)
             for fraction in (0.0, 0.5, 1.0):
+                value = low + fraction * (high - low)
+                # A minimum that is a sliver of the range is 0 on this scale, not 1.2e-5 (#348).
                 pdf.drawString(143 * mm, (13 + fraction * 72) * mm - 2,
-                               self.value_format(low + fraction * (high - low)))
+                               self.value_format(0.0 if abs(value) < 1e-3 * abs(high - low) else value))
             if self.legend_note:
                 pdf.setFont("Helvetica", 7)
                 for line_index, line in enumerate(self.legend_note.split("\n")):
@@ -1249,22 +1366,29 @@ def _motor_mesh_figures(
     for triangle, value in zip(triangles, values):
         bucket = min(7, int((value - low) / (high - low) * 8)) if high > low else 0
         heat_draw.polygon([pixels[i] for i in triangle], fill=_HEAT_COLORS[bucket])
-    for level in _sequence(plot.get("contour_levels")):
-        for raw in _sequence(_mapping(level).get("segments_mm")):
-            segment = _sequence(raw)
-            if len(segment) != 4:
-                continue
-            try:
-                x0, y0, x1, y1 = map(float, segment)
-            except (TypeError, ValueError, OverflowError):
-                continue
-            if all(math.isfinite(value) for value in (x0, y0, x1, y1)):
-                heat_draw.line([point(x0, y0), point(x1, y1)], fill="#f1c232", width=2)
-    return geometry_figure, _MotorMeshFigure(png(heatmap), field_range=(low, high))
+    # The arrows along B that the app draws, from the same code as its playback images (#348). The view
+    # box is this image's own mapping: width size/scale, centred, with the image's y running down.
+    from backend.public_field_playback import field_arrow_layer
+
+    view = size / scale
+    arrows = field_arrow_layer(dict(plot), (center_x - view / 2, -center_y - view / 2, view, view), size)
+    note = "White arrows: direction of B,\nfainter where |B| is weak"
+    if arrows.getbbox() is None:
+        note = None
+    heatmap = PILImage.alpha_composite(heatmap.convert("RGBA"), arrows).convert("RGB")
+    return geometry_figure, _MotorMeshFigure(png(heatmap), field_range=(low, high), legend_note=note)
 
 
 def _number(value: Any, digits: int = 3) -> str:
     return format_report_number(value, decimal_places=digits)
+
+
+def _without_noise(value: Any, scale: Any) -> Any:
+    """A value that is rounding noise beside its scale reads 0, not 1e-15: a 0 deg request has no d-axis current."""
+    if (isinstance(value, (int, float)) and not isinstance(value, bool) and isinstance(scale, (int, float))
+            and math.isfinite(value) and math.isfinite(scale) and abs(value) <= 1e-9 * abs(scale)):
+        return 0.0
+    return value
 
 
 def _percent(fraction: Any, digits: int = 3) -> str:
@@ -1336,9 +1460,9 @@ def _dq_story(result: Mapping[str, Any], styles: Mapping[str, ParagraphStyle]) -
         _section("d/q operating point", styles),
         _settings_grid(
             [
-                ("Current angle", f"{_number(dq.get('current_angle_deg'))} deg"),
+                ("Current angle", f"{_number(_without_noise(dq.get('current_angle_deg'), 1.0))} deg"),
                 ("Positions averaged", _number(dq.get("positions"))),
-                ("d-axis current", f"{_number(dq.get('i_d_A'))} A peak"),
+                ("d-axis current", f"{_number(_without_noise(i_d, math.hypot(i_d, i_q)))} A peak"),
                 ("q-axis current", f"{_number(dq.get('i_q_A'))} A peak"),
                 ("d-axis flux linkage", milli(dq.get("lambda_d_Wb"), "mWb")),
                 ("q-axis flux linkage", milli(dq.get("lambda_q_Wb"), "mWb")),
@@ -1781,7 +1905,7 @@ def _motor_figure_story(
     else:
         story.extend([heatmap, Paragraph(
             f"Stored loaded field at {escape(position)}. Colors show per-element flux-density magnitude in tesla "
-            "at this position, not the maximum over the sweep. Field lines are from the same stored solution.",
+            "at this position, not the maximum over the sweep. Arrows show the direction of B from the same stored solution.",
             styles["small"],
         )])
     return story
@@ -1800,6 +1924,12 @@ def build_public_run_pdf(
     styles = _report_styles()
     buffer = io.BytesIO()
     run_id = _plain(manifest.get("run_id"))
+    # The report is named after its design: "Example SPM 8p/12s Solve Report".
+    report_title = f"{_plain(manifest.get('project_name')) or 'Motor'} Solve Report"
+    # A long design name takes a smaller title, so page 1 still holds the whole provenance table.
+    title_size = 24 if len(report_title) <= 36 else 17 if len(report_title) <= 60 else 13
+    title_style = ParagraphStyle("ReportTitleSized", parent=styles["title"], fontSize=title_size, leading=title_size * 1.2,
+                                 spaceAfter=2.5 * mm)
     document = SimpleDocTemplate(
         buffer,
         pagesize=A4,
@@ -1807,18 +1937,20 @@ def build_public_run_pdf(
         rightMargin=15 * mm,
         topMargin=18 * mm,
         bottomMargin=16 * mm,
-        title=f"coilEM solve report - {run_id}",
+        title=f"{report_title} - {run_id}",
         author="coilEM",
         subject="Immutable local electromagnetic solve record",
     )
 
     def page_chrome(pdf: canvas.Canvas, doc: SimpleDocTemplate) -> None:
         pdf.saveState()
+        pdf.setStrokeColor(_ACCENT)
+        pdf.setLineWidth(1.1)
+        pdf.line(15 * mm, A4[1] - 12 * mm, A4[0] - 15 * mm, A4[1] - 12 * mm)
         pdf.setStrokeColor(_BORDER)
         pdf.setLineWidth(0.4)
-        pdf.line(15 * mm, A4[1] - 12 * mm, A4[0] - 15 * mm, A4[1] - 12 * mm)
-        pdf.setFont("Helvetica-Bold", 7)
-        pdf.setFillColor(_NAVY)
+        pdf.setFont("Helvetica-Bold", 7.5)
+        pdf.setFillColor(_HEADING)
         pdf.drawString(15 * mm, A4[1] - 9 * mm, "coilEM")
         pdf.setFont("Helvetica", 6.5)
         pdf.setFillColor(_SLATE)
@@ -1829,7 +1961,8 @@ def build_public_run_pdf(
         pdf.restoreState()
 
     story: list[Any] = [
-        Paragraph("Electromagnetic solve report", styles["title"]),
+        Paragraph(escape(report_title), title_style),
+        HRFlowable(width=34 * mm, thickness=2.2, color=_ACCENT, hAlign="LEFT", spaceBefore=0, spaceAfter=2.5 * mm),
         Paragraph(
             "A replayable, immutable record generated from the stored project, resolved request, material contract, result, and solve provenance.",
             styles["subtitle"],
@@ -1882,7 +2015,8 @@ def build_public_run_pdf(
                         f"{_pdf_text(solve_params.get('commutation_advance_deg') if six_step else solve_params.get('current_angle_deg'))} deg",
                     ),
                     ("Excitation", "Ideal six-step (120 deg)" if six_step else "Sinusoidal"),
-                    ("Phase connection", solve_params.get("phase_connection") if six_step else "Not recorded"),
+                    # Line quantities assume the recorded connection whatever the drive (#348).
+                    ("Phase connection", str(solve_params.get("phase_connection") or "Not recorded").capitalize()),
                     ("Rated speed", f"{_pdf_text(solve_params.get('rated_speed_rpm'))} rpm"),
                     *(
                         [
@@ -1898,8 +2032,10 @@ def build_public_run_pdf(
                         else []
                     ),
                     ("Accuracy plan", _setting_entry("solve_quality", solve_params.get("solve_quality"))[1]),
-                    ("Mesh density", solve_metadata.get("mesh_density") or solve_params.get("mesh_density")),
-                    ("Mesh elements", solve_metadata.get("mesh_element_count")),
+                    ("Mesh density", _setting_entry(
+                        "mesh_density", solve_metadata.get("mesh_density") or solve_params.get("mesh_density") or "Not recorded")[1]),
+                    # Each rotor position is meshed again; the recorded count is the first solved position's (#348).
+                    ("Mesh elements, first position", solve_metadata.get("mesh_element_count")),
                     ("Rotor positions", solve_metadata.get("rotor_positions")),
                     ("Torque method used", _setting_entry("torque_method", solve_metadata.get("torque_method") or "Not recorded")[1]),
                     ("Torque method requested", _setting_entry("torque_method", solve_params.get("torque_method"))[1]),
@@ -1991,6 +2127,16 @@ def build_public_run_pdf(
     story.extend(_winding_and_loss_story(result, styles))
     story.extend(_cogging_story(result, request, styles))
     story.extend(_torque_speed_story(result, styles))
+    thermal = _mapping(summary.get("thermal"))
+    if thermal:
+        story.extend(thermal_story(
+            thermal, figure=_thermal_heatmap_figure(_mapping(result.get("field_line_plot")), project, thermal),
+            heading=lambda title: _section(title, styles)))
+    thermal_curve = _mapping(result.get("thermal_torque_curve"))
+    if thermal_curve:
+        # The inputs are printed once when the estimate above used the same ones.
+        story.extend(thermal_story(thermal_curve, rating=True, heading=lambda title: _section(title, styles),
+                                   show_inputs=thermal_curve.get("inputs") != thermal.get("inputs")))
     if torque_plot is not None or back_emf_plot is not None:
         story.append(_section("Stored result plots", styles))
         if torque_plot is not None:
@@ -2106,7 +2252,7 @@ def build_public_run_pdf(
     ]
     story.extend([KeepTogether([_section("Warnings", styles), warning_lines[0]]), *warning_lines[1:]])
     limitations = [
-        *PUBLIC_REPORT_LIMITATIONS,
+        *(PUBLIC_REPORT_LIMITATIONS[1:] if thermal else PUBLIC_REPORT_LIMITATIONS),
         *((SIX_STEP_REPORT_LIMITATION,) if six_step else ()),
         *_qualification_limitations(manifest),
     ]

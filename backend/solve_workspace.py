@@ -455,6 +455,54 @@ def _run_setups_snapshot(raw: Any) -> dict[str, Any] | None:
     return deepcopy(dict(raw)) if size <= RUN_SETUPS_MAX_BYTES else None
 
 
+_RUN_HEADLINE_MAX_BYTES = 2 * 1024 * 1024
+
+
+def _finite(value: Any) -> float | None:
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+        return None
+    return float(value)
+
+
+def _run_headline(report: Any) -> dict[str, Any]:
+    """The few numbers that tell one saved run from another. Display only: never an input to a solve."""
+    if not isinstance(report, Mapping):
+        return {}
+    summary = report.get("summary") if isinstance(report.get("summary"), Mapping) else {}
+    metadata = report.get("solve_metadata") if isinstance(report.get("solve_metadata"), Mapping) else {}
+    loss = summary.get("loss_breakdown") if isinstance(summary.get("loss_breakdown"), Mapping) else {}
+    cogging = summary.get("cogging") if isinstance(summary.get("cogging"), Mapping) else {}
+    numbers = {
+        # A run without a loaded sweep records a torque of zero, which is not a result.
+        "mean_torque_Nm": _finite(summary.get("avg_torque_Nm")) if metadata.get("torque_sweep_computed") is not False else None,
+        "back_emf_fundamental_V": _finite(summary.get("back_emf_fundamental_V")) if metadata.get("back_emf_computed") is not False else None,
+        "cogging_peak_to_peak_Nm": _finite(cogging.get("peak_to_peak_Nm")),
+        "efficiency_pct": _finite(loss.get("efficiency_pct")),
+        "solve_time_s": _finite(summary.get("solve_time_s")),
+    }
+    return {key: value for key, value in numbers.items() if value is not None}
+
+
+def _run_operating_point(request: Mapping[str, Any]) -> dict[str, Any]:
+    """Current, speed and drive as the run's request entered them. Display only."""
+    config = request.get("resolved_config")
+    if not isinstance(config, Mapping):
+        submitted = request.get("submitted")
+        config = submitted.get("config") if isinstance(submitted, Mapping) else None
+    params = config.get("solve_params") if isinstance(config, Mapping) else None
+    if not isinstance(params, Mapping):
+        return {}
+    point: dict[str, Any] = {}
+    for key, name in (("current_amplitude_A", "current_A"), ("rated_speed_rpm", "speed_rpm"), ("current_angle_deg", "current_angle_deg")):
+        value = _finite(params.get(key))
+        if value is not None:
+            point[name] = value
+    for key, name in (("current_amplitude_convention", "current_convention"), ("excitation_mode", "excitation_mode")):
+        if isinstance(params.get(key), str) and len(params[key]) <= 40:
+            point[name] = params[key]
+    return point
+
+
 def _submitted_run_setup(submitted: Mapping[str, Any]) -> dict[str, Any] | None:
     """A submitted display label, never an input to physics or qualification."""
     raw = submitted.get("run_setup")
@@ -1103,7 +1151,7 @@ class SolveWorkspace:
             raise FileNotFoundError("run artifact not found")
         return candidate
 
-    def load_run(self, project_slug: str, run_id: str) -> dict[str, Any]:
+    def load_run(self, project_slug: str, run_id: str, *, include_material: bool = False) -> dict[str, Any]:
         run = self.resolve_run(project_slug, run_id)
 
         def read_json(name: str) -> Any:
@@ -1208,6 +1256,7 @@ class SolveWorkspace:
             "project": project,
             "request": request,
             "result": result,
+            **({"material": material} if include_material else {}),
             "saved_run": RunLocation(
                 project_slug,
                 run_id,
@@ -1514,6 +1563,10 @@ class SolveWorkspace:
                         setup = _submitted_run_setup(submitted) if isinstance(submitted, Mapping) else None
                         if setup is not None:
                             record["run_setup"] = setup
+                        if record["status"] == "complete":
+                            point = _run_operating_point(request)
+                            if point:
+                                record["operating_point"] = point
                 except (OSError, ValueError, SolveWorkspaceError):
                     pass  # Historical or damaged requests remain listable without a setup label.
                 # The design's setup-library scope outlives edits, unlike the slug that unnamed
@@ -1533,6 +1586,17 @@ class SolveWorkspace:
                 retention = manifest.get("retention")
                 if isinstance(retention, Mapping) and retention.get("field_playback_removed_at"):
                     record["field_playback_removed_at"] = retention["field_playback_removed_at"]
+                if record["status"] == "complete":
+                    # What a list row shows of a run, from its small report summary; the large result is not opened.
+                    try:
+                        report_path = run / "report" / "summary.json"
+                        self._require_safe_path(report_path)
+                        if report_path.stat().st_size <= _RUN_HEADLINE_MAX_BYTES:
+                            headline = _run_headline(json.loads(report_path.read_text(encoding="utf-8")))
+                            if headline:
+                                record["headline"] = headline
+                    except (OSError, ValueError, SolveWorkspaceError):
+                        pass  # A run without a readable summary stays listable without its numbers.
                 records.append(record)
         return sorted(
             records,

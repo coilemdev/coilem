@@ -24,7 +24,7 @@ def binary_path():
 
 
 def run(*args):
-    subprocess.run([sys.executable, '-m', *map(str, args)], cwd=ROOT, check=True)
+    subprocess.run([sys.executable, '-m', *map(str, args)], cwd=ROOT, env=os.environ.copy(), check=True)
 
 
 def main():
@@ -38,7 +38,7 @@ def main():
                         choices=['registered', 'protocol16-native-only', 'sector'])
     args = parser.parse_args()
     if requested := os.environ.get('COILEM_BUILD_COMMIT'):
-        actual = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
+        actual = subprocess.check_output([shutil.which('git') or 'git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
         if not re.fullmatch('[0-9a-f]{40}', requested) or requested != actual:
             raise ValueError('candidate must be the exact full immutable checkout SHA')
     # The sector collection (protocol 1.11.0) solves the same cases, and the Prius jobs, as one repeating sector.

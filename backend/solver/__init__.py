@@ -3847,7 +3847,11 @@ class Magneto2DSolver(Solver):
             nonlocal field_progress_total
             self._raise_if_cancelled()
             if rotor_work and not rotor_finished and len(args) >= 4 and args[3] == "magneto2d_complete":
-                args = (*args[:3], "magneto2d_sweep", *args[4:])
+                # The field stage is done, but the run goes on to the rotor turn. This event counts the
+                # loaded sweep alone, which would move the bar back (434 -> 410 positions on the example):
+                # report the whole field stage as done (#348).
+                finished = field_progress_total or args[1]
+                args = (finished, finished, args[2], "magneto2d_sweep", *args[4:])
             if (rotor_work and len(args) >= 2 and isinstance(args[1], (int, float)) and args[1] > 0
                     and (len(args) < 4 or args[3] != "rotor_iron_loss")):
                 field_progress_total = max(field_progress_total, int(args[1]))

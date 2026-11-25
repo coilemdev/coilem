@@ -1,7 +1,8 @@
 """Internal full-machine rotor motion with fixed material meshes (#306).
 
 The rotor (including magnets and shaft) moves rigidly, the stator stays fixed,
-and only the circular air-gap annulus is triangulated again. Every interface
+and only the circular air-gap annulus is triangulated again. The rotor may be
+inside the gap or, for an outer-rotor machine, outside it. Every interface
 node is shared with the original material cells: there are no penalty ties,
 field interpolation, or changes to the loss kernel. Used by the opt-in rotor-loss stage.
 """
@@ -65,8 +66,19 @@ def triangle_metrics(nodes, triangles):
     return area2/2, 2*math.sqrt(3)*area2/edge_sq
 
 
-def validate_conforming_disk(nodes, triangles, boundary_nodes):
-    """All faces positive, all internal edges shared, one disk with no orphans."""
+def euler_characteristic(node_count, triangles):
+    """Nodes - edges + faces: 1 for a filled disk, 0 for a ring with one hole."""
+    triangles = np.asarray(triangles)
+    edges = np.unique(np.sort(np.concatenate((triangles[:, :2], triangles[:, 1:], triangles[:, [2, 0]])), axis=1), axis=0)
+    return int(node_count)-len(edges)+len(triangles)
+
+
+def validate_conforming_disk(nodes, triangles, boundary_nodes, *, holes=0):
+    """All faces positive, all internal edges shared, one region with no orphans.
+
+    ``holes`` is the number of unmeshed openings inside the region: none for a
+    filled disk, one for an outer-rotor mesh whose stator bore is left open.
+    """
     triangles = np.asarray(triangles)
     if not np.array_equal(np.unique(triangles), np.arange(len(nodes))):
         raise ValueError("motion mesh has orphan or invalid nodes")
@@ -77,8 +89,9 @@ def validate_conforming_disk(nodes, triangles, boundary_nodes):
     edges, counts = np.unique(edges, axis=0, return_counts=True)
     if np.max(counts) > 2 or set(np.unique(edges[counts == 1])) != set(boundary_nodes):
         raise ValueError("motion mesh has a nonconforming edge or an internal crack")
-    if len(nodes)-len(edges)+len(triangles) != 1:
-        raise ValueError("motion mesh is not a single filled disk")
+    if len(nodes)-len(edges)+len(triangles) != 1-holes:
+        raise ValueError("motion mesh is not a single filled disk" if not holes
+                         else "motion mesh is not a single ring around its opening")
     return {"minimum_quality": float(np.min(quality)), "area_mm2": float(np.sum(area)),
             "boundary_edges": int(np.sum(counts == 1))}
 
@@ -86,8 +99,9 @@ def validate_conforming_disk(nodes, triangles, boundary_nodes):
 class FixedMaterialRotorMesh:
     """Reusable geometry template; every pose still requires a fresh field solve.
 
-    Full-circle inner-rotor SPM or IPM with one circular sliding gap.
-    Unsupported geometry fails explicitly. The default mesher path is unchanged.
+    Full-circle inner-rotor SPM or IPM, or outer-rotor SPM, with one circular
+    sliding gap. Unsupported geometry fails explicitly. The default mesher path
+    is unchanged.
     """
 
     def __init__(self, artifact, *, angular_divisions=1536, radial_layers=4):
@@ -99,10 +113,13 @@ class FixedMaterialRotorMesh:
         mesh = self.base["mesh"]
         info = mesh["info"]
         contract = self.base["physics_contract"]
+        layout = info.get("rotor_layout", "inner")
         if (mesh["length_units"] != "mm" or info["total_span_deg"] != 360 or mesh.get("sector_edge_pairs")
-                or info.get("sector") or info.get("rotor_layout", "inner") != "inner"
-                or contract["topology_hint"] not in {"SPM", "IPM"}):
-            raise ValueError("fixed material motion currently requires a full-circle inner PM mesh")
+                or info.get("sector") or layout not in {"inner", "outer"}
+                or contract["topology_hint"] not in ({"SPM"} if layout == "outer" else {"SPM", "IPM"})):
+            raise ValueError("fixed material motion currently requires a full-circle inner PM or outer SPM mesh")
+        # The rotor is the material inside the gap, or outside it for an outer rotor.
+        self.outer_rotor = layout == "outer"
         self.base_angle = float(self.base["rotor_angle_mech_deg"])
         self.ri, self.ro = info["airgap_inner_radius_mm"], info["airgap_outer_radius_mm"]
         if not math.isfinite(self.base_angle) or not 0 < self.ri < self.ro:
@@ -126,8 +143,13 @@ class FixedMaterialRotorMesh:
         if len(np.intersect1d(moving_nodes, fixed_nodes)):
             raise ValueError("rotor and stator material meshes intersect across the air gap")
         radius = np.hypot(source_nodes[:, 0], source_nodes[:, 1])
-        if (np.max(radius[moving_nodes]) > self.ri+1e-7 or np.min(radius[fixed_nodes]) < self.ro-1e-7):
+        inside, outside = (fixed_nodes, moving_nodes) if self.outer_rotor else (moving_nodes, fixed_nodes)
+        if (np.max(radius[inside]) > self.ri+1e-7 or np.min(radius[outside]) < self.ro-1e-7):
             raise ValueError("material regions do not bound the declared circular gap")
+        # An inner-rotor mesh is a filled disk. An outer-rotor mesh may leave the stator bore open.
+        self.holes = 1-euler_characteristic(len(np.unique(source_triangles)), source_triangles)
+        if self.holes not in ((0, 1) if self.outer_rotor else (0,)):
+            raise ValueError("motion template is not a filled disk or a single ring around the stator bore")
         used = np.union1d(moving_nodes, fixed_nodes)
         remap = np.full(len(source_nodes), -1, dtype=int)
         remap[used] = np.arange(len(used))
@@ -137,8 +159,8 @@ class FixedMaterialRotorMesh:
         self.boundary_nodes = remap[np.asarray(mesh["boundary_nodes"], dtype=int)].tolist()
         if min(self.boundary_nodes) < 0:
             raise ValueError("outer boundary intersects the removed air gap")
-        self.inner = remap[moving_nodes[np.abs(radius[moving_nodes]-self.ri) < 1e-7]]
-        self.outer = remap[fixed_nodes[np.abs(radius[fixed_nodes]-self.ro) < 1e-7]]
+        self.inner = remap[inside[np.abs(radius[inside]-self.ri) < 1e-7]]
+        self.outer = remap[outside[np.abs(radius[outside]-self.ro) < 1e-7]]
         self.angular_divisions, self.radial_layers = angular_divisions, radial_layers
         self.template_sha256 = hashlib.sha256(json.dumps(artifact, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
         # Interface ring edges must be complete material boundaries, rather
@@ -169,7 +191,9 @@ class FixedMaterialRotorMesh:
         angles = 2*math.pi*np.arange(self.angular_divisions)/self.angular_divisions
         for layer in range(1, self.radial_layers):
             radius = self.ri+(self.ro-self.ri)*layer/self.radial_layers
-            a = angles+(delta if 2*layer <= self.radial_layers else 0.0)
+            # The band layers on the rotor's side of the gap turn with it.
+            with_rotor = 2*layer >= self.radial_layers if self.outer_rotor else 2*layer <= self.radial_layers
+            a = angles+(delta if with_rotor else 0.0)
             chunks.append(radius*np.column_stack((np.cos(a), np.sin(a))))
             rings.append(np.arange(offset, offset+self.angular_divisions))
             offset += self.angular_divisions
@@ -177,7 +201,7 @@ class FixedMaterialRotorMesh:
         nodes = np.concatenate(chunks)
         band = np.concatenate([annular_strip(nodes, inner, outer) for inner, outer in zip(rings, rings[1:])])
         triangles = np.concatenate((self.triangles, band))
-        qa = validate_conforming_disk(nodes, triangles, self.boundary_nodes)
+        qa = validate_conforming_disk(nodes, triangles, self.boundary_nodes, holes=self.holes)
         result = copy.deepcopy(self.base)
         mesh = result["mesh"]
         mesh.update(nodes=nodes.tolist(), triangles=triangles.tolist(), boundary_nodes=self.boundary_nodes.copy())

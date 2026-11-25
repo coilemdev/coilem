@@ -41,6 +41,7 @@ export type ConsistencyStatus = 'ok' | 'check' | 'unavailable' | 'not-applicable
 export interface MotorConstantsView {
   kt: MotorConstantValue;
   ke: MotorConstantValue;
+  kv: MotorConstantValue;
   lambdaPm: MotorConstantValue;
   consistency: MotorConstantValue;
   consistencyStatus: ConsistencyStatus;
@@ -105,10 +106,16 @@ export function motorConstantsView(summary: MotorConstantsSummary): MotorConstan
   const notApplicable = consistencyNotApplicable(summary.dq_flux_linkage);
   // Torque per rms ampere: I_rms = I_pk / √2, so Kt_rms = √2 · Kt_pk.
   const ktShown = constantValue('kt-rms', 'N·m/A rms', kt === null ? null : kt * Math.SQRT2);
-  const keShown = constantValue('ke-krpm', 'V/krpm L-L rms', ke === null ? null : ke * RAD_PER_S_PER_KRPM * PEAK_LN_TO_RMS_LL);
+  const keLineRmsPerKrpm = ke === null ? null : finite(ke * RAD_PER_S_PER_KRPM * PEAK_LN_TO_RMS_LL);
+  const keShown = constantValue('ke-krpm', 'V/krpm L-L rms', keLineRmsPerKrpm);
+  // Use the peak voltage between leads at 1,000 mechanical RPM.
+  const kvEstimate = keLineRmsPerKrpm !== null && keLineRmsPerKrpm > 0
+    ? finite((1000 / Math.SQRT2) / keLineRmsPerKrpm)
+    : null;
   return {
     kt: kt === null ? ktShown : { ...ktShown, siHint: `${constantValue('kt-peak', '', kt).text} N·m/A per peak ampere (SI)` },
     ke: ke === null ? keShown : { ...keShown, siHint: `${constantValue('ke-si', '', ke).text} V·s/rad, phase peak per mechanical rad/s (SI)` },
+    kv: constantValue('kv-estimate', 'RPM/V L-L peak', kvEstimate),
     lambdaPm: constantValue('lambda-pm', 'mWb', lambdaPm === null ? null : lambdaPm * 1000),
     consistency: constantValue('consistency', '%', consistency, formatPercent),
     consistencyStatus: shownPercent === null
